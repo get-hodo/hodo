@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hodo · Capture</title>
+  <meta name="theme-color" content="#ffffff" id="themeColor">
+  <link rel="icon" id="favicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22246%20250%20760%20760%22%3E%3Cg%20fill%3D%22%23c25a33%22%3E%3Crect%20x%3D%22323%22%20y%3D%22497%22%20width%3D%22170%22%20height%3D%22219%22%20rx%3D%2285%22%2F%3E%3Crect%20x%3D%22541%22%20y%3D%22410%22%20width%3D%22171%22%20height%3D%22323%22%20rx%3D%2285.5%22%2F%3E%3Crect%20x%3D%22764%22%20y%3D%22310%22%20width%3D%22173%22%20height%3D%22402%22%20rx%3D%2286.5%22%2F%3E%3Cpath%20d%3D%22M300%2C716%20Q627%2C914%20950%2C716%20A44%2C44%200%200%201%20988%2C782%20C880%2C1006%20370%2C1006%20266%2C782%20A44%2C44%200%200%201%20300%2C716%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    // Theme + style before first paint, so the window never flashes the wrong colors
+    (function () { var t = 'default', s = 'expressive';
+      try { t = localStorage.getItem('pd-theme') || 'default'; s = localStorage.getItem('pd-style') || 'expressive'; } catch (e) {}
+      if (t !== 'default') document.documentElement.setAttribute('data-theme', t);
+      // Minimalist is off (C-02): the quick window is always Expressive
+      var c = { default: '#ffffff', green: '#ffffff', dark: '#30333b' }[t] || '#ffffff';
+      document.getElementById('themeColor').setAttribute('content', c); })();
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #faf9f5; --card: #ffffff; --soft: #F5F4EF; --text: #141413; --text2: #5c5c5a; --muted: #8c8c8a; --border: #e5e4df; --brand: #b8603f; --on-brand: #fff; --danger: #c2410c; }
+    [data-theme="green"] { --bg: #f4f8f4; --soft: #e5efe6; --text: #13231a; --text2: #43594b; --muted: #748a7c; --border: #d3e4d6; --brand: #2f855a; }
+    [data-theme="dark"] { --bg: #22242a; --card: #30333b; --soft: #2a2d34; --text: #d8d6cf; --text2: #a8a69f; --muted: #7d7b76; --border: #3b3e46; --brand: #d8b27a; --on-brand: #22242a; --danger: #e08a66; color-scheme: dark; }
+    html, body { height: 100%; }
+    body { background: var(--card); color: var(--text); font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif; overflow: hidden; display: flex; flex-direction: column; justify-content: center; padding: 14px 16px 10px; }
+    .bar { display: flex; align-items: flex-start; gap: 10px; }
+    .ic { flex: none; width: 22px; height: 40px; display: flex; align-items: center; color: var(--brand); }
+    .ic svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+    .ic svg path:last-child { fill: currentColor; }
+    .field { flex: 1; min-width: 0; }
+    textarea { display: block; width: 100%; height: 40px; max-height: 120px; resize: none; border: 0; outline: 0; background: transparent; color: var(--text);
+      font: inherit; font-size: 18px; line-height: 1.4; padding: 8px 0; unicode-bidi: plaintext; text-align: start; }
+    textarea::placeholder { color: var(--muted); }
+    .interim { font-size: 15px; color: var(--muted); font-style: italic; unicode-bidi: plaintext; text-align: start; padding-bottom: 4px; }
+    .interim:empty { display: none; }
+    button { font: inherit; cursor: pointer; }
+    .lang { flex: none; height: 40px; min-width: 40px; padding: 0 8px; border-radius: 12px; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 650; }
+    .lang:hover { background: var(--soft); color: var(--text); }
+    .mic { flex: none; position: relative; width: 40px; height: 40px; border-radius: 12px; border: 0; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--soft); color: var(--text2); transition: background .2s, color .2s; }
+    .mic svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+    .mic:hover { color: var(--text); }
+    .mic:disabled { opacity: .35; cursor: not-allowed; }
+    body.listening .mic { background: var(--brand); color: var(--on-brand); }
+    body.listening .mic::after { content: ''; position: absolute; inset: -4px; border-radius: 15px; border: 2px solid var(--brand); animation: pulse 1.5s ease-out infinite; }
+    @keyframes pulse { from { transform: scale(1); opacity: .7; } to { transform: scale(1.35); opacity: 0; } }
+    .foot { display: flex; align-items: center; gap: 12px; padding: 10px 0 0 32px; margin-top: 8px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--text2); font-weight: 600; }
+    body.listening .msg { color: var(--brand); }
+    .msg.err { color: var(--danger); }
+    .msg.warn { color: #b7791f; }
+    kbd { font: inherit; font-size: 11px; padding: 0 5px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; color: var(--text2); }
+    .done { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--card); color: var(--text); font-size: 17px; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity .15s; }
+    .done svg { width: 24px; height: 24px; fill: none; stroke: var(--brand); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; stroke-dashoffset: 30; }
+    body.caught .done { opacity: 1; pointer-events: auto; }
+    body.caught .done svg { animation: tick .35s ease-out .05s forwards; }
+    @keyframes tick { to { stroke-dashoffset: 0; } }
+    .done small { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+    html.cs-min .ic, html.cs-min body.listening .msg { color: var(--muted); }
+    html.cs-min body.listening .mic { background: var(--text); color: var(--card); }
+    html.cs-min body.listening .mic::after { border-color: var(--muted); }
+    html.cs-min .done svg { stroke: var(--text); }
+    @media (max-width: 480px) { .keys { display: none; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .done svg { stroke-dashoffset: 0; } }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <span class="ic"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8.2 2.2L3 8.6h3.6l-.8 5.2 5.2-6.6H7.4z" stroke-linejoin="round"/><path d="M12.8 1.2l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z" stroke-width=".6" stroke-linejoin="round"/></svg></span>
+    <div class="field"><textarea id="in" rows="1" dir="auto" placeholder="Catch a thought, a task, or paste a message…" aria-label="Capture" autofocus></textarea><div class="interim" id="interim" dir="auto"></div></div>
+    <button class="lang" id="lang" type="button" title="Voice language (click to switch)">ع</button>
+    <button class="mic" id="mic" type="button" title="Talk (Ctrl+Space)" aria-label="Talk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
+  </div>
+  <div class="foot"><span class="msg" id="msg"></span><span class="keys"><kbd>Enter</kbd> catch · <kbd>Ctrl</kbd>+<kbd>Space</kbd> talk · <kbd>Esc</kbd> close</span></div>
+  <div class="done" aria-live="polite"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="doneText">Caught</span></div>
+  <script>
+  (function () {
+    var inp = document.getElementById('in'), interim = document.getElementById('interim'), msg = document.getElementById('msg'), micB = document.getElementById('mic'), langB = document.getElementById('lang');
+    var store = { get: function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }, set: function (k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } } };
+    var via = 'typed', rec = null, listening = false, lang = store.get('koi-voice-lang', 'ar-SA'), sent = false;
+    var W = 640, H = 168;
+
+    // A small window, centered a little above the middle of the screen
+    function place() { try { window.resizeTo(W + (window.outerWidth - window.innerWidth), H + (window.outerHeight - window.innerHeight)); window.moveTo(Math.round((screen.availWidth - window.outerWidth) / 2) + (screen.availLeft || 0), Math.round(screen.availHeight * 0.28) + (screen.availTop || 0)); } catch (e) {} }
+    place(); setTimeout(place, 60);
+
+    function waiting() { var n = parseInt(store.get('koi-captured-count', '0'), 10) || 0, q = []; try { q = JSON.parse(store.get('koi-inbox', '[]')) || []; } catch (e) {} return n + q.length; }
+    function pending() { var q = []; try { q = JSON.parse(store.get('koi-inbox', '[]')) || []; } catch (e) {} return q.length; }
+    // catches sit in this browser until Hodo is opened; say so, so nobody clears browser data and loses them
+    function idle() { if (listening) return; var p = pending(), n = waiting(); if (p) { msg.className = 'msg warn'; msg.textContent = p + ' not in Hodo yet \u00b7 open Hodo to save ' + (p > 1 ? 'them' : 'it'); return; } msg.className = 'msg'; msg.textContent = n ? n + ' waiting in Captured' : ''; }
+    function grow() { inp.style.height = '40px'; inp.style.height = Math.min(120, inp.scrollHeight) + 'px'; }
+
+    // draft survives Esc, so a half-typed thought is never lost
+    var draft = store.get('koi-qc-draft', ''); if (draft) { inp.value = draft; grow(); }
+    inp.addEventListener('input', function () { if (via !== 'voice' && via !== 'paste') via = 'typed'; store.set('koi-qc-draft', inp.value); grow(); });
+    inp.addEventListener('paste', function () { via = 'paste'; setTimeout(function () { store.set('koi-qc-draft', inp.value); grow(); }, 0); });
+
+    function close() { stopVoice(); window.close(); }
+    function catchIt() {
+      var text = (inp.value + (interim.textContent.trim() ? ' ' + interim.textContent.trim() : '')).trim();
+      if (!text || sent) return;
+      stopVoice();
+      var q = []; try { q = JSON.parse(store.get('koi-inbox', '[]')) || []; } catch (e) {}
+      q.push({ text: text, via: via, at: Date.now() });
+      if (!store.set('koi-inbox', JSON.stringify(q))) { msg.className = 'msg err'; msg.textContent = 'Couldn’t save. Copy it before closing.'; return; }
+      sent = true; store.set('koi-qc-draft', '');
+      var n = waiting(), before = q.length - 1;
+      document.getElementById('doneText').innerHTML = before > 0 ? 'Caught <small>\u00b7 ' + (before + 1) + ' not in Hodo yet \u00b7 open Hodo to save them</small>' : 'Caught <small>\u00b7 ' + n + ' waiting in Captured</small>';
+      document.body.classList.add('caught');
+      setTimeout(function () {
+        window.close();
+        // if the browser kept the window open, get ready for the next one
+        setTimeout(function () { sent = false; inp.value = ''; interim.textContent = ''; via = 'typed'; grow(); document.body.classList.remove('caught'); idle(); inp.focus(); }, 400);
+      }, 650);
+    }
+
+    // ---------- voice (same as Hodo: Arabic or English, remembered) ----------
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    langB.textContent = lang === 'en-US' ? 'EN' : 'ع';
+    if (!SR) { micB.disabled = true; micB.title = 'Voice needs Chrome or Edge'; }
+    function startVoice() {
+      if (!SR || listening) return;
+      var r = new SR(); r.lang = lang; r.continuous = true; r.interimResults = true;
+      r.onresult = function (e) { var fin = '', mid = '';
+        for (var i = e.resultIndex; i < e.results.length; i++) { var x = e.results[i]; if (x.isFinal) fin += x[0].transcript; else mid += x[0].transcript; }
+        if (fin) { inp.value = (inp.value.trim() ? inp.value.trim() + ' ' : '') + fin.trim(); via = 'voice'; store.set('koi-qc-draft', inp.value); grow(); }
+        interim.textContent = mid; };
+      r.onerror = function (e) { msg.className = 'msg err'; msg.textContent = ({ 'not-allowed': 'Microphone is blocked. Allow it from the icon in the title bar.', 'service-not-allowed': 'Microphone is blocked. Allow it from the icon in the title bar.', network: 'Voice needs an internet connection.', 'no-speech': 'Didn’t catch anything. Try again.', 'audio-capture': 'No microphone found.' })[e.error] || ('Voice stopped: ' + e.error); };
+      r.onend = function () { if (rec === r) { rec = null; listening = false; document.body.classList.remove('listening'); if (/Listening|أسمعك/.test(msg.textContent)) idle(); } };
+      try { r.start(); rec = r; listening = true; via = 'voice'; document.body.classList.add('listening'); msg.className = 'msg'; msg.textContent = lang === 'en-US' ? 'Listening…' : 'أسمعك…'; }
+      catch (err) { msg.className = 'msg err'; msg.textContent = 'Voice could not start.'; }
+    }
+    function stopVoice() {
+      if (interim.textContent.trim()) { inp.value = (inp.value.trim() ? inp.value.trim() + ' ' : '') + interim.textContent.trim(); interim.textContent = ''; grow(); }
+      if (rec) { var r = rec; rec = null; try { r.stop(); } catch (e) {} }
+      listening = false; document.body.classList.remove('listening'); idle();
+    }
+    micB.addEventListener('click', function () { listening ? stopVoice() : startVoice(); inp.focus(); });
+    langB.addEventListener('click', function () { lang = lang === 'en-US' ? 'ar-SA' : 'en-US'; langB.textContent = lang === 'en-US' ? 'EN' : 'ع'; store.set('koi-voice-lang', lang); if (listening) { stopVoice(); startVoice(); } inp.focus(); });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); catchIt(); }
+      else if (e.key === 'Escape') { e.preventDefault(); if (listening) stopVoice(); else close(); }
+      else if (e.code === 'Space' && e.ctrlKey && !e.altKey) { e.preventDefault(); listening ? stopVoice() : startVoice(); }
+    });
+    window.addEventListener('focus', function () { inp.focus(); idle(); });
+    if (/voice|talk/i.test(location.hash)) startVoice();
+    idle(); inp.focus(); setTimeout(function () { inp.focus(); }, 50);
+  })();
+  </script>
+</body>
+</html>
