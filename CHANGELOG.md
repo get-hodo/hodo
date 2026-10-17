@@ -1,5 +1,11 @@
 # Hodo: what changed
 
+## Hodo 1.4.1 · Oct 17, 2026
+- REWORKED: A new look for the progress button
+- SOLVED: Capture and the Captured count look like two separate buttons.
+- SOLVED: “See what’s new” is hard to read when you hover it.
+- SHELVED: The delete animation in the List
+
 ## Hodo 1.4 · Oct 17, 2026
 - NEW: Add tasks one after another, with or without details
 - REWORKED: Delete in one click

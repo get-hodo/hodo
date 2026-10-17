@@ -60,7 +60,9 @@
   - Safety net                                 "// ===== Task file safety net (Oct 9)"
   - Calendar row animation                     "Calendar: the week row opens and closes smoothly"
   - Burn (now: Erase in the Waste Yard)        "Deleting burns the task away"
-  - Delete: crumple and toss to the Waste Yard "Delete = crumple and toss" (koiToss, koiBinEraseFx, koiBinEmptyFx)
+  - Delete: crumple and toss to the Waste Yard "Delete = crumple and toss" (koiToss, koiBinEraseFx, koiBinEmptyFx); List rows just vanish for now (koiLvVanish)
+  - New stuff! replay every 5 min + theme redraw (koiNsRedraw)
+  - Progress button outline = status track "Progress button, take 2" (koiProgEdge)
   - Waste Yard                                 "// ===== Waste yard (Oct 9)"
   - Onboarding (PAUSED Oct 17, see "Welcome paused") "// ===== Onboarding (Oct 10)" (koiWelcomeShow, Getting started: GS_ITEMS)
   - Theme switch toast                         "vtHintShow"
@@ -4742,6 +4744,23 @@
     header .buttons #progBtn #progPct { position: relative; z-index: 1; pointer-events: none; color: #22242a; font-size: 11.5px; font-weight: 750; letter-spacing: -.01em; line-height: 1; padding-top: 4.2px; }   /* the Night Owl header colour, in both themes */
     header .buttons #progBtn:hover .pr-pie .pie { filter: brightness(1.05); }
     header .buttons #progBtn .pr-pie .pie-pop { right: -12px; left: auto; }
+    /* ===== Oct 17 fixes: Capture + Captured joined into one button; New stuff! button hover ===== */
+    header .cap-split:has(#trayBtn:not([hidden])) #captureBtn { border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right-color: transparent; }
+    header .cap-split #trayBtn:not([hidden]) { border-radius: 0 9px 9px 0 !important; margin-left: -1px; position: relative; }
+    #nsPill .ns-btn:hover, #nsPill .ns-btn:focus-visible { background: color-mix(in srgb, var(--brand, var(--accent)) 86%, #000); color: #fff; filter: none; }
+    [data-theme="dark"] #nsPill .ns-btn:hover, [data-theme="dark"] #nsPill .ns-btn:focus-visible { background: color-mix(in srgb, var(--brand, var(--accent)) 84%, #fff); color: #22242a; }
+    .ns-ok:hover { background: color-mix(in srgb, var(--brand, var(--accent)) 86%, #000); color: #fff; }
+    [data-theme="dark"] .ns-ok:hover { background: color-mix(in srgb, var(--brand, var(--accent)) 84%, #fff); color: #22242a; }
+    /* ===== Progress button, take 2 (Oct 17): a normal button whose outline is the coloured status track ===== */
+    header #openTaskBtn { display: none !important; }   /* the old "Select File" button; the welcome screen and Settings still open a file */
+    header .buttons #progBtn { background: var(--bg-card); }
+    header .buttons #progBtn .pr-pie .pie { display: none; }
+    header .buttons #progBtn .pr-edge { position: absolute; inset: 0; width: 38px; height: 38px; pointer-events: none; overflow: visible; }
+    header .buttons #progBtn .pr-edge path { fill: none; stroke-width: 3; stroke-linecap: butt; }
+    header .buttons #progBtn .pr-edge .trk { stroke: var(--border); }
+    header .buttons #progBtn #progPct { color: var(--text-primary); padding-top: 0; }
+    header .buttons #progBtn:hover { background: var(--bg-secondary); }
+    header .buttons #progBtn:hover .pr-edge { filter: brightness(1.06); }
   </style>
 </head>
 <body>
@@ -7069,7 +7088,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '1.4';
+    const KOI_VERSION = '1.4.1';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -14852,6 +14871,15 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       return delay + DUR;
     }
     const KOI_BURN_MS = 1500;
+    // a List row that is deleted disappears at once and the gap closes (whole item, so an opened row goes too)
+    const KOI_LV_GONE = 200;
+    function koiLvVanish(item) {
+      if (!item) return;
+      const h = item.getBoundingClientRect().height, cs = getComputedStyle(item);
+      item.style.visibility = 'hidden'; item.style.overflow = 'hidden'; item.style.pointerEvents = 'none';
+      item.animate([{ height: h + 'px', marginTop: cs.marginTop, marginBottom: cs.marginBottom },
+                    { height: '0px', marginTop: '0px', marginBottom: '0px' }], { duration: KOI_LV_GONE - 20, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
+    }
     // after a single row burns, the gap where it was folds shut instead of jumping
     function koiBinCollapse(row, then) {
       const h = row.getBoundingClientRect().height, cs = getComputedStyle(row);
@@ -14867,9 +14895,12 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       if (reduceMotion) return;
       const els = koiBurnEls([...koiSel]); if (!els.length) return;
       e.stopImmediatePropagation(); e.preventDefault(); koiBurning = true;
-      try { koiSound.play('toss'); } catch (x) {}
-      els.slice(0, 24).forEach((el, i) => koiToss(el, Math.min(i, 8) * 70, els.length > 3));   // Oct 15: crumple and toss (burning is for Erase in the Waste Yard)
-      setTimeout(() => { koiBurning = false; b.dataset.kbGo = '1'; b.click(); }, KT_TOTAL + Math.min(els.length - 1, 8) * 70);
+      // Oct 17: List rows have no effect for now: they vanish and the rows below close the gap (the crumple is being reworked for the List)
+      const lv = els.filter(x => x.closest('.lv-item')), tz = els.filter(x => !x.closest('.lv-item'));
+      lv.forEach(x => koiLvVanish(x.closest('.lv-item')));
+      if (tz.length) { try { koiSound.play('toss'); } catch (x) {} }
+      tz.slice(0, 24).forEach((el, i) => koiToss(el, Math.min(i, 8) * 70, tz.length > 3));   // Oct 15: crumple and toss (burning is for Erase in the Waste Yard)
+      setTimeout(() => { koiBurning = false; b.dataset.kbGo = '1'; b.click(); }, tz.length ? KT_TOTAL + Math.min(tz.length - 1, 8) * 70 : KOI_LV_GONE);
     }, true);
     // ===== Waste yard (Oct 9): deleted tasks wait 30 days, then they're erased for good =====
     // Stored in TASKS.md under "## Deleted" (kept off the board, progress, calendar and Focus). Each line carries
@@ -16081,6 +16112,12 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '1.4.1': [
+        { k: 'reworked', t: 'A new look for the progress button', d: 'Now the progress button looks like the buttons next to it, and its outline is the chart: each status colour takes its share of the edge, with the percentage in the middle. Hover it to see your tasks by status.' },
+        { k: 'solved', t: 'Capture and the Captured count look like two separate buttons.', d: 'Now they join into one button when something is waiting for you, and Capture is a single square when nothing is.' },
+        { k: 'solved', t: '“See what’s new” is hard to read when you hover it.', d: 'Now the button keeps its colour on hover and stays readable in both themes.' },
+        { k: 'shelved', t: 'The delete animation in the List', d: 'We’ve shelved the delete animation in the List while we design a better one. Deleting there now simply removes the row. It’ll be back in a later update.' }
+      ],
       '1.4': [
         { k: 'new', t: 'Add tasks one after another, with or without details', clip: 'adddetails', d: 'Click “+ Add task” at the bottom of a column and type a title. Then:<ul><li><kbd>Enter</kbd> adds the task and opens a new empty box right below, so you can keep going.</li><li><kbd>Tab</kbd> adds the task and opens its details instead, with the cursor ready for steps. Type a step and press Enter for the next one. You can also set priority, area, dates and the rest there.</li><li>When you’re done with the details, press <kbd>Enter</kbd> on an empty step, or <kbd>Ctrl</kbd>+<kbd>Enter</kbd> from anywhere, and the next new-task box opens.</li><li><kbd>Esc</kbd>, or Enter on an empty box, stops. Clicking away keeps whatever you typed.</li></ul>Small key hints under the box and at the bottom of the details remind you how it works.' },
         { k: 'reworked', t: 'Delete in one click', clip: 'delete', d: 'Now the bin on a task deletes it straight away, no “are you sure?”. Changed your mind? Your safety net is the brief “Undo” button, or the ability to restore it from the Waste Yard within 30 days. Deleting several selected tasks at once still asks first.' },
@@ -16161,12 +16198,12 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     let nsNewer = null, nsAnimated = false;
     function koiNsPaint() {
       const drop = () => { const b = document.getElementById('nsPill'); if (b) b.remove(); };
-      if (nsNewer) { if (!document.querySelector('#nsPill .ns-btn[data-m="bring"]')) { koiNewStuffPill('bring', nsAnimated); nsAnimated = true; document.querySelector('#nsPill .ns-btn').dataset.m = 'bring'; } return; }
+      if (nsNewer) { if (!document.querySelector('#nsPill .ns-btn[data-m="bring"]')) { koiNewStuffPill('bring', false); nsAnimated = true; document.querySelector('#nsPill .ns-btn').dataset.m = 'bring'; } return; }
       if (nsOff()) { drop(); return; }
       let pend = null, day = null; try { pend = localStorage.getItem('koi-notes-pending'); day = localStorage.getItem('koi-notes-seen-day'); } catch (e) {}
       if (pend !== KOI_VERSION || !KOI_NOTES[KOI_VERSION]) { drop(); return; }
       if (day && day !== new Date().toDateString()) { try { localStorage.removeItem('koi-notes-pending'); localStorage.removeItem('koi-notes-seen-day'); } catch (e) {} drop(); return; }
-      if (!document.getElementById('nsPill')) { koiNewStuffPill('see', !!day || nsAnimated); nsAnimated = true; }
+      if (!document.getElementById('nsPill')) { koiNewStuffPill('see', false); nsAnimated = true; }
     }
     (function koiNsBoot() {
       let last = null, used = false;
@@ -16284,6 +16321,46 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     { const i = MU.findIndex(t => t.id === 'rebel'); if (i >= 0) MU.splice(i, 1); }
     if (mu.cur === 'rebel') { mu.cur = 'velvet'; muLS.set('koi-mu-cur', 'velvet'); }
     { const g = GUIDE_ITEMS.find(x => x.id === 'music'); if (g) g.d = 'Two moods to work to: Stoic Winner and Quiet Grinder.'; }
+    // Oct 17: New stuff! plays its animation each time Hodo opens and again every 5 minutes while the pill is there
+    function koiNsRedraw(still) {
+      const b = document.getElementById('nsPill'); if (!b) return;
+      const bring = b.querySelector('.ns-btn').dataset.m === 'bring';
+      koiNewStuffPill(bring ? 'bring' : 'see', still);
+      if (bring) document.querySelector('#nsPill .ns-btn').dataset.m = 'bring';
+    }
+    setInterval(() => { const b = document.getElementById('nsPill'); if (b && !document.hidden && !b.matches(':hover') && !nsEl) koiNsRedraw(false); }, 5 * 60 * 1000);
+    // switching theme redraws it in that theme's style (ink drop / shooting star) without playing it
+    new MutationObserver(() => koiNsRedraw(true)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    // ===== Progress button, take 2 (Oct 17): the button's outline is the status track =====
+    // Starts at the top middle and runs clockwise, like the pie did; each status gets its share of the outline.
+    const KOI_EDGE_D = (() => { const i = 1.5, e = 36.5, r = 7.5; return `M19 ${i} H${e - r} A${r} ${r} 0 0 1 ${e} ${i + r} V${e - r} A${r} ${r} 0 0 1 ${e - r} ${e} H${i + r} A${r} ${r} 0 0 1 ${i} ${e - r} V${i + r} A${r} ${r} 0 0 1 ${i + r} ${i} Z`; })();
+    function koiProgEdge(sl) {
+      const pb = document.getElementById('progBtn'); if (!pb) return;
+      let svg = pb.querySelector('.pr-edge');
+      if (!svg) { svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'pr-edge'); svg.setAttribute('viewBox', '0 0 38 38'); svg.setAttribute('aria-hidden', 'true'); pb.prepend(svg); }
+      const live = (sl || []).filter(x => x.n > 0.0001), total = live.reduce((a, b) => a + b.n, 0);
+      if (!total) { svg.innerHTML = `<path class="trk" d="${KOI_EDGE_D}" pathLength="100"/>`; return; }
+      if (live.length === 1) { svg.innerHTML = `<path d="${KOI_EDGE_D}" pathLength="100" style="stroke:${live[0].color}"/>`; return; }
+      let off = 0, out = '';
+      live.forEach(x => { const len = x.n / total * 100, gap = Math.min(1.6, len * .4);
+        out += `<path d="${KOI_EDGE_D}" pathLength="100" style="stroke:${x.color}" stroke-dasharray="${Math.max(0, len - gap).toFixed(3)} 100" stroke-dashoffset="${(-off - gap / 2).toFixed(3)}"/>`; off += len; });
+      svg.innerHTML = out;
+    }
+    { const _pc = progPieCopy; progPieCopy = function () { const r = _pc.apply(this, arguments); const sp = document.getElementById('statusPie'); koiProgEdge(sp && sp._slices); return r; }; }
+    // the smooth change after finishing a task now slides the outline segments instead of the pie slices
+    { const _pt = progPieTween; progPieTween = function (done) {
+        const pp = document.getElementById('progPie'), sp = document.getElementById('statusPie');
+        const to = sp && sp._slices, from = pp && pp._shown;
+        if (!pp || !to || !from || reduceMotion) return _pt.apply(this, arguments);
+        const t0 = performance.now(), dur = 750;
+        const step = now => {
+          const k = Math.min(1, (now - t0) / dur), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+          koiProgEdge(to.map(x => { const f = from.find(y => y.id === x.id); return { id: x.id, color: x.color, n: (f ? f.n : 0) + (x.n - (f ? f.n : 0)) * e }; }));
+          if (k < 1) requestAnimationFrame(step); else { progPieCopy(); if (done) done(); }
+        };
+        requestAnimationFrame(step);
+      }; }
+    setTimeout(() => { try { progPieCopy(); } catch (e) {} }, 0);
     applyWaitRail();
   </script>
 </body>
