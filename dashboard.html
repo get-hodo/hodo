@@ -16113,7 +16113,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
       '1.4.1': [
-        { k: 'reworked', t: 'A new look for the progress button', d: 'Now the progress button looks like the buttons next to it, and its outline is the chart: each status colour takes its share of the edge, with the percentage in the middle. Hover it to see your tasks by status.' },
+        { k: 'reworked', over: ['prog'], t: 'A new look for the progress button', d: 'Now the progress button looks like the buttons next to it, and its outline is the chart: each status colour takes its share of the edge, with the percentage in the middle. Hover it to see your tasks by status.' },
         { k: 'solved', t: 'Capture and the Captured count look like two separate buttons.', d: 'Now they join into one button when something is waiting for you, and Capture is a single square when nothing is.' },
         { k: 'solved', t: '“See what’s new” is hard to read when you hover it.', d: 'Now the button keeps its colour on hover and stays readable in both themes.' },
         { k: 'shelved', t: 'The delete animation in the List', d: 'We’ve shelved the delete animation in the List while we design a better one. Deleting there now simply removes the row. It’ll be back in a later update.' }
@@ -16124,7 +16124,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         { k: 'reworked', t: 'A new look for erasing', clip: 'erase', d: 'Erasing a task in the Waste Yard now burns it away in a clean, hand-drawn style: the fire spreads from a corner, the flames stay on the burning edge, and the space closes up neatly afterwards.' },
         { k: 'solved', t: 'Box select doesn’t reach the whole column.', clip: 'box', d: 'Now while dragging a box to select cards, hold the mouse near the top or bottom of a column and it scrolls, so cards that weren’t showing can be selected too.' },
         { k: 'solved', t: 'The delete animation stutters.', d: 'Now the crumple-and-toss into the Waste Yard runs smoothly, without freezing halfway.' },
-        { k: 'reworked', t: 'The progress button is the chart', d: 'Now the progress button is the chart itself: the whole square fills with your progress, with the percentage in the middle. It sits first among the header buttons. Hover it to see your tasks by status. Finishing a task still sends the green drop into it.' },
+        { k: 'reworked', key: 'prog', t: 'The progress button is the chart', d: 'Now the progress button is the chart itself: the whole square fills with your progress, with the percentage in the middle. It sits first among the header buttons. Hover it to see your tasks by status. Finishing a task still sends the green drop into it.' },
         { k: 'shelved', t: 'The Performance page', d: 'We’ve shelved the Performance page while we rework it. The progress button still shows how far along you are; hover it for the breakdown by status.' },
         { k: 'shelved', t: 'Cyber Rebel', d: 'We’ve taken Cyber Rebel out of the music. Stoic Winner and Quiet Grinder are still there to work to.' },
         { k: 'shelved', t: 'The Rundown', d: 'We’ve shelved the Rundown while we rework it. Hodo now opens on your board, and nothing you saved is lost. It’ll be back in a later update.' }
@@ -16132,8 +16132,18 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     };
     const NS_TAG = { new: 'NEW', reworked: 'REWORKED', solved: 'SOLVED', shelved: 'SHELVED' };   // category names (Oct 17)
     let nsEl = null;
+    // Oct 17: someone who skipped updates gets every update they missed in one list. 'koi-notes-from' is the version they
+    // had before; a newer line can replace an older one (over: [key]), and then only the newer line shows.
+    function koiNotesMissed() {
+      let from = null; try { from = localStorage.getItem('koi-notes-from'); } catch (e) {}
+      const vers = Object.keys(KOI_NOTES).filter(v => !koiVerNewer(v, KOI_VERSION) && (v === KOI_VERSION || (from && koiVerNewer(v, from))))
+        .sort((a, b) => koiVerNewer(a, b) ? -1 : 1);   // newest first
+      const out = [], gone = new Set();
+      vers.forEach(v => (KOI_NOTES[v] || []).forEach(x => { if (x.key && gone.has(x.key)) return; (x.over || []).forEach(k => gone.add(k)); out.push(x); }));
+      return out;
+    }
     function koiNotesOpen(ver) {
-      ver = ver || KOI_VERSION; const items = (KOI_NOTES[ver] || []).slice().sort((a, b) => Object.keys(NS_TAG).indexOf(a.k) - Object.keys(NS_TAG).indexOf(b.k));
+      const items = (ver ? (KOI_NOTES[ver] || []) : koiNotesMissed()).slice().sort((a, b) => Object.keys(NS_TAG).indexOf(a.k) - Object.keys(NS_TAG).indexOf(b.k));
       if (!items.length) return;
       if (nsEl) nsEl.remove();
       nsEl = document.createElement('div'); nsEl.className = 'ns-scrim';
@@ -16202,7 +16212,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       if (nsOff()) { drop(); return; }
       let pend = null, day = null; try { pend = localStorage.getItem('koi-notes-pending'); day = localStorage.getItem('koi-notes-seen-day'); } catch (e) {}
       if (pend !== KOI_VERSION || !KOI_NOTES[KOI_VERSION]) { drop(); return; }
-      if (day && day !== new Date().toDateString()) { try { localStorage.removeItem('koi-notes-pending'); localStorage.removeItem('koi-notes-seen-day'); } catch (e) {} drop(); return; }
+      if (day && day !== new Date().toDateString()) { try { localStorage.removeItem('koi-notes-pending'); localStorage.removeItem('koi-notes-seen-day'); localStorage.removeItem('koi-notes-from'); } catch (e) {} drop(); return; }
       if (!document.getElementById('nsPill')) { koiNewStuffPill('see', false); nsAnimated = true; }
     }
     (function koiNsBoot() {
@@ -16212,7 +16222,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^(koi-|pd-)/.test(k) && k !== 'koi-ver-last') { used = true; break; } }
         localStorage.setItem('koi-ver-last', KOI_VERSION);
         // no record yet but Hodo was used here before: that person has just updated (brand-new people get no notice)
-        if ((last ? last !== KOI_VERSION : used) && KOI_NOTES[KOI_VERSION]) { localStorage.setItem('koi-notes-pending', KOI_VERSION); localStorage.removeItem('koi-notes-seen-day'); }
+        if ((last ? last !== KOI_VERSION : used) && KOI_NOTES[KOI_VERSION]) { const unread = localStorage.getItem('koi-notes-pending') && !localStorage.getItem('koi-notes-seen-day'); if (!unread || !localStorage.getItem('koi-notes-from')) { if (last) localStorage.setItem('koi-notes-from', last); else localStorage.removeItem('koi-notes-from'); } localStorage.setItem('koi-notes-pending', KOI_VERSION); localStorage.removeItem('koi-notes-seen-day'); }
       } catch (e) { return; }
       setTimeout(koiNsPaint, 900);
     })();
