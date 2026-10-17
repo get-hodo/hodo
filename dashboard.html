@@ -20,7 +20,7 @@
   - Waiting On rail                            "Waiting On: a slim follow-up rail"
   - Details panel                              "Task detail panel"
   - Focus                                      "FOCUS OVERLAY", "focus layout with description"
-  - Rundown                                    "TODAY page", "RUNDOWN, Round 1", "RUNDOWN, Round 2", "RUNDOWN · Expressive", "Expressive Rundown, round 3"
+  - Rundown (PAUSED Oct 17, see "Rundown paused") "TODAY page", "RUNDOWN, Round 1", "RUNDOWN, Round 2", "RUNDOWN · Expressive", "Expressive Rundown, round 3"
   - Look: Minimalist, theme change, music      "Minimalist: same information", "Theme change as light", "Soundtrack" (= Music)
   - Celebrations                               "CELEBRATIONS", "contained celebrations"
   - Settings sheet                             "SETTINGS SHEET (Oct 2)"
@@ -51,7 +51,7 @@
   - Profile photo                              "Your profile picture (Oct 4)"
   - Sounds                                     "KOI SOUNDS: synthesized" (one lo-fi set now)
   - Music                                      "SOUNDTRACK: four work personas" (three moods now)
-  - Performance                                "PERFORMANCE (beta, Oct 3)"
+  - Performance (SHELVED Oct 17, KOI_PERF_SHELVED) "PERFORMANCE (beta, Oct 3)"
   - Click-away rule                            "Click-away rule (Oct 3)"
   - Bulk actions                               "BULK ACTIONS (Oct 3)"
   - Header, progress                           "HEADER: progress ring"
@@ -62,7 +62,7 @@
   - Burn (now: Erase in the Waste Yard)        "Deleting burns the task away"
   - Delete: crumple and toss to the Waste Yard "Delete = crumple and toss" (koiToss, koiBinEraseFx, koiBinEmptyFx)
   - Waste Yard                                 "// ===== Waste yard (Oct 9)"
-  - Onboarding                                 "// ===== Onboarding (Oct 10)" (koiWelcomeShow, Getting started: GS_ITEMS)
+  - Onboarding (PAUSED Oct 17, see "Welcome paused") "// ===== Onboarding (Oct 10)" (koiWelcomeShow, Getting started: GS_ITEMS)
   - Theme switch toast                         "vtHintShow"
   - Rule fixes (RULES.md C-xx decisions)       "Rule fixes, group 1", "Rule fixes, group 2"
   - Column settings (Done / Waiting)           "Column settings (Oct 15" (KOI_COLNOTE_RE, isDoneSection/isWaitSection overrides, koiPickDone, koiColPopOpen) (koiPreDel, koiColNameProblem, koiDescribeDropped, guard input block, koiNearestYear, koiDateRatchet, koiStepRemove)
@@ -70,6 +70,13 @@
   - Hold redraws while typing                  "Don't redraw under someone typing" (koiEditingInBoard)
   - Web app, settings in the folder, quick-capture setup  "Web app (Oct 17)" (KOI_WEB, koiSnapSave/koiSnapLoad, koiQuickCaptureFile)
   - Start fresh in an empty folder             "Start fresh in an empty folder" (koiStartFresh, KOI_STARTER_TASKS)
+  - Quick delete (card trash, no confirm)      "Quick delete (Oct 17)" (runs the bar's Delete path on a hidden button)
+  - Add tasks one after another              "Add tasks one after another (Oct 17)" (Enter = next box, Tab = details; ntChain)
+  - Box select scrolls at the edges           "drag a box over empty space to select" (Oct 17: edge auto-scroll, pinned start corner)
+  - Crumple speed (Oct 17)                     koiFlatten; no perspective on facets; thrower only card-sized
+  - Erase burn (anime, Oct 17)                koiBurn (device-pixel cel bands, flames on the edge), KOI_BURN_MS, koiBinCollapse
+  - New stuff! (update notices, Oct 17)       "New stuff (Oct 17)" (KOI_NOTES, koiNotesOpen, koiNewStuffPill, koiNsPaint, koiNsCheck)
+  - Header layout (Oct 17)                     "Header layout (Oct 17)" (saved dot #hdDot, middle #hdMid for messages, dividers, Guide in Settings)
   - Guide (? key, header button)               "// ===== Guide (Oct 15)" (GUIDE_ITEMS, GUIDE_CLIPS, guideOpen); clips in guide/<id>.webm
   New script goes just before the final "applyWaitRail();" at the end; new CSS just before the end of the style block.
 -->
@@ -4580,8 +4587,9 @@
     .gd-foot { padding: 10px 20px 14px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-muted); }
 
     /* ===== Delete = crumple and toss (Oct 15) ===== */
-    .kt-throw { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 9000; pointer-events: none; }
-    .kt-wrap { position: fixed; z-index: 9000; pointer-events: none; }
+    .kt-throw { position: fixed; z-index: 9000; pointer-events: none; will-change: transform; }
+    .kt-wrap { position: absolute; pointer-events: none; }
+    .kt-facet *, .kt-facet *::before, .kt-facet *::after { transition: none !important; animation: none !important; }
     .kt-facet { position: absolute; overflow: hidden; pointer-events: none; will-change: transform; }
     .kt-shade { position: absolute; inset: 0; pointer-events: none; opacity: 0; border-radius: inherit; }
     #binBtn.kt-catch .pk-ic { animation: ktCatch .5s cubic-bezier(.3,1.6,.5,1); }
@@ -4613,7 +4621,128 @@
     .kd-acts .kd-yes { background: var(--brand); border-color: var(--brand); color: #fff; }
     [data-theme="dark"] .kd-acts .kd-yes { color: #22242a; }
 
-</style>
+
+    /* ===== Add tasks one after another (Oct 17) ===== */
+    .nt-hint { font-size: 11.5px; color: var(--text-muted); padding: 5px 4px 2px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+    .nt-hint span, .nt-phint span { opacity: .6; }
+    .nt-hint kbd, .nt-phint kbd { display: inline-block; padding: 0 5px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--bg-card); font-family: inherit; font-size: 10.5px; font-weight: 600; line-height: 1.5; color: var(--text-secondary); }
+    .nt-phint { position: sticky; bottom: 0; padding: 9px 18px; border-top: 1px solid var(--border-light); background: var(--bg-primary); font-size: 12px; color: var(--text-muted); display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+    /* ===== New stuff (Oct 17): the header pill and the "what's new" panel ===== */
+    .ns-pill { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 12px; margin-right: 8px; border-radius: 999px; overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--brand, var(--accent)) 40%, var(--border)); background: color-mix(in srgb, var(--brand, var(--accent)) 7%, var(--bg-card));
+      color: var(--text-primary); font-size: 12.5px; font-weight: 600; white-space: nowrap; animation: nsIn .35s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes nsIn { from { opacity: 0; transform: translateY(-4px); } }
+    .ns-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--brand, var(--accent)); flex: none; }
+    .ns-lab { display: inline-block; }
+    .ns-btn { all: unset; height: 24px; padding: 0 11px; border-radius: 999px; background: var(--brand, var(--accent)); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; opacity: 0; animation: nsLab .3s .95s ease-out forwards; }
+    @keyframes nsLab { to { opacity: 1; } }
+    .ns-btn:hover { filter: brightness(1.06); }
+    .ns-btn:focus-visible { outline: 2px solid var(--brand, var(--accent)); outline-offset: 2px; }
+    [data-theme="dark"] .ns-btn { color: #22242a; }
+    /* Early Bird: a drop of ink falls, lands as a blot with ragged edges and a few specks, then "New stuff!" is written in */
+    .ns-pill.eb { overflow: visible; }
+    .ns-ink { width: 20px; height: 20px; margin: 0 -6px 0 -6px; flex: none; overflow: visible; }
+    .ns-ink .blot { fill: var(--brand, var(--accent)); transform-origin: 0 0; transform: scale(0); animation: nsBlot .55s .2s cubic-bezier(.2,.9,.3,1.15) forwards; }
+    .ns-ink .speck { fill: var(--brand, var(--accent)); opacity: 0; animation: nsSpeck .4s .22s cubic-bezier(.2,.8,.3,1) forwards; }
+    .ns-ink .drop { fill: var(--brand, var(--accent)); animation: nsFall .22s cubic-bezier(.5,0,1,.6) forwards; }
+    @keyframes nsFall { from { transform: translateY(-16px); opacity: 1; } 90% { opacity: 1; } to { transform: translateY(0); opacity: 0; } }
+    @keyframes nsBlot { 0% { transform: scale(.25); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+    @keyframes nsSpeck { from { opacity: .9; transform: translate(0, 0) scale(.4); } to { opacity: .75; transform: var(--to) scale(1); } }
+    .ns-pill.eb .ns-lab { clip-path: inset(0 100% 0 0); animation: nsWrite .5s .5s cubic-bezier(.45,.05,.4,1) forwards; }
+    @keyframes nsWrite { to { clip-path: inset(0 0 0 0); } }
+    /* Night Owl: a shooting star streaks down across the header and burns out where the dot lights up */
+    .ns-pill.no .ns-lab { opacity: 0; animation: nsLab .35s .7s ease-out forwards; }
+    .ns-pill.no .ns-dot { box-shadow: 0 0 8px color-mix(in srgb, var(--brand, var(--accent)) 70%, transparent); transform: scale(0); animation: nsGlow .5s .62s ease-out forwards; }
+    @keyframes nsGlow { 0% { transform: scale(0); } 55% { transform: scale(1.5); } 100% { transform: scale(1); } }
+    .ns-meteor { position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 9500; pointer-events: none; }
+    .ns-meteor i { position: absolute; right: 0; top: -1px; height: 2px; width: 70px; border-radius: 2px; transform-origin: 100% 50%;
+      background: linear-gradient(90deg, transparent, rgba(255,236,200,.35) 55%, rgba(255,250,235,.95)); }
+    .ns-meteor b { position: absolute; left: -2.5px; top: -2.5px; width: 5px; height: 5px; border-radius: 50%; background: #fffdf5; box-shadow: 0 0 6px 2px rgba(255,240,210,.9), 0 0 14px 4px color-mix(in srgb, var(--brand, var(--accent)) 55%, transparent); }
+    .ns-twinkle { position: fixed; z-index: 9500; width: 18px; height: 18px; margin: -9px 0 0 -9px; pointer-events: none; }
+    .ns-twinkle path { fill: #fff8e6; }
+    @media (prefers-reduced-motion: reduce) { .ns-pill *, .ns-ink * { animation: none !important; opacity: 1 !important; clip-path: none !important; transform: none !important; } .ns-ink .drop { display: none; } }
+
+    .ns-scrim { position: fixed; inset: 0; z-index: 2400; background: color-mix(in srgb, #000 22%, transparent); display: grid; place-items: center; padding: 20px; animation: nsFade .2s ease-out both; }
+    [data-theme="dark"] .ns-scrim { background: color-mix(in srgb, #000 45%, transparent); }
+    @keyframes nsFade { from { opacity: 0; } }
+    .ns-panel { width: min(820px, 100%); height: min(520px, calc(100vh - 40px)); display: flex; flex-direction: column; background: var(--bg-card); color: var(--text-primary);
+      border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 30px 80px var(--shadow-hover), 0 2px 8px var(--shadow); overflow: hidden; animation: nsPop .26s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes nsPop { from { opacity: 0; transform: translateY(10px) scale(.985); } }
+    .ns-head { display: flex; align-items: center; gap: 10px; padding: 18px 16px 14px 22px; border-bottom: 1px solid var(--border-light); }
+    .ns-head b { font-size: 17px; font-weight: 650; }
+    .ns-head span { font-size: 12.5px; color: var(--text-muted); flex: 1; padding-top: 2px; }
+    .ns-x { all: unset; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+    .ns-x:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .ns-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 300px 1fr; }
+    .ns-list { overflow-y: auto; padding: 10px 8px; border-right: 1px solid var(--border-light); }
+    .ns-row { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 10px; cursor: pointer; font-size: 13.5px; line-height: 1.35; }
+    .ns-row:hover { background: var(--bg-secondary); }
+    .ns-row.on { background: color-mix(in srgb, var(--brand, var(--accent)) 10%, var(--bg-secondary)); }
+    .ns-row:focus-visible { outline: 2px solid var(--brand, var(--accent)); outline-offset: -2px; }
+    .ns-row b { font-weight: 550; }
+    .ns-tag { flex: none; font-size: 9.5px; font-weight: 750; letter-spacing: .07em; padding: 2px 7px; border-radius: 999px; min-width: 78px; text-align: center; box-sizing: border-box; }
+    .ns-tag.new { background: color-mix(in srgb, var(--brand, var(--accent)) 15%, transparent); color: var(--brand, var(--accent)); }
+    .ns-tag.reworked { background: color-mix(in srgb, #6b7fd7 17%, transparent); color: #5a6cc4; }
+    .ns-tag.solved { background: color-mix(in srgb, var(--st-done-edge, #3f9a6b) 17%, transparent); color: var(--st-done-edge, #3f9a6b); }
+    .ns-tag.shelved { background: color-mix(in srgb, var(--text-muted) 16%, transparent); color: var(--text-secondary); }
+    [data-theme="dark"] .ns-tag.reworked { color: #a3aef2; }
+    .ns-view ul { margin: 6px 0 10px; padding-left: 20px; } .ns-view li { margin: 4px 0; }
+    .ns-view { overflow-y: auto; padding: 22px 26px 24px; }
+    .ns-view .ns-tag { display: inline-block; margin-bottom: 10px; }
+    .ns-view h3 { font-size: 19px; font-weight: 650; margin: 0 0 8px; line-height: 1.3; }
+    .ns-view p, .ns-view .ns-p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 0 0 16px; max-width: 56ch; }
+    .ns-view kbd { display: inline-block; min-width: 20px; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 6px; background: var(--bg-secondary); font-family: inherit; font-size: 12px; font-weight: 600; line-height: 1.55; color: var(--text-primary); text-align: center; }
+    .ns-media { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-secondary); aspect-ratio: 16 / 10; }
+    .ns-media video { width: 100%; height: 100%; display: block; object-fit: cover; }
+    .ns-foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 14px 22px; border-top: 1px solid var(--border-light); }
+    .ns-foot span { font-size: 12px; color: var(--text-muted); }
+    .ns-ok { all: unset; padding: 8px 18px; border-radius: 9px; background: var(--brand, var(--accent)); color: #fff; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+    [data-theme="dark"] .ns-ok { color: #22242a; }
+    @media (max-width: 680px) { .ns-panel { height: calc(100vh - 40px); } .ns-body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } .ns-list { max-height: 40vh; border-right: 0; border-bottom: 1px solid var(--border-light); } }
+
+    .ns-pill.still, .ns-pill.still * { animation: none !important; }
+    .ns-pill.still .ns-lab, .ns-pill.still .ns-btn { opacity: 1; clip-path: none; }
+    .ns-pill.still .ns-ink .blot, .ns-pill.still .ns-dot { transform: none; }
+    .ns-pill.still .ns-ink .speck { opacity: .75; transform: var(--to); }
+    .ns-pill.still .ns-ink .drop { display: none; }
+    .gd-wn { all: unset; float: right; cursor: pointer; font-weight: 600; color: var(--brand, var(--accent)); }
+    .gd-wn:hover { text-decoration: underline; }
+  
+    /* Rundown paused (Oct 17) */
+    html.rd-off #todayTabBtn, html.rd-off #todayPanel, html.rd-off .pick-pill, html.rd-off .mm-pick { display: none !important; }
+  
+    /* ===== Header layout (Oct 17) ===== */
+    header { display: flex; align-items: center; }
+    .hd-logo { display: flex; align-items: center; }
+    .hd-dot { width: 8px; height: 8px; border-radius: 50%; margin-left: 8px; flex: none; background: var(--st-done-edge, #3f9a6b); box-shadow: 0 0 0 3px color-mix(in srgb, var(--st-done-edge, #3f9a6b) 18%, transparent); transition: background .2s, box-shadow .2s; }
+    .hd-dot.busy { background: var(--st-pending-edge, #d4a017); box-shadow: 0 0 0 3px color-mix(in srgb, var(--st-pending-edge, #d4a017) 22%, transparent); animation: hdBusy 1s ease-in-out infinite alternate; }
+    .hd-dot.err { background: var(--danger, #c0392b); box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger, #c0392b) 22%, transparent); cursor: pointer; }
+    @keyframes hdBusy { to { opacity: .45; } }
+    header #fileState, header #filePath { display: none !important; }
+    .hd-mid { flex: 1; display: flex; justify-content: center; align-items: center; gap: 10px; min-width: 0; padding: 0 12px; }
+    .hd-mid .ns-pill, .hd-mid .install-pill { margin: 0; }
+    .hd-mid .install-pill { border-radius: 9px; }
+    header .buttons { gap: 8px; }
+    .hd-div { width: 1px; height: 22px; background: var(--border); margin: 0 6px; flex: none; }
+    header .buttons .focus-top, header .buttons .icon-btn, header #themeToggle, header .prog-btn { border-radius: 9px !important; }
+    header #themeToggle { width: 38px !important; height: 38px; }
+    header #captureBtn, header #focusBtn, header #muBtn { width: 38px; padding: 0 !important; justify-content: center; }
+    header .cap-split:has(#trayBtn:not([hidden])) #captureBtn { width: 38px; }
+    header .buttons .ft-label { display: none !important; }
+    .sp-guide { all: unset; display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); padding: 6px 10px; border-radius: 8px; cursor: pointer; border: 1px solid var(--border); margin-left: auto; margin-right: 6px; white-space: nowrap; }
+    .sp-guide:hover { color: var(--text-primary); background: var(--bg-secondary); }
+    .sp-guide:focus-visible { outline: 2px solid var(--brand, var(--accent)); outline-offset: 2px; }
+    .sp-guide svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  
+    /* ===== Progress button = the chart (Oct 17) ===== */
+    header .buttons #progBtn { width: 38px; height: 38px; padding: 0; gap: 0; justify-content: center; border: 0; background: transparent; overflow: visible; }
+    header .buttons #progBtn .pr-pie { position: absolute; inset: 0; width: 38px; height: 38px; display: block; }
+    header .buttons #progBtn .pr-pie .pie { position: absolute; width: 62px; height: 62px; left: -12px; top: -12px; clip-path: inset(12px round 9px); }
+    header .buttons #progBtn .pr-pie .pie path, header .buttons #progBtn .pr-pie .pie circle { stroke: transparent; }
+    header .buttons #progBtn #progPct { position: relative; z-index: 1; pointer-events: none; color: #22242a; font-size: 11.5px; font-weight: 750; letter-spacing: -.01em; line-height: 1; padding-top: 4.2px; }   /* the Night Owl header colour, in both themes */
+    header .buttons #progBtn:hover .pr-pie .pie { filter: brightness(1.05); }
+    header .buttons #progBtn .pr-pie .pie-pop { right: -12px; left: auto; }
+  </style>
 </head>
 <body>
   <div id="skyFx" aria-hidden="true"></div>
@@ -6940,7 +7069,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '1.3';
+    const KOI_VERSION = '1.4';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -8654,7 +8783,7 @@
         pie.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.32)', offset: .35 }, { transform: 'scale(.94)', offset: .7 }, { transform: 'scale(1)' }], { duration: 560, easing: 'ease-out' });
         const rp = document.createElement('span'); rp.className = 'pr-ripple'; pie.appendChild(rp);
         rp.animate([{ transform: 'scale(1)', opacity: .7 }, { transform: 'scale(2.4)', opacity: 0 }], { duration: 700, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = () => rp.remove();
-        pctEl.animate([{ color: 'var(--pie-done)' }, { color: 'var(--pie-done)', offset: .6 }, { color: '' }], { duration: 1300 });
+        pctEl.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)', offset: .3 }, { transform: 'scale(1)' }], { duration: 700, easing: 'ease-out' });   // Oct 17: the % stays white on the chart; it pops instead of turning green
         if (from < to) {
           const pl = document.createElement('span'); pl.className = 'pr-plus'; pl.textContent = '+' + (to - from) + '%'; pb.appendChild(pl);
           pl.animate([{ transform: 'translateY(4px)', opacity: 0 }, { transform: 'translateY(-6px)', opacity: 1, offset: .3 }, { transform: 'translateY(-16px)', opacity: 0 }], { duration: 1100, easing: 'ease-out' }).onfinish = () => pl.remove();
@@ -13418,7 +13547,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         <div class="mu-row"><span>Volume</span><input type="range" min="0" max="100" step="1" value="${mu.vol}" data-mu="vol"><span>${mu.vol}%</span></div>
         <div class="mu-row"><label><input type="checkbox" data-mu="auto" ${mu.auto ? 'checked' : ''}> Start with each Focus session</label></div>
         <div class="mu-msg">${escapeHtml(mu.msg)}</div>
-        <div class="mu-foot"><span>Never repeats · works offline · B to play / pause</span></div>`;
+        <div class="mu-foot"><span>B to play / pause</span></div>`;
     }
     document.addEventListener('click', e => {
       const btn = e.target.closest && e.target.closest('#muBtn'), pop = document.getElementById('muPop');
@@ -13929,7 +14058,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       if (a === 'del-no') { selConfirm = false; if (selSingleDel) { koiSel.clear(); selPaint(); } selSingleDel = false; selBarRender(); return; }
       if (a === 'del-yes') { const snap = selSnap(), ids = new Set(koiSel), one = selSingleDel && ids.size === 1 && findTaskById([...ids][0]); sections.forEach(s => { tasks[s.id] = (tasks[s.id] || []).filter(t => !ids.has(String(t.id))); }); selConfirm = false; selSingleDel = false; selDone(one ? 'Task deleted' : `${ids.size} deleted`, snap, true); return; }
     }
-    // Deleting one task (card trash icon, list view): the same confirm bar as bulk delete, with the task's name
+    // Deleting one task: this used to show the confirm bar; since Oct 17 "Quick delete" (near the end) deletes right away
     var selSingleDel = false;
     // Enter confirms the delete bar, Esc cancels it (unless you're typing somewhere)
     window.addEventListener('keydown', e => {
@@ -13957,16 +14086,66 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         return _std.apply(this, arguments);
       }; }
     // ---- drag a box over empty space to select (Board, List, Calendar) ----
+    // Oct 17: holding the box near the edge of a column (or the board, list or page) scrolls it, so cards out of
+    // view can be reached; the box keeps its starting corner fixed to the content while things scroll.
     (function selLasso() {
-      let st = null, box = null, moved = false, base = null, eatClick = false;
+      let st = null, box = null, moved = false, base = null, eatClick = false, last = null, raf = 0;
       const ROOTS = '#board, #listView, #calendarView';
       const NOT = SEL_ITEM + ', .lv-row, .lv-item, .cal-chip, .cal-dl, button, input, textarea, select, a, label, [contenteditable="true"], .column-header, .lv-ghead, .lv-head, .cal-pop, .cal-toolbar, .cal-grid-head, .lv-detail, .lv-quick, .add-card, .kf-banner';
       const selFloat = KOI_FLOATS[KOI_FLOATS.length - 1];
+      const EDGE = 44, MAXV = 18;
+      const canY = el => { const o = getComputedStyle(el).overflowY; return /(auto|scroll|overlay)/.test(o) && el.scrollHeight > el.clientHeight + 1; };
+      const canX = el => { const o = getComputedStyle(el).overflowX; return /(auto|scroll|overlay)/.test(o) && el.scrollWidth > el.clientWidth + 1; };
+      const scrollers = el => { const out = []; for (let n = el; n && n !== document.body && n !== document.documentElement; n = n.parentElement) if (n.nodeType === 1 && (canY(n) || canX(n))) out.push(n); out.push(document.scrollingElement || document.documentElement); return out; };
+      // The starting corner is pinned to the content: for a card, it moves by however far the things holding that
+      // card (its column, the board, the page) have scrolled since the drag began.
+      const known = el => { if (!st.sc.has(el)) st.sc.set(el, { l: el.scrollLeft, t: el.scrollTop }); };
+      const drift = el => { let dx = 0, dy = 0; for (let n = el; n; n = n.parentElement) { const s = st.sc.get(n); if (s) { dx += n.scrollLeft - s.l; dy += n.scrollTop - s.t; } } return { dx, dy }; };
+      const rectOf = (ax, ay) => ({ x1: Math.min(ax, last.x), y1: Math.min(ay, last.y), x2: Math.max(ax, last.x), y2: Math.max(ay, last.y) });
+      function paint() {
+        if (!st || !moved || !last) return;
+        const under = document.elementFromPoint(Math.max(0, Math.min(innerWidth - 1, last.x)), Math.max(0, Math.min(innerHeight - 1, last.y)));
+        const d0 = drift(under || document.documentElement), b = rectOf(st.x - d0.dx, st.y - d0.dy);
+        Object.assign(box.style, { left: b.x1 + 'px', top: b.y1 + 'px', width: (b.x2 - b.x1) + 'px', height: (b.y2 - b.y1) + 'px' });
+        koiSel.clear(); base.forEach(id => koiSel.add(id));
+        document.querySelectorAll(SEL_ITEM).forEach(el => { if (el.classList.contains('kf-hide') || !el.offsetParent) return;
+          const d = drift(el), q = rectOf(st.x - d.dx, st.y - d.dy), r = el.getBoundingClientRect();
+          if (r.right > q.x1 && r.left < q.x2 && r.bottom > q.y1 && r.top < q.y2) koiSel.add(selIdOf(el)); });
+        selPaint();
+      }
+      // scroll whatever is under the pointer when the pointer sits near its edge
+      function tick() {
+        raf = 0; if (!st || !moved || !last) return;
+        const under = document.elementFromPoint(Math.max(0, Math.min(innerWidth - 1, last.x)), Math.max(0, Math.min(innerHeight - 1, last.y)));
+        let did = false, doneY = false, doneX = false;
+        // a board column the pointer has left by its top or bottom edge keeps scrolling too
+        const cols = [...document.querySelectorAll('#board .cards')].filter(c => { const r = c.getBoundingClientRect(); return last.x >= r.left && last.x <= r.right && (last.y < r.top + EDGE || last.y > r.bottom - EDGE) && canY(c); });
+        const list = [...new Set([...cols, ...(under ? scrollers(under) : [document.scrollingElement])])];
+        for (const el of list) {
+          const page = el === document.scrollingElement || el === document.documentElement;
+          const r = page ? { top: 0, bottom: innerHeight, left: 0, right: innerWidth } : el.getBoundingClientRect();
+          const sp = (d) => Math.ceil(MAXV * Math.min(1, Math.max(0, (EDGE - d) / EDGE)));
+          if (!doneY && (page || canY(el))) {
+            const up = last.y - r.top, dn = r.bottom - last.y; let v = 0;
+            if (up < EDGE && el.scrollTop > 0) v = -sp(up); else if (dn < EDGE && el.scrollTop + el.clientHeight < el.scrollHeight - 1) v = sp(dn);
+            if (v) { known(el); el.scrollTop += v; did = doneY = true; }
+          }
+          if (!doneX && (page || canX(el))) {
+            const lf = last.x - r.left, rt = r.right - last.x; let v = 0;
+            if (lf < EDGE && el.scrollLeft > 0) v = -sp(lf); else if (rt < EDGE && el.scrollLeft + el.clientWidth < el.scrollWidth - 1) v = sp(rt);
+            if (v) { known(el); el.scrollLeft += v; did = doneX = true; }
+          }
+          if (doneX && doneY) break;
+        }
+        if (did) paint();
+        raf = requestAnimationFrame(tick);
+      }
       document.addEventListener('mousedown', e => {
         st = null;
         if (e.button !== 0 || activeMainTab !== 'tasks' || !e.target.closest || !e.target.closest(ROOTS) || e.target.closest(NOT)) return;
         if (KOI_FLOATS.some(f => f !== selFloat && (() => { try { return f.open(); } catch (x) { return false; } })())) return;   // something else is open: that click just closes it
-        st = { x: e.clientX, y: e.clientY, add: e.ctrlKey || e.metaKey || e.shiftKey }; moved = false;
+        st = { x: e.clientX, y: e.clientY, add: e.ctrlKey || e.metaKey || e.shiftKey, sc: new Map() }; moved = false;
+        [...scrollers(e.target), ...document.querySelectorAll('#board, #board .cards, #listView, #calendarView, .cal-day')].forEach(el => known(el));
       });
       document.addEventListener('mousemove', e => {
         if (!st) return;
@@ -13976,14 +14155,14 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
           box = document.createElement('div'); box.className = 'sel-lasso'; document.body.appendChild(box);
           document.documentElement.classList.add('lassoing'); try { getSelection().removeAllRanges(); } catch (x) {} }
         e.preventDefault();
-        const x1 = Math.min(st.x, e.clientX), y1 = Math.min(st.y, e.clientY), x2 = Math.max(st.x, e.clientX), y2 = Math.max(st.y, e.clientY);
-        Object.assign(box.style, { left: x1 + 'px', top: y1 + 'px', width: (x2 - x1) + 'px', height: (y2 - y1) + 'px' });
-        koiSel.clear(); base.forEach(id => koiSel.add(id));
-        document.querySelectorAll(SEL_ITEM).forEach(el => { if (el.classList.contains('kf-hide') || !el.offsetParent) return; const r = el.getBoundingClientRect(); if (r.right > x1 && r.left < x2 && r.bottom > y1 && r.top < y2) koiSel.add(selIdOf(el)); });
-        selPaint();
+        last = { x: e.clientX, y: e.clientY };
+        paint();
+        if (!raf) raf = requestAnimationFrame(tick);
       });
+      // a scroll wheel turn while boxing scrolls as usual; keep the box in step
+      document.addEventListener('scroll', () => { if (st && moved) paint(); }, true);
       document.addEventListener('mouseup', () => {
-        if (!st) return; const was = moved; st = null;
+        if (!st) return; const was = moved; st = null; last = null; if (raf) { cancelAnimationFrame(raf); raf = 0; }
         if (!was) return;
         moved = false; if (box) { box.remove(); box = null; } document.documentElement.classList.remove('lassoing');
         koiAwayClick = null; eatClick = true; setTimeout(() => { eatClick = false; }, 0);   // the drag is not a click
@@ -14572,83 +14751,114 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       });
       return out;
     }
-    // Oct 15 rebuild (used for Erase / Empty now in the Waste Yard): a real burn front. A noise field decides where the
-    // paper burns first; the front spreads from a spot on the bottom edge with a ragged glowing rim, a charred band
-    // behind it, a brown scorch just ahead, embers lifting off the rim and a little smoke. Drawn on canvas each frame;
-    // the paper itself is cut away with a small mask image made from the same field.
-    function koiBurn(el, delay) {
+    // Oct 17, fourth take ("anime style, but not cartoonish", no pixels, no flames flying around).
+    // Everything is worked out per screen pixel (device pixels), so edges stay crisp at any zoom. Clean cel bands eat
+    // the paper from one corner in uneven tongues: a two-tone scorch ring, a thin char line, an orange rim and a pale
+    // hot line at the hole, with a soft glow. The flame tongues are attached to the burning edge: every frame they are
+    // placed on the edge where it is now, and their height flickers smoothly (no random jumps, nothing drifting off).
+    // The hole is painted with the colour behind the row, so no per-frame mask image is needed (that was slow).
+    function koiBurn(el, delay, many) {
       const r = el.getBoundingClientRect(), g = el.cloneNode(true), W = r.width, H = r.height;
       g.classList.remove('hov', 'dragging', 'sel', 'selected'); g.classList.add('kb-ghost', 'kbn'); g.removeAttribute('draggable'); g.querySelectorAll('.sel-tick, .qa-in').forEach(x => x.remove());
       Object.assign(g.style, { position: 'fixed', left: r.left + 'px', top: r.top + 'px', width: W + 'px', height: H + 'px', margin: '0', zIndex: 9000, pointerEvents: 'none', boxSizing: 'border-box' });
       document.body.appendChild(g); el.style.visibility = 'hidden';
       const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-      // the field: distance from the spark point, roughened by value noise
-      const C = 2, gw = Math.max(2, Math.ceil(W / C)), gh = Math.max(2, Math.ceil(H / C)), F = new Float32Array(gw * gh);
-      const nz = (() => { const S = 7, cw = Math.ceil(gw / S) + 2, ch = Math.ceil(gh / S) + 2, v = Array.from({ length: cw * ch }, Math.random);
-        const sm = t => t * t * (3 - 2 * t);
-        return (x, y, s) => { const fx = x / s, fy = y / s, ix = Math.floor(fx), iy = Math.floor(fy), ux = sm(fx - ix), uy = sm(fy - iy), at = (a, b) => v[((b % ch) * cw + (a % cw))];
-          return (at(ix, iy) * (1 - ux) + at(ix + 1, iy) * ux) * (1 - uy) + (at(ix, iy + 1) * (1 - ux) + at(ix + 1, iy + 1) * ux) * uy; }; })();
-      const sx = (0.15 + Math.random() * 0.3) * gw, sy = gh + 2, far = Math.hypot(Math.max(sx, gw - sx), sy) || 1;
+      // the colour behind the row (what the hole shows)
+      const behind = (() => { for (let n = el.parentElement; n; n = n.parentElement) { const m = /rgba?\(([^)]+)\)/.exec(getComputedStyle(n).backgroundColor || ''); if (m) { const v = m[1].split(',').map(Number); if (v.length < 4 || v[3] > 0.9) return v.slice(0, 3); } } return dark ? [34, 36, 42] : [250, 249, 245]; })();
+      const dpr = many ? 1 : Math.min(2, window.devicePixelRatio || 1);
+      // 1) the burn field on a coarse grid (smooth), then sampled at every device pixel
+      const Cf = 2, gw = Math.max(2, Math.ceil(W / Cf) + 1), gh = Math.max(2, Math.ceil(H / Cf) + 1);
+      const mkNoise = (S, w, h) => { const cw = Math.ceil(w / S) + 3, ch = Math.ceil(h / S) + 3, v = Array.from({ length: cw * ch }, Math.random), sm = t => t * t * (3 - 2 * t);
+        return (x, y) => { const fx = x / S + 1, fy = y / S + 1, ix = Math.floor(fx), iy = Math.floor(fy), ux = sm(fx - ix), uy = sm(fy - iy), at = (a, b) => v[(Math.max(0, Math.min(ch - 1, b))) * cw + Math.max(0, Math.min(cw - 1, a))];
+          return (at(ix, iy) * (1 - ux) + at(ix + 1, iy) * ux) * (1 - uy) + (at(ix, iy + 1) * (1 - ux) + at(ix + 1, iy + 1) * ux) * uy; }; };
+      const big = mkNoise(Math.max(8, gh * 0.6), gw, gh), mid = mkNoise(5, gw, gh);
+      const sx = (Math.random() < .5 ? 0.06 + Math.random() * 0.18 : 0.76 + Math.random() * 0.18) * gw, sy = gh + 1, warp = gh * 0.75;
+      const Fc = new Float32Array(gw * gh);
       for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) {
-        const d = Math.hypot((x - sx) * 0.85, (y - sy) * 1.6) / far;
-        F[y * gw + x] = d + (nz(x, y, 9) * 0.7 + nz(x * 2.6, y * 2.6, 9) * 0.3 - 0.5) * 0.13;   // a wavy, ragged front, not islands
+        const wx = x + (big(x, y) - .5) * warp * 1.6, wy = y + (big(x + 37, y + 11) - .5) * warp;
+        Fc[y * gw + x] = Math.hypot((wx - sx) * 0.8, (wy - sy) * 1.35) + (mid(x, y) - .5) * gh * 0.05;
       }
-      let mn = Infinity, mx = -Infinity; for (const f of F) { if (f < mn) mn = f; if (f > mx) mx = f; }
-      for (let i = 0; i < F.length; i++) F[i] = (F[i] - mn) / ((mx - mn) || 1);
-      // canvases: a tiny mask for the paper, a band layer (same size) and an effects layer that reaches above the row
-      const mk = document.createElement('canvas'); mk.width = gw; mk.height = gh; const mc = mk.getContext('2d'), md = mc.createImageData(gw, gh);
-      const bd = document.createElement('canvas'); bd.width = gw; bd.height = gh; const bc = bd.getContext('2d'), bdat = bc.createImageData(gw, gh);
-      const PAD = 70, fx = document.createElement('canvas'), dpr = Math.min(2, window.devicePixelRatio || 1);
+      let mn = Infinity, mx = -Infinity; for (const f of Fc) { if (f < mn) mn = f; if (f > mx) mx = f; }
+      const span = (mx - mn) || 1, cssPx = 1 / (span * Cf);           // one CSS pixel in field units
+      const DW = Math.max(2, Math.round(W * dpr)), DH = Math.max(2, Math.round(H * dpr)), DN = DW * DH, dev = cssPx / dpr;
+      const fib = mkNoise(4 * dpr, DW, DH);                             // paper fibre: a slight wobble on the edge, smooth
+      const F = new Float32Array(DN);
+      for (let y = 0; y < DH; y++) { const cy = Math.min(gh - 1.001, y / dpr / Cf), iy = Math.floor(cy), uy = cy - iy;
+        for (let x = 0; x < DW; x++) { const cx = Math.min(gw - 1.001, x / dpr / Cf), ix = Math.floor(cx), ux = cx - ix, k = iy * gw + ix;
+          const v = (Fc[k] * (1 - ux) + Fc[k + 1] * ux) * (1 - uy) + (Fc[k + gw] * (1 - ux) + Fc[k + gw + 1] * ux) * uy;
+          F[y * DW + x] = (v - mn) / span + (fib(x, y) - .5) * cssPx * 2.2; } }
+      // 2) canvases: the paper layer (device pixels, drawn 1:1) and a glow layer
+      const PAD = 46, fx = document.createElement('canvas');
       fx.className = 'kbn-fx'; fx.width = Math.round((W + 40) * dpr); fx.height = Math.round((H + PAD + 20) * dpr);
       Object.assign(fx.style, { left: (r.left - 20) + 'px', top: (r.top - PAD) + 'px', width: (W + 40) + 'px', height: (H + PAD + 20) + 'px' });
       document.body.appendChild(fx); const c = fx.getContext('2d'); c.scale(dpr, dpr);
-      const rimC = document.createElement('canvas'); rimC.width = gw; rimC.height = gh; const rc = rimC.getContext('2d'), rdat = rc.createImageData(gw, gh);
-      const CHAR = 0.07, DUR = 1300, embers = [], smoke = [];
-      const ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+      const lay = document.createElement('canvas'); lay.width = DW; lay.height = DH; const lc = lay.getContext('2d'), L = lc.createImageData(DW, DH), Ld = L.data;
+      const glo = document.createElement('canvas'); glo.width = DW; glo.height = DH; const gc = glo.getContext('2d'), Gi = gc.createImageData(DW, DH), Gd = Gi.data;
+      // cel palette (two-tone scorch, char line, rim, hot line)
+      const S1 = dark ? [118, 80, 50] : [222, 182, 128], S2 = dark ? [86, 54, 32] : [184, 124, 70], CH = [44, 26, 18], RM = [255, 132, 38], HT = [255, 236, 168];
+      const wS = 8 * cssPx, wC = 1.4 * cssPx, wR = 2.4 * cssPx, wH = 1.1 * cssPx;
+      const eH = -wH, eR = eH - wR, eC = eR - wC, eS2 = eC - wS * 0.45, eS1 = eC - wS;
+      const cov = (e, d) => { const t = (d - e) / dev + 0.5; return t <= 0 ? 0 : t >= 1 ? 1 : t; };   // 1-device-pixel anti-aliasing
+      const DUR = 1500, ease = p => p < .25 ? 1.8 * p * p : 0.1125 + (p - .25) / .75 * 0.8875;
+      const flick = mkNoise(9, W + 20, 400);                             // smooth flicker in space and time
+      const STEP = Math.max(9, Math.round(W / 42));                      // a flame every so often along the edge
       let t0 = 0, last = 0;
       const frame = now => {
         if (!t0) t0 = now; const ms = now - t0; if (ms < delay) { requestAnimationFrame(frame); return; }
-        const p = Math.min(1, (ms - delay) / DUR), T = -0.03 + p * (1 + CHAR + 0.05), dt = Math.min(50, now - (last || now)); last = now;
-        const front = [];
-        for (let i = 0; i < F.length; i++) {
-          const d = T - F[i], k = i * 4;                                     // d > 0: the fire has passed here
-          const paper = 1 - ss(CHAR - 0.012, CHAR + 0.012, d);               // paper left (soft ragged edge)
-          md.data[k + 3] = paper * 255;
-          const ch = ss(-0.005, 0.03, d) * paper;                            // charred, darkening toward the hole
-          const sc = d < 0 ? Math.exp(d / 0.045) * 0.3 : 0;                   // brown scorch just ahead of the flame
-          const a = Math.max(ch * 0.92, sc);
-          const w = ch > 0 ? Math.min(1, d / CHAR) : 0;
-          bdat.data[k] = ch > sc ? 62 - w * 34 : 130; bdat.data[k + 1] = ch > sc ? 34 - w * 20 : 82; bdat.data[k + 2] = ch > sc ? 18 - w * 10 : 40; bdat.data[k + 3] = a * 255;
-          const rim = d > -0.012 && d < 0.04 ? Math.exp(-Math.pow((d - 0.008) / 0.011, 2)) : 0;   // the glowing rim
-          rdat.data[k] = 255; rdat.data[k + 1] = (dark ? 150 : 110) + rim * (dark ? 90 : 100); rdat.data[k + 2] = (dark ? 40 : 20) + rim * (dark ? 70 : 50); rdat.data[k + 3] = rim * 255;
-          if (rim > .6 && Math.random() < 0.006) front.push(i);
+        const p = Math.min(1, (ms - delay) / DUR), T = -0.01 + ease(p) * (1.02 + wS + wC + wR + wH), dt = Math.min(50, now - (last || now)); last = now;
+        for (let i = 0; i < DN; i++) {
+          const d = T - F[i], k = i * 4;
+          if (d < eS1 - dev) { Ld[k + 3] = 0; Gd[k + 3] = 0; continue; }
+          let R = S1[0], G = S1[1], B = S1[2], a = cov(eS1, d) * (dark ? 0.75 : 0.7);
+          const m = (q, t) => { if (t > 0) { R += (q[0] - R) * t; G += (q[1] - G) * t; B += (q[2] - B) * t; } };
+          const s2 = cov(eS2, d), ch = cov(eC, d), rm = cov(eR, d), ht = cov(eH, d), hole = cov(0, d);
+          m(S2, s2); a += (0.92 - a) * s2; m(CH, ch); a += (1 - a) * ch; m(RM, rm); m(HT, ht); m(behind, hole);
+          Ld[k] = R; Ld[k + 1] = G; Ld[k + 2] = B; Ld[k + 3] = a * 255;
+          const gl = rm * (1 - hole);
+          Gd[k] = 255; Gd[k + 1] = 150; Gd[k + 2] = 60; Gd[k + 3] = gl * 255;
         }
-        mc.putImageData(md, 0, 0); bc.putImageData(bdat, 0, 0); rc.putImageData(rdat, 0, 0);
-        const url = mk.toDataURL(); g.style.webkitMaskImage = g.style.maskImage = `url(${url})`;
+        lc.putImageData(L, 0, 0); gc.putImageData(Gi, 0, 0);
         c.clearRect(0, 0, W + 40, H + PAD + 20);
-        c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
-        c.drawImage(bd, 20, PAD, W, H);                                       // char + scorch
-        c.save(); c.filter = 'blur(6px)'; c.globalAlpha = dark ? .8 : .55; c.globalCompositeOperation = dark ? 'lighter' : 'source-over'; c.drawImage(rimC, 20, PAD, W, H); c.restore();   // heat glow
-        c.save(); c.filter = 'blur(.6px)'; c.drawImage(rimC, 20, PAD, W, H); c.restore();   // the rim itself
-        // embers lift off the rim
-        if (p < 1) front.slice(0, 3).forEach(i => { const x = (i % gw) * C, y = Math.floor(i / gw) * C;
-          embers.push({ x: 20 + x, y: PAD + y, vx: (Math.random() - .5) * 0.05, vy: -0.05 - Math.random() * 0.09, life: 1, sz: 0.8 + Math.random() * 1.6 });
-          if (Math.random() < 0.05) smoke.push({ x: 20 + x, y: PAD + y, life: 1, rad: 8 + Math.random() * 8 }); });
-        c.save(); c.globalCompositeOperation = dark ? 'lighter' : 'source-over';
-        for (let i = embers.length - 1; i >= 0; i--) { const e = embers[i]; e.x += e.vx * dt + Math.sin((e.y + ms) / 90) * 0.15; e.y += e.vy * dt; e.life -= dt / (700 + e.sz * 200);
-          if (e.life <= 0) { embers.splice(i, 1); continue; }
-          c.globalAlpha = Math.min(1, e.life * 1.4); c.fillStyle = e.life > .5 ? '#ffd27a' : '#ff8a3a'; c.shadowColor = 'rgba(255,120,30,.9)'; c.shadowBlur = 6;
-          c.beginPath(); c.arc(e.x, e.y, e.sz * (0.5 + e.life * 0.5), 0, 7); c.fill(); }
-        c.restore();
-        for (let i = smoke.length - 1; i >= 0; i--) { const s = smoke[i]; s.y -= dt * 0.04; s.x += dt * 0.008; s.rad += dt * 0.025; s.life -= dt / 1300;
-          if (s.life <= 0) { smoke.splice(i, 1); continue; }
-          const gr = c.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.rad); const sc = dark ? '200,195,190' : '110,100,92';
-          gr.addColorStop(0, `rgba(${sc},${0.13 * s.life})`); gr.addColorStop(1, `rgba(${sc},0)`); c.fillStyle = gr; c.beginPath(); c.arc(s.x, s.y, s.rad, 0, 7); c.fill(); }
-        if (p < 1 || embers.length || smoke.length) requestAnimationFrame(frame); else { g.remove(); fx.remove(); }
+        c.drawImage(lay, 20, PAD, DW / dpr, DH / dpr);
+        c.save(); c.globalCompositeOperation = dark ? 'lighter' : 'source-over'; c.globalAlpha = dark ? 0.5 : 0.3; c.filter = 'blur(4px)'; c.drawImage(glo, 20, PAD, DW / dpr, DH / dpr); c.restore();
+        // 3) flame tongues, sitting on the edge where it is right now
+        const fade = p < 0.85 ? Math.min(1, p / 0.08) : Math.max(0, (1 - p) / 0.15);
+        if (fade > 0) {
+          for (let xc = STEP / 2; xc < W; xc += STEP) {
+            const xd = Math.min(DW - 1, Math.round(xc * dpr));
+            let prev = -1;
+            for (let yd = 1; yd < DH; yd++) {                            // where this column crosses the hole's edge
+              const a0 = T - F[(yd - 1) * DW + xd] >= 0, a1 = T - F[yd * DW + xd] >= 0;
+              if (a0 === a1) continue;
+              const yc = yd / dpr; if (yc < 4 || yc > H - 3 || (prev >= 0 && yc - prev < 6)) continue; prev = yc;   // not where the hole just meets the row's border
+              const n = flick(xc * 0.6, ms * 0.012), n2 = flick(xc * 0.6 + 50, ms * 0.009);
+              if (n < 0.28) continue;                                        // gaps: not every spot is alight
+              const h = (3 + (n - 0.28) / 0.72 * 17) * fade, w = 6 + n2 * 5, lean = (n2 - .5) * 0.5, bx = 20 + xc + (n2 - .5) * STEP * 0.6, by = PAD + yc;
+              if (h < 2.5) continue;
+              const tongue = (hh, ww) => { const tx = bx + lean * hh, ty = by - hh; c.beginPath(); c.moveTo(bx - ww / 2, by + 1);
+                c.bezierCurveTo(bx - ww * 0.62, by - hh * 0.4, tx - ww * 0.12, ty + hh * 0.3, tx, ty);
+                c.bezierCurveTo(tx + ww * 0.12, ty + hh * 0.3, bx + ww * 0.62, by - hh * 0.4, bx + ww / 2, by + 1); c.closePath(); c.fill(); };
+              const gr = c.createLinearGradient(bx, by, bx, by - h); gr.addColorStop(0, 'rgba(255,150,40,0.92)'); gr.addColorStop(0.55, 'rgba(255,100,32,0.7)'); gr.addColorStop(1, 'rgba(230,60,30,0)');
+              c.fillStyle = gr; tongue(h, w);
+              const gi = c.createLinearGradient(bx, by, bx, by - h * 0.6); gi.addColorStop(0, 'rgba(255,244,200,0.95)'); gi.addColorStop(1, 'rgba(255,214,120,0)');
+              c.fillStyle = gi; tongue(h * 0.6, w * 0.5);
+            }
+          }
+        }
+        if (p < 1) requestAnimationFrame(frame); else { g.remove(); fx.remove(); }
         if (p >= 1) g.style.opacity = '0';
       };
       requestAnimationFrame(frame);
       return delay + DUR;
+    }
+    const KOI_BURN_MS = 1500;
+    // after a single row burns, the gap where it was folds shut instead of jumping
+    function koiBinCollapse(row, then) {
+      const h = row.getBoundingClientRect().height, cs = getComputedStyle(row);
+      row.style.overflow = 'hidden'; row.style.height = h + 'px';
+      row.animate([{ height: h + 'px', marginTop: cs.marginTop, marginBottom: cs.marginBottom, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom },
+                   { height: '0px', marginTop: '0px', marginBottom: '0px', paddingTop: '0px', paddingBottom: '0px' }], { duration: 260, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
+      setTimeout(then, 270);
     }
     document.addEventListener('click', e => {
       const b = e.target.closest && e.target.closest('[data-sb="del-yes"]');
@@ -15176,7 +15386,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'safety', g: 'concepts', t: 'Safety net', d: 'A daily backup of your tasks, and a guard that stops and asks if your task file suddenly loses most of its tasks.', kw: 'backup guard lost restore' },
 
       // Everyday moves
-      { id: 'add', g: 'moves', t: 'Add a task', d: 'Click “Add a task…” at the bottom of a column and type.', kw: 'new create' },
+      { id: 'add', g: 'moves', t: 'Add a task', d: 'Click “+ Add task” at the bottom of a column and type. Enter adds it and opens the next one. Tab adds it and opens its details (priority, area, steps); Ctrl+Enter there moves on to the next task.', keys: ['Enter', 'Tab'], kw: 'new create quick several many details priority area' },
       { id: 'details', g: 'moves', t: 'Open details', d: 'Click a card to open everything about it. Click it again to close.', kw: 'panel open card' },
       { id: 'rename', g: 'moves', t: 'Rename', d: 'Double-click a task’s title to edit it.', kw: 'edit title' },
       { id: 'status', g: 'moves', t: 'Change status', d: 'Hover the top strip of a card and click a status icon. The card flies to that column.', kw: 'move column strip' },
@@ -15185,8 +15395,10 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'setdate', g: 'moves', t: 'Set the day or deadline', d: 'Click the date pill or the ⚑ flag, on the card or in details.', kw: 'due date deadline calendar' },
       { id: 'nottoday', g: 'moves', t: 'Not today', d: 'Move a task off today: Tomorrow, Next week, Pick a date, or Park it.', kw: 'postpone snooze later reschedule' },
       { id: 'park', g: 'moves', t: 'Park a card', d: 'Click the P icon on the card’s strip, or drag the card onto the Parked button.', kw: 'later backlog' },
+      { id: 'adddetails', g: 'moves', t: 'Add a task with details', d: 'In a column’s add box, press Tab instead of Enter: the task is added and its details open, ready for steps. Enter on an empty step (or Ctrl+Enter) moves on to the next new task.', keys: ['Tab', 'Ctrl+Enter'], kw: 'new create steps subtasks priority area quick' },
       { id: 'delete', g: 'moves', t: 'Delete', d: 'Click the bin icon. The card is crumpled up and tossed into the Waste Yard.', kw: 'remove bin trash crumple' },
-      { id: 'restore', g: 'moves', t: 'Restore or erase', d: 'In the Waste Yard, Restore puts a task back where it was. Erase burns it away for good.', kw: 'undelete bin trash burn' },
+      { id: 'restore', g: 'moves', t: 'Restore', d: 'In the Waste Yard, Restore puts a task back in the column it came from.', kw: 'undelete bin trash back' },
+      { id: 'erase', g: 'moves', t: 'Erase for good', d: 'In the Waste Yard, Erase burns a task away for good and the gap closes up. Empty now erases everything there (it asks first).', kw: 'delete bin trash burn permanent' },
       { id: 'undo', g: 'moves', t: 'Undo', d: 'Almost every action shows a small message at the bottom with Undo.', kw: 'revert mistake toast' },
       { id: 'dup', g: 'moves', t: 'Duplicate', d: 'The copy icon on the card’s strip, or Ctrl+D.', keys: ['Ctrl+D'], kw: 'copy clone' },
       { id: 'size', g: 'moves', t: 'Card size', d: 'Expand or collapse one card (E over it), or every card in a column from its header.', keys: ['E'], kw: 'expand collapse compact' },
@@ -15214,7 +15426,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'switchdo', g: 'mouse', t: 'Switch task in Do', d: 'In the Rundown, click a task in Duna’s “After that…” line to work on it now.', kw: 'rundown next' },
 
       // Keys
-      { id: 'k-guide', g: 'keys', t: 'Open this guide', d: 'Shows everything Hodo can do, with short clips.', keys: ['?'], kw: 'help' },
+      { id: 'k-guide', g: 'keys', t: 'Open this guide', d: 'Shows everything Hodo can do, with short clips. Press ? any time, or open Settings and click Guide.', keys: ['?'], kw: 'help settings' },
       { id: 'k-c', g: 'keys', t: 'Capture by typing', d: 'Opens the capture bar from anywhere.', keys: ['C'], kw: 'capture' },
       { id: 'k-v', g: 'keys', t: 'Capture by voice', d: 'Hold V to talk and let go to stop. Tap it to keep listening.', keys: ['V'], kw: 'voice speak mic' },
       { id: 'k-f', g: 'keys', t: 'Focus', d: 'Starts a Focus session on today’s tasks (Rundown and Tasks). For one task, use the focus icon on its card.', keys: ['F'], kw: 'timer' },
@@ -15269,7 +15481,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'backups', g: 'capture', t: 'Backups folder', d: 'A daily copy of your tasks, kept for 30 days.', kw: 'backup safety' },
       { id: 'welcome', g: 'capture', t: 'Show the welcome again', d: 'Replays the welcome and the Getting started list. Settings → Keyboard.', kw: 'onboarding start tour' },
     ];
-    const GUIDE_CLIPS = new Set(['box',  'bulk',  'cal',  'calmove',  'capbar',  'colset',  'delete',  'drag',  'dup',  'focus',  'k-guide',  'k-t',  'list',  'park',  'restore',  'search',  'status',  'step']);   // filled by tools/guide/record_clips.py when clips are recorded
+    const GUIDE_CLIPS = new Set(['add',  'adddetails',  'box',  'erase',  'bulk',  'cal',  'calmove',  'capbar',  'colset',  'delete',  'drag',  'dup',  'focus',  'k-guide',  'k-t',  'list',  'park',  'restore',  'search',  'status',  'step']);   // filled by tools/guide/record_clips.py when clips are recorded
     const GUIDE_IC = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><path d="M12 17.2h.01"/></svg>';
     let guideEl = null, guideOpenId = null, guideGroup = '';
 
@@ -15441,10 +15653,10 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         if (Math.random() < .5) tris.push([a, b, c], [a, c, d]); else tris.push([a, b, d], [b, c, d]);
       }
       const wrap = document.createElement('div'); wrap.className = 'kt-wrap';
-      Object.assign(wrap.style, { left: r.left + 'px', top: r.top + 'px', width: W + 'px', height: H + 'px' });
+      Object.assign(wrap.style, { left: 0, top: 0, width: W + 'px', height: H + 'px' });
       const base = el.cloneNode(true);
       base.classList.remove('hov', 'dragging', 'sel', 'selected'); base.removeAttribute('draggable'); base.querySelectorAll('.sel-tick, .qa-in').forEach(x => x.remove());
-      Object.assign(base.style, { position: 'absolute', left: 0, top: 0, width: W + 'px', height: H + 'px', margin: 0, boxSizing: 'border-box', visibility: 'visible' });
+      Object.assign(base.style, { position: 'absolute', left: 0, top: 0, width: W + 'px', height: H + 'px', margin: 0, boxSizing: 'border-box', visibility: 'visible', boxShadow: 'none', transition: 'none', animation: 'none' });
       const k = S / Math.max(W, H);
       tris.forEach(t => {
         // each facet is only as big as its triangle (a small layer to paint), with the card copy shifted inside it
@@ -15456,11 +15668,12 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         inner.style.left = -bx + 'px'; inner.style.top = -by + 'px'; f.appendChild(inner);
         f.style.clipPath = `polygon(${t.map(p => `${(p[0] - bx).toFixed(1)}px ${(p[1] - by).toFixed(1)}px`).join(',')})`;
         f.style.transformOrigin = `${cx - bx}px ${cy - by}px`;
+        f._kt = { o: [cx - bx, cy - by], tri: t.map(q => [q[0] - bx, q[1] - by]) };   // for flattening before the throw
         const ox = cx - W / 2, oy = cy - H / 2;                       // where this facet sits relative to the middle
         const ax = (Math.random() - .5) * 2, ay = (Math.random() - .5) * 2, ang = 120 + Math.random() * 160;
         const lit = 1 + (Math.random() - .5) * .5, lit2 = 1 + (Math.random() - .5) * .7;
         const tx = -ox * .6, ty = -oy * .6;                            // crowd in toward the middle (the sheet itself shrinks too)
-        const tw = (Math.random() - .5) * 6, P = 'perspective(420px) ';
+        const tw = (Math.random() - .5) * 6, P = '';   // Oct 17: no perspective(); with the triangle clip it made every frame expensive (the lag), and at this size it can't be seen
         // light and shade: an overlay whose opacity changes (cheap to animate), instead of a brightness filter (slow)
         const sh = document.createElement('i'); sh.className = 'kt-shade'; sh.style.background = lit > 1 ? '#fff' : '#000'; f.appendChild(sh);
         f.animate([
@@ -15477,27 +15690,48 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       const kw = Math.max(k * 2.7, .1), rz = (Math.random() - .5) * 30;
       wrap.animate([{ transform: 'none' }, { offset: .28, transform: 'translateY(-3px) rotate(-1.5deg) scale(.97)' }, { offset: .62, transform: `translateY(-5px) rotate(${rz * .5}deg) scale(${(.97 + kw) / 2.6})` }, { transform: `translateY(-6px) rotate(${rz}deg) scale(${kw})` }],
         { duration: dur, delay, easing: 'ease-in', fill: 'forwards' });
-      document.body.appendChild(wrap);
       return wrap;
+    }
+    function koiFlatten(wrap) {
+      wrap.querySelectorAll('.kt-facet').forEach(f => {
+        const k = f._kt; if (!k) return;
+        let M; try { M = new DOMMatrix(getComputedStyle(f).transform); } catch (x) { return; }
+        const [ox, oy] = k.o;
+        const P = k.tri.map(([x, y]) => [x - ox, y - oy]);
+        const Q = P.map(([x, y]) => { const X = M.m11 * x + M.m21 * y + M.m41, Y = M.m12 * x + M.m22 * y + M.m42, W = M.m14 * x + M.m24 * y + M.m44 || 1; return [X / W, Y / W]; });
+        // solve the affine map that sends the three corners P to Q
+        const [[x1, y1], [x2, y2], [x3, y3]] = P, det = x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);
+        if (Math.abs(det) < 1e-6) return;
+        const solve = (v1, v2, v3) => [(v1 * (y2 - y3) + v2 * (y3 - y1) + v3 * (y1 - y2)) / det, (v1 * (x3 - x2) + v2 * (x1 - x3) + v3 * (x2 - x1)) / det, (v1 * (x2 * y3 - x3 * y2) + v2 * (x3 * y1 - x1 * y3) + v3 * (x1 * y2 - x2 * y1)) / det];
+        const [a, c, e] = solve(Q[0][0], Q[1][0], Q[2][0]), [b, d, g] = solve(Q[0][1], Q[1][1], Q[2][1]);
+        f.getAnimations().forEach(an => an.cancel());
+        f.style.transform = `matrix(${a}, ${b}, ${c}, ${d}, ${e}, ${g})`;
+      });
     }
     function koiToss(el, delay, many) {
       const r = el.getBoundingClientRect();
       const S = 40, CR = 480, cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       const wrap = koiCrumple(el, r, delay, CR, S, many);
-      el.style.visibility = 'hidden';
-      // the crumpled wad itself is thrown (Oct 15: no separate ball drawing on top of it)
+      // the crumpled wad itself is thrown (Oct 15: no separate ball drawing on top of it).
+      // Oct 17: the thrower is only as big as the card (it used to cover the whole screen, which made the throw lag)
       const thrower = document.createElement('div'); thrower.className = 'kt-throw';
-      document.body.appendChild(thrower); thrower.appendChild(wrap);
+      Object.assign(thrower.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+      thrower.appendChild(wrap); document.body.appendChild(thrower);
+      el.style.visibility = 'hidden';
       // the throw: an arc up and over into the Waste Yard button (or the top right corner if it isn't showing)
       const bin = document.getElementById('binBtn'), br = bin && !bin.hidden ? bin.getBoundingClientRect() : null;
       const tx = br && br.width ? br.left + 18 : innerWidth - 60, ty = br && br.width ? br.top + br.height / 2 : 24;
       const by = cy - 6, peak = Math.min(by, ty) - 70 - Math.min(90, Math.abs(tx - cx) * 0.15), FL = 560, N = 14, kf = [];
-      thrower.style.transformOrigin = `${cx}px ${by}px`;
+      thrower.style.transformOrigin = `${cx - r.left}px ${by - r.top}px`;
       for (let i = 0; i <= N; i++) {
         const u = i / N, x = cx + (tx - cx) * u;
         const y = (1 - u) * (1 - u) * by + 2 * (1 - u) * u * peak + u * u * ty;   // quadratic curve through the peak
         kf.push({ transform: `translate(${x - cx}px, ${y - by}px) rotate(${u * 540}deg) scale(${1 - u * 0.45})`, opacity: u > .92 ? (1 - u) / .08 : 1, offset: u });
       }
+      // Oct 17: just before the throw each facet is flattened to a plain 2D transform. A tumbling parent full of 3D
+      // layers added to the lag. The flat transform is fitted through the facet's three corners as they
+      // appear on screen, so the wad looks the same.
+      setTimeout(() => koiFlatten(wrap), delay + CR + 5);
       thrower.animate(kf, { duration: FL, delay: delay + CR + 20, easing: 'cubic-bezier(.3,.1,.6,1)', fill: 'forwards' });
       setTimeout(() => { thrower.remove(); if (bin && !bin.hidden) { bin.classList.remove('kt-catch'); void bin.offsetWidth; bin.classList.add('kt-catch'); setTimeout(() => bin.classList.remove('kt-catch'), 520); } }, delay + CR + 20 + FL);
     }
@@ -15510,7 +15744,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       if (reduceMotion || !row) { koiBinErase(t); return; }
       koiBinBurning = true; try { koiSound.play('burn'); } catch (x) {}
       koiBurn(row, 0);
-      setTimeout(() => { koiBinBurning = false; koiBinErase(t); }, 1350);
+      setTimeout(() => koiBinCollapse(row, () => { koiBinBurning = false; koiBinErase(t); }), KOI_BURN_MS + 60);
     }
     function koiBinEmptyFx() {
       if (koiBinBurning) return;
@@ -15518,8 +15752,8 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       const done = () => { koiBinBurning = false; koiBin = []; markChanged(); binPaint(); };
       if (reduceMotion || !rows.length) { done(); return; }
       koiBinBurning = true; try { koiSound.play('burn'); } catch (x) {}
-      rows.slice(0, 24).forEach((x, i) => koiBurn(x, Math.min(i, 8) * 70));
-      setTimeout(done, 1350 + Math.min(rows.length - 1, 8) * 70);
+      rows.slice(0, 24).forEach((x, i) => koiBurn(x, Math.min(i, 8) * 70, rows.length > 2));
+      setTimeout(done, KOI_BURN_MS + 60 + Math.min(rows.length - 1, 8) * 70);
     }
 
 
@@ -15651,8 +15885,8 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
   - [ ] Capture one thing by typing
   - [ ] Capture one thing by voice
   - [ ] Add it from the Captured list to Pending
-- [ ] **Pick today's three in the Rundown** - Getting started · Medium
-  > Open the Rundown tab. Pick the three things that matter most today; Hodo keeps them in front of you.
+- [ ] **Add a few tasks one after another** - Getting started · Medium
+  > Click + Add task, type a title and press Enter. The next box opens by itself; press Tab instead to add details.
 - [ ] **Book a dentist check-up** - Personal · Low
 - [ ] **Draft the kickoff email for the new project** - Work · Medium
   > Who needs to be there, the goal, and the first meeting date.
@@ -15718,6 +15952,338 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     }
     { const _lmF = loadMemoryHandle; loadMemoryHandle = async function () { const r = await _lmF.apply(this, arguments); setTimeout(() => { koiStartFresh(); }, 0); return r; }; }
 
+
+    // ===== Quick delete (Oct 17): a card's trash deletes right away, no confirm bar =====
+    // Undo (right after) and the Waste Yard (30 days) are the safety. The delete runs through the same path as the
+    // bar's Delete button, so the crumple-and-toss, the Waste Yard entry and Undo all stay the same.
+    // Bulk delete (several selected) still asks first. Several quick deletes in a row wait their turn.
+    {
+      const qd = document.createElement('div'); qd.className = 'koi-qdel'; qd.hidden = true;
+      qd.innerHTML = '<button type="button" data-sb="del-yes" tabindex="-1"></button>'; document.body.appendChild(qd);
+      const qb = qd.firstChild; const q = []; let busy = false, keep = [];
+      const back = () => { keep.forEach(id => { if (findTaskById(parseFloat(id))) koiSel.add(id); }); };
+      // set the selection to just this task for the moment of the click (window capture runs before the toss and Waste Yard hooks)
+      window.addEventListener('click', e => {
+        if (e.target !== qb) return;
+        koiSel.clear(); koiSel.add(qb.dataset.id); selSingleDel = true;
+        setTimeout(() => { if (koiBurning && koiSel.size === 1 && koiSel.has(qb.dataset.id)) { koiSel.clear(); back(); } }, 0);
+      }, true);
+      qd.addEventListener('click', e => { selBarClick(e); busy = false; back(); keep = []; selPaint(); selBarRender(); setTimeout(pump, 0); });
+      function pump() {
+        if (busy || !q.length) return;
+        if (koiBurning) { setTimeout(pump, 120); return; }
+        const id = q.shift();
+        if (!findTaskById(parseFloat(id))) { pump(); return; }
+        busy = true; keep = [...koiSel].filter(x => x !== id); qb.dataset.id = id; qb.click();
+      }
+      const _dQ = deleteTask;
+      deleteTask = function (task) {
+        if (activeMainTab !== 'tasks') return _dQ.apply(this, arguments);
+        const id = String(task.id); if (!q.includes(id) && !(busy && qb.dataset.id === id)) q.push(id);
+        pump();
+      };
+    }
+
+    // ===== Add tasks one after another (Oct 17) =====
+    // In a column's "+ Add task" box: Enter adds the task and opens the next empty box right below (like steps);
+    // Enter on an empty box, Esc or clicking away stops. Tab adds the task and opens its details (priority, area,
+    // steps...) with the cursor in the sub-task box; there, Enter on an empty sub-task (or outside a text box) or
+    // Ctrl+Enter closes the details and opens the next empty box.
+    // Esc or clicking away closes the details and stops.
+    let ntChain = null;   // { sec, id, next }
+    const ntBox = sec => document.querySelector(`#board .cards[data-column="${CSS.escape(String(sec))}"]`);
+    { const _ant = addNewTask;
+      addNewTask = function (sectionId, container) {
+        const had = container.querySelector('.new-task-input');
+        _ant.apply(this, arguments);
+        const input = container.querySelector('.new-task-input'); if (!input || input === had) return;
+        const hint = document.createElement('div'); hint.className = 'nt-hint';
+        hint.innerHTML = '<kbd>Enter</kbd> add, next one <span>·</span> <kbd>Tab</kbd> add with details <span>·</span> <kbd>Esc</kbd> stop';
+        input.after(hint); requestAnimationFrame(() => hint.isConnected && hint.scrollIntoView({ block: 'nearest' }));
+        const gone = () => { if (!input.isConnected || document.activeElement !== input) hint.remove(); };
+        input.addEventListener('blur', () => setTimeout(gone, 120));
+        let viaTab = false;
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Escape') { hint.remove(); return; }
+          if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            const title = input.value.trim(); if (!title) return;
+            e.preventDefault();
+            const before = new Set((tasks[sectionId] || []).map(t => t));
+            viaTab = true; input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })); viaTab = false;
+            hint.remove();
+            const t = (tasks[sectionId] || []).find(x => !before.has(x));
+            if (!t) return;
+            ntChain = { sec: sectionId, id: String(t.id), next: false };
+            openTaskPanel(t);
+            return;
+          }
+          if (e.key === 'Enter' && !e.shiftKey && !viaTab) {
+            hint.remove();
+            if (!input.value.trim()) return;
+            setTimeout(() => { const box = ntBox(sectionId); if (box) addNewTask(sectionId, box); }, 0);
+          }
+        });
+      };
+    }
+    { const _ctp = closeTaskPanel;
+      closeTaskPanel = function () {
+        const ch = ntChain; ntChain = null;
+        const r = _ctp.apply(this, arguments);
+        if (ch && ch.next) setTimeout(() => { if (activeMainTab !== 'tasks') return; const box = ntBox(ch.sec); if (box) addNewTask(ch.sec, box); }, 60);
+        return r;
+      };
+    }
+    { const _tpr = tpRender;
+      tpRender = function (focusDesc) {
+        const chain = !!(ntChain && tpEl && tpTask && String(tpTask.id) === ntChain.id);
+        const r = _tpr.call(this, chain ? false : focusDesc);
+        if (chain && tpEl && !tpEl.querySelector('.nt-phint')) {
+          const h = document.createElement('div'); h.className = 'nt-phint';
+          h.innerHTML = '<kbd>Enter</kbd> on an empty sub-task, or <kbd>Ctrl</kbd>+<kbd>Enter</kbd>: next task <span>·</span> <kbd>Esc</kbd> stop';
+          tpEl.appendChild(h);
+        }
+        // details opened with Tab: start in the sub-task box (type a step, Enter for the next; Enter on an empty one moves on)
+        if (chain && focusDesc) setTimeout(() => { const a = tpEl && tpEl.querySelector('.tp-addsub'); if (a) a.focus({ preventScroll: true }); }, 60);
+        return r;
+      };
+    }
+    window.addEventListener('keydown', e => {
+      if (!ntChain || e.key !== 'Enter' || e.shiftKey || e.altKey) return;
+      if (!tpEl || !tpTask || String(tpTask.id) !== ntChain.id) { ntChain = null; return; }
+      const el = e.target, emptyStep = el && el.classList && el.classList.contains('tp-addsub') && !el.value.trim();
+      if (!(e.ctrlKey || e.metaKey) && !emptyStep) {
+        if (el && (/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(el.tagName) || el.isContentEditable)) return;
+        if (document.querySelector('.field-pop, .fp')) return;
+      }
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (document.activeElement && tpEl.contains(document.activeElement)) document.activeElement.blur();   // keep what was being typed
+      ntChain.next = true;
+      setTimeout(() => closeTaskPanel(), 0);
+    }, true);
+
+    // ===== Welcome paused (Oct 17): the first-run card, "How Hodo works" and Getting started are switched off =====
+    // They need a complete rethink (RULES.md H-140s/§15 marked paused). Settings no longer offers "Show the welcome again".
+    // To bring them back, set KOI_WELCOME_PAUSED to false.
+    const KOI_WELCOME_PAUSED = true;
+    if (KOI_WELCOME_PAUSED) {
+      koiFirstRunCheck = async function () {};
+      koiFirstRunShow = function () {};
+      koiWelcomeShow = function () {};
+      koiGsStart = function () {};
+      try { if (gs && gs.on) { gs.on = false; gsSave(); } if (gsPoll) { clearInterval(gsPoll); gsPoll = null; } if (gsEl) { gsEl.remove(); gsEl = null; } } catch (e) {}
+      window.koiGs = { start: () => {}, welcome: () => {}, state: () => gs };
+      document.querySelectorAll('#settingsPanel .gs-replay:not(.qc-setup)').forEach(r => r.remove());
+      { const i = GUIDE_ITEMS.findIndex(x => x.id === 'welcome'); if (i >= 0) GUIDE_ITEMS.splice(i, 1); }
+    }
+
+    // ===== New stuff (Oct 17): tell people what changed after an update =====
+    // Version numbers are never shown to people. The pill says "New stuff": "Bring it in" (a newer Hodo is on the
+    // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
+    // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
+    const KOI_NOTES = {
+      '1.4': [
+        { k: 'new', t: 'Add tasks one after another, with or without details', clip: 'adddetails', d: 'Click “+ Add task” at the bottom of a column and type a title. Then:<ul><li><kbd>Enter</kbd> adds the task and opens a new empty box right below, so you can keep going.</li><li><kbd>Tab</kbd> adds the task and opens its details instead, with the cursor ready for steps. Type a step and press Enter for the next one. You can also set priority, area, dates and the rest there.</li><li>When you’re done with the details, press <kbd>Enter</kbd> on an empty step, or <kbd>Ctrl</kbd>+<kbd>Enter</kbd> from anywhere, and the next new-task box opens.</li><li><kbd>Esc</kbd>, or Enter on an empty box, stops. Clicking away keeps whatever you typed.</li></ul>Small key hints under the box and at the bottom of the details remind you how it works.' },
+        { k: 'reworked', t: 'Delete in one click', clip: 'delete', d: 'Now the bin on a task deletes it straight away, no “are you sure?”. Changed your mind? Your safety net is the brief “Undo” button, or the ability to restore it from the Waste Yard within 30 days. Deleting several selected tasks at once still asks first.' },
+        { k: 'reworked', t: 'A new look for erasing', clip: 'erase', d: 'Erasing a task in the Waste Yard now burns it away in a clean, hand-drawn style: the fire spreads from a corner, the flames stay on the burning edge, and the space closes up neatly afterwards.' },
+        { k: 'solved', t: 'Box select doesn’t reach the whole column.', clip: 'box', d: 'Now while dragging a box to select cards, hold the mouse near the top or bottom of a column and it scrolls, so cards that weren’t showing can be selected too.' },
+        { k: 'solved', t: 'The delete animation stutters.', d: 'Now the crumple-and-toss into the Waste Yard runs smoothly, without freezing halfway.' },
+        { k: 'reworked', t: 'The progress button is the chart', d: 'Now the progress button is the chart itself: the whole square fills with your progress, with the percentage in the middle. It sits first among the header buttons. Hover it to see your tasks by status. Finishing a task still sends the green drop into it.' },
+        { k: 'shelved', t: 'The Performance page', d: 'We’ve shelved the Performance page while we rework it. The progress button still shows how far along you are; hover it for the breakdown by status.' },
+        { k: 'shelved', t: 'Cyber Rebel', d: 'We’ve taken Cyber Rebel out of the music. Stoic Winner and Quiet Grinder are still there to work to.' },
+        { k: 'shelved', t: 'The Rundown', d: 'We’ve shelved the Rundown while we rework it. Hodo now opens on your board, and nothing you saved is lost. It’ll be back in a later update.' }
+      ]
+    };
+    const NS_TAG = { new: 'NEW', reworked: 'REWORKED', solved: 'SOLVED', shelved: 'SHELVED' };   // category names (Oct 17)
+    let nsEl = null;
+    function koiNotesOpen(ver) {
+      ver = ver || KOI_VERSION; const items = (KOI_NOTES[ver] || []).slice().sort((a, b) => Object.keys(NS_TAG).indexOf(a.k) - Object.keys(NS_TAG).indexOf(b.k));
+      if (!items.length) return;
+      if (nsEl) nsEl.remove();
+      nsEl = document.createElement('div'); nsEl.className = 'ns-scrim';
+      nsEl.innerHTML = `<div class="ns-panel" role="dialog" aria-modal="true" aria-label="New stuff">
+        <div class="ns-head"><b>New stuff</b><span>Here’s what changed in Hodo.</span><button class="ns-x" aria-label="Close">×</button></div>
+        <div class="ns-body"><div class="ns-list">${items.map((x, i) => `<button class="ns-row" data-i="${i}"><span class="ns-tag ${x.k}">${NS_TAG[x.k]}</span><b>${escapeHtml(x.t)}</b></button>`).join('')}</div><div class="ns-view"></div></div>
+        <div class="ns-foot"><span>You can open this again from the Guide (?).</span><button class="ns-ok">Got it</button></div></div>`;
+      document.body.appendChild(nsEl);
+      const view = nsEl.querySelector('.ns-view');
+      const pick = i => { const x = items[i];
+        nsEl.querySelectorAll('.ns-row').forEach(r => r.classList.toggle('on', +r.dataset.i === i));
+        const clip = x.clip && typeof GUIDE_CLIPS !== 'undefined' && GUIDE_CLIPS.has(x.clip);
+        view.innerHTML = `<span class="ns-tag ${x.k}">${NS_TAG[x.k]}</span><h3>${escapeHtml(x.t)}</h3><div class="ns-p">${x.d}</div>${clip ? `<div class="ns-media"><video src="guide/${x.clip}.webm" muted loop playsinline autoplay></video></div>` : ''}`; };
+      nsEl.querySelectorAll('.ns-row').forEach(r => r.onclick = () => pick(+r.dataset.i));
+      pick(0);
+      try { if (!localStorage.getItem('koi-notes-seen-day')) localStorage.setItem('koi-notes-seen-day', new Date().toDateString()); } catch (e) {}
+      const close = () => { const el = nsEl; nsEl = null; if (el) el.remove(); };
+      nsEl.querySelector('.ns-x').onclick = close; nsEl.querySelector('.ns-ok').onclick = close;
+      nsEl.addEventListener('click', e => { if (e.target === nsEl) close(); });
+      nsEl.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const rs = [...nsEl.querySelectorAll('.ns-row')], cur = rs.findIndex(r => r.classList.contains('on')); const n = Math.max(0, Math.min(rs.length - 1, cur + (e.key === 'ArrowDown' ? 1 : -1))); pick(n); rs[n].focus(); } });
+      nsEl.querySelector('.ns-row').focus();
+    }
+    // the pill: mode 'bring' (newer Hodo on the website) or 'see' (already updated, list not looked at yet)
+    function koiNewStuffPill(mode, still) {
+      let b = document.getElementById('nsPill'); if (b) b.remove();
+      const sw = document.querySelector('.settings-wrap'); if (!sw) return;
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      b = document.createElement('div'); b.id = 'nsPill'; b.className = 'ns-pill ' + (dark ? 'no' : 'eb') + (still ? ' still' : '');
+      const ink = '<svg class="ns-ink" viewBox="-10 -10 20 20" aria-hidden="true"><defs><filter id="nsInkF" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter></defs>'
+        + '<path class="drop" d="M0 -3.2 C1.6 -0.6 1.9 0.6 1.9 1.4 a1.9 1.9 0 0 1 -3.8 0 C-1.9 0.6 -1.6 -0.6 0 -3.2z"/>'
+        + '<g filter="url(#nsInkF)"><circle class="blot" r="4.3"/></g>'
+        + [[6.2, -3.4, .9], [-5.6, 3.6, .7], [5, 4.6, .55], [-4.4, -5, .5]].map(([x, y, r]) => `<circle class="speck" r="${r}" style="--to: translate(${x}px, ${y}px)"/>`).join('') + '</svg>';
+      b.innerHTML = `${dark ? '<span class="ns-dot" aria-hidden="true"></span>' : ink}<span class="ns-lab">New stuff!</span><button class="ns-btn" type="button">${mode === 'bring' ? 'Bring it in' : 'See what’s new'}</button>`;
+      b.querySelector('.ns-btn').title = mode === 'bring' ? 'Hodo has been updated. Your tasks are saved, so this is safe.' : 'See what changed';
+      b.querySelector('.ns-btn').onclick = () => { if (mode === 'bring') location.reload(); else koiNotesOpen(); };
+      const anchor = document.getElementById('installBtn') || document.getElementById('guideBtn') || sw; anchor.parentNode.insertBefore(b, anchor);
+      if (dark && !reduceMotion && !still) koiNsMeteor(b.querySelector('.ns-dot'));
+    }
+    // a shooting star: comes in steep from the upper right, speeds up, its tail grows then burns away; a twinkle where it ends
+    function koiNsMeteor(dot) {
+      const d = dot.getBoundingClientRect(), ex = d.left + d.width / 2, ey = d.top + d.height / 2;
+      const sx = ex + 150, sy = ey - 64, ang = Math.atan2(ey - sy, ex - sx) * 180 / Math.PI;
+      const m = document.createElement('div'); m.className = 'ns-meteor'; m.innerHTML = '<i></i><b></b>'; document.body.appendChild(m);
+      const D = 620, ease = 'cubic-bezier(.45,.05,.8,.45)';
+      m.animate([{ transform: `translate(${sx}px, ${sy}px) rotate(${ang}deg)`, opacity: 0 }, { opacity: 1, offset: .12 },
+                 { transform: `translate(${ex}px, ${ey}px) rotate(${ang}deg)`, opacity: 1 }], { duration: D, easing: ease, fill: 'forwards' });
+      m.querySelector('i').animate([{ transform: 'scaleX(.1)', opacity: .6 }, { transform: 'scaleX(1)', opacity: 1, offset: .6 }, { transform: 'scaleX(.35)', opacity: .2 }], { duration: D, easing: ease, fill: 'forwards' });
+      m.querySelector('b').animate([{ transform: 'scale(.6)' }, { transform: 'scale(1.1)', offset: .8 }, { transform: 'scale(.4)', opacity: 0 }], { duration: D, easing: ease, fill: 'forwards' });
+      setTimeout(() => {
+        m.remove();
+        const t = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); t.setAttribute('class', 'ns-twinkle'); t.setAttribute('viewBox', '-9 -9 18 18');
+        t.innerHTML = '<path d="M0 -8 L1.2 -1.2 L8 0 L1.2 1.2 L0 8 L-1.2 1.2 L-8 0 L-1.2 -1.2 Z"/>'; t.style.left = ex + 'px'; t.style.top = ey + 'px';
+        document.body.appendChild(t);
+        t.animate([{ transform: 'scale(0) rotate(0deg)', opacity: 1 }, { transform: 'scale(1.15) rotate(25deg)', opacity: 1, offset: .35 }, { transform: 'scale(0) rotate(45deg)', opacity: 0 }], { duration: 420, easing: 'ease-out', fill: 'forwards' });
+        setTimeout(() => t.remove(), 450);
+      }, D - 10);
+    }
+
+    // when the pill shows: after an update until the list has been opened once (then until that day ends), or when a
+    // newer Hodo is on the website. Settings → Feedback can switch the notices off.
+    const nsOff = () => { try { return localStorage.getItem('koi-notes-off') === '1'; } catch (e) { return false; } };
+    let nsNewer = null, nsAnimated = false;
+    function koiNsPaint() {
+      const drop = () => { const b = document.getElementById('nsPill'); if (b) b.remove(); };
+      if (nsNewer) { if (!document.querySelector('#nsPill .ns-btn[data-m="bring"]')) { koiNewStuffPill('bring', nsAnimated); nsAnimated = true; document.querySelector('#nsPill .ns-btn').dataset.m = 'bring'; } return; }
+      if (nsOff()) { drop(); return; }
+      let pend = null, day = null; try { pend = localStorage.getItem('koi-notes-pending'); day = localStorage.getItem('koi-notes-seen-day'); } catch (e) {}
+      if (pend !== KOI_VERSION || !KOI_NOTES[KOI_VERSION]) { drop(); return; }
+      if (day && day !== new Date().toDateString()) { try { localStorage.removeItem('koi-notes-pending'); localStorage.removeItem('koi-notes-seen-day'); } catch (e) {} drop(); return; }
+      if (!document.getElementById('nsPill')) { koiNewStuffPill('see', !!day || nsAnimated); nsAnimated = true; }
+    }
+    (function koiNsBoot() {
+      let last = null, used = false;
+      try {
+        last = localStorage.getItem('koi-ver-last');
+        for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^(koi-|pd-)/.test(k) && k !== 'koi-ver-last') { used = true; break; } }
+        localStorage.setItem('koi-ver-last', KOI_VERSION);
+        // no record yet but Hodo was used here before: that person has just updated (brand-new people get no notice)
+        if ((last ? last !== KOI_VERSION : used) && KOI_NOTES[KOI_VERSION]) { localStorage.setItem('koi-notes-pending', KOI_VERSION); localStorage.removeItem('koi-notes-seen-day'); }
+      } catch (e) { return; }
+      setTimeout(koiNsPaint, 900);
+    })();
+    // is a newer Hodo on the website? (only when Hodo runs from a web address)
+    const koiVerNewer = (a, b) => { const x = String(a).split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
+    let nsLastCheck = 0;
+    async function koiNsCheck() {
+      if (!/^https?:$/.test(location.protocol) || nsNewer) return;
+      nsLastCheck = Date.now();
+      try { const t = await (await fetch(location.href.split('#')[0], { cache: 'no-store' })).text(); const m = /const KOI_VERSION = '([^']+)'/.exec(t);
+        if (m && koiVerNewer(m[1], KOI_VERSION)) { nsNewer = m[1]; koiNsPaint(); } } catch (e) {}
+    }
+    setInterval(koiNsCheck, 30 * 60 * 1000);
+    const nsBack = () => { if (document.visibilityState === 'visible' && Date.now() - nsLastCheck > 60 * 1000) koiNsCheck(); };
+    window.addEventListener('focus', nsBack); document.addEventListener('visibilitychange', nsBack);
+    setInterval(() => { if (document.getElementById('nsPill') && !nsNewer) koiNsPaint(); }, 10 * 60 * 1000);   // drop it once the day is over
+    // Settings → Feedback: a switch for the notices
+    (function () {
+      const sw = document.getElementById('soundToggle'); const row0 = sw && sw.closest('.sp-row'); if (!row0) return;
+      const r = document.createElement('div'); r.className = 'sp-row';
+      r.innerHTML = '<div class="sp-rl"><span class="sp-rt">New stuff! after updates</span><span class="sp-hint">A note in the header when Hodo gets something new</span></div><label class="sp-switch"><input type="checkbox" id="nsToggle" aria-label="New stuff! after updates"><span class="sw-track"><span class="sw-knob"></span></span></label>';
+      row0.after(r);
+      const cb = r.querySelector('input'); cb.checked = !nsOff();
+      cb.onchange = () => { try { localStorage.setItem('koi-notes-off', cb.checked ? '' : '1'); } catch (e) {} koiNsPaint(); };
+    })();
+    // the Guide links to the list any time
+    { const _go = guideOpen; guideOpen = function () { const r = _go.apply(this, arguments);
+        const f = document.querySelector('.gd .gd-foot'); if (f && KOI_NOTES[KOI_VERSION] && !f.querySelector('.gd-wn')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'gd-wn'; b.textContent = 'What’s new'; b.onclick = () => koiNotesOpen(); f.appendChild(b); }
+        return r; }; }
+    // the version number is for us, not on screen
+    try { const v = document.getElementById('koiVer'); if (v) { const p = v.previousSibling; v.remove(); if (p && p.nodeType === 3) p.textContent = p.textContent.replace(/\s*·\s*$/, ''); } console.info('Hodo ' + KOI_VERSION); } catch (e) {}
+
+    // ===== Rundown paused (Oct 17): the Rundown page is hidden everywhere until it's reworked =====
+    // No Rundown tab, Hodo opens on Tasks, no "★ Today #" badges, no Rundown entries in the Guide, no assistant-name
+    // setting. The Rundown code and the picks saved in TASKS.md are kept. To bring it back, set KOI_RUNDOWN_PAUSED to false.
+    const KOI_RUNDOWN_PAUSED = true;
+    if (KOI_RUNDOWN_PAUSED) {
+      document.documentElement.classList.add('rd-off');
+      { const _sw = switchMainTab; switchMainTab = function (tab) { return _sw.call(this, tab === 'today' ? 'tasks' : tab); }; }
+      if (activeMainTab === 'today') switchMainTab('tasks');
+      const asst = document.querySelector('#settingsPanel input[data-pf-k="assistant"]'); const ar = asst && asst.closest('.sp-row'); if (ar) ar.remove();
+      document.querySelectorAll('#settingsPanel .sp-row').forEach(r => { if (/Your assistant’s name|Rundown/.test(r.textContent)) r.remove(); });   // the assistant's name and your photo are Rundown-only
+      for (let i = GUIDE_ITEMS.length - 1; i >= 0; i--) { const x = GUIDE_ITEMS[i]; if (/Rundown|Duna|The Three|Three\b/.test(x.t + ' ' + x.d) && x.id !== 'k-f') GUIDE_ITEMS.splice(i, 1); }
+      { const f = GUIDE_ITEMS.find(x => x.id === 'k-f'); if (f) f.d = 'Starts a Focus session on today’s tasks. For one task, use the focus icon on its card.'; }
+    }
+
+    // ===== Header layout (Oct 17) =====
+    // Left: logo + a small saved dot (the file name shows on hover) + places. Middle: messages (New stuff!, Install app),
+    // so the buttons never move. Right: progress · Capture (+ Captured) · Focus | Theme · Music | Settings.
+    // Only square buttons (New stuff! keeps its pill); no labels (names show on hover). The Guide lives in Settings (and on ?).
+    (function () {
+      const H = document.querySelector('header .buttons'), hdr = document.querySelector('header'); if (!H || !hdr) return;
+      const $ = id => document.getElementById(id);
+      // the saved dot
+      const fs = $('fileState'), logo = document.querySelector('.koi-title');
+      if (fs && logo) {
+        const d = document.createElement('span'); d.className = 'hd-dot'; d.id = 'hdDot'; d.hidden = true;
+        logo.parentNode.classList.add('hd-logo'); logo.after(d);
+        const paint = () => { const ss = $('saveState'), nm = ($('fsName') || {}).textContent || 'Your task file';
+          d.hidden = fs.hidden; d.className = 'hd-dot' + (ss && ss.classList.contains('error') ? ' err' : ss && ss.classList.contains('saving') ? ' busy' : '');
+          d.title = nm + ' · ' + (d.classList.contains('err') ? 'not saved, click to try again' : d.classList.contains('busy') ? 'saving…' : 'saved'); };
+        new MutationObserver(paint).observe(fs, { attributes: true, childList: true, subtree: true, characterData: true });
+        d.addEventListener('click', () => { const ss = $('saveState'); if (ss && ss.classList.contains('error')) ss.click(); });
+        paint();
+      }
+      // the middle: messages
+      const mid = document.createElement('div'); mid.className = 'hd-mid'; mid.id = 'hdMid'; hdr.insertBefore(mid, H);
+      // the right: groups with thin dividers
+      const g = $('guideBtn'); if (g) g.remove();
+      H.querySelectorAll('.hd-sep').forEach(x => x.remove());
+      const sw = H.querySelector('.settings-wrap');
+      const div = () => Object.assign(document.createElement('span'), { className: 'hd-div', ariaHidden: 'true' });
+      [$('progBtn'), $('capSplit'), $('focusBtn'), div(), $('themeToggle'), $('muWrap'), div()].forEach(x => x && H.insertBefore(x, sw));
+      // the Guide inside Settings
+      const head = document.querySelector('#settingsPanel .sp-head .sp-saved');
+      if (head) {
+        head.insertAdjacentHTML('afterend', '<button class="sp-guide" type="button" title="Guide · ?"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6M12 17.2h.01"/></svg>Guide</button>');
+        document.querySelector('#settingsPanel .sp-guide').addEventListener('click', () => {
+          const sp = $('settingsPanel'), sb = $('settingsBtn'); if (sp) sp.hidden = true; if (sb) sb.classList.remove('open');
+          setTimeout(() => guideOpen(), 0);
+        });
+      }
+    })();
+    // messages go in the middle
+    { const _ins = koiInstallPaint; koiInstallPaint = function () { const r = _ins.apply(this, arguments); const b = document.getElementById('installBtn'), m = document.getElementById('hdMid'); if (b && m && b.parentNode !== m) m.appendChild(b); return r; }; koiInstallPaint(); }
+    { const _nsp = koiNewStuffPill; koiNewStuffPill = function () { const r = _nsp.apply(this, arguments); const b = document.getElementById('nsPill'), m = document.getElementById('hdMid'); if (b && m && b.parentNode !== m) m.insertBefore(b, m.firstChild); return r; }; }
+
+    // ===== Performance shelved, progress button reworked, music trimmed (Oct 17) =====
+    // Performance: the page is shelved (code kept; KOI_PERF_SHELVED). The progress button no longer opens it.
+    const KOI_PERF_SHELVED = true;
+    if (KOI_PERF_SHELVED) {
+      pfOpen = function () {}; pfToggle = function () {};
+      for (let i = GUIDE_ITEMS.length - 1; i >= 0; i--) if (/^perf/.test(GUIDE_ITEMS[i].id)) GUIDE_ITEMS.splice(i, 1);
+      const pb = document.getElementById('progBtn');
+      if (pb) { const fix = () => { const t = pb.getAttribute('title') || ''; if (/Performance/.test(t)) pb.setAttribute('title', t.replace(/\.?\s*Click for Performance \(beta\)/, '')); };
+        new MutationObserver(fix).observe(pb, { attributes: true, attributeFilter: ['title'] }); fix(); }
+    }
+    // The progress button is the chart itself (a square filled by the pie, the % in the middle), first in the header's
+    // buttons, in its own group. Hover still shows progress by area; finishing a task still sends the green drop into it.
+    (function () {
+      const pb = document.getElementById('progBtn'), mu = document.getElementById('muWrap'); if (!pb || !mu) return;
+      const cap = document.getElementById('capSplit'); if (cap) { cap.before(pb); const d = document.createElement('span'); d.className = 'hd-div'; d.setAttribute('aria-hidden', 'true'); cap.before(d); }   // Oct 17: [%] | Capture Focus | Theme Music | Settings
+      const ch = pb.querySelector('.pr-chev'); if (ch) ch.remove();
+    })();
+    // Music: Cyber Rebel is gone (two moods now)
+    { const i = MU.findIndex(t => t.id === 'rebel'); if (i >= 0) MU.splice(i, 1); }
+    if (mu.cur === 'rebel') { mu.cur = 'velvet'; muLS.set('koi-mu-cur', 'velvet'); }
+    { const g = GUIDE_ITEMS.find(x => x.id === 'music'); if (g) g.d = 'Two moods to work to: Stoic Winner and Quiet Grinder.'; }
     applyWaitRail();
   </script>
 </body>

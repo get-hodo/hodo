@@ -1,6 +1,17 @@
 # Hodo: what changed
 
-## Hodo 1.3 · Oct 16, 2026
+## Hodo 1.4 · Oct 17, 2026
+- NEW: Add tasks one after another, with or without details
+- REWORKED: Delete in one click
+- REWORKED: A new look for erasing
+- REWORKED: The progress button is the chart
+- SOLVED: Box select doesn’t reach the whole column.
+- SOLVED: The delete animation stutters.
+- SHELVED: The Performance page
+- SHELVED: Cyber Rebel
+- SHELVED: The Rundown
+
+## Hodo 1.3 · Oct 17, 2026
 New: press ? for the Guide, a searchable list of everything Hodo does, with short clips. Any column can be your Done or Waiting column: click the gear on its header (you can have several Done columns; Hodo asks which one). Renaming a task now keeps its waiting dates, card size and place in the Rundown. Expressive is the only style for now; Minimalist is being reworked. Changes: today's Three never goes past 3 (extra work becomes a bonus); quick-adds land at the top of Pending; a passed planned day says 'from Tue' and only a passed deadline is late, on the Waiting rail too; parking a task with a deadline brings it back 3 days before it; one area per task; dates far away or in another year show their year; the quick window tells you when catches haven't reached Hodo yet. Fixes: Undo after a delete puts everything back; blank steps are removed everywhere, with Undo; when TASKS.md was changed somewhere else, Hodo names the change it couldn't save; nothing can be edited while the safety-net question is open; column names that are already taken are refused; your work week is no longer pre-selected on first run; the Parked review day starts on your first work day.
 
 ## Hodo 1.2 · Oct 15, 2026
