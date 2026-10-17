@@ -69,6 +69,7 @@
   - Task ids (hidden id per task line)         "// ===== Task ids (Oct 15" (koiUidNew, koiTaskKey in "TASKS FUNCTIONALITY"; koiUidMigrate)
   - Hold redraws while typing                  "Don't redraw under someone typing" (koiEditingInBoard)
   - Web app, settings in the folder, quick-capture setup  "Web app (Oct 17)" (KOI_WEB, koiSnapSave/koiSnapLoad, koiQuickCaptureFile)
+  - Start fresh in an empty folder             "Start fresh in an empty folder" (koiStartFresh, KOI_STARTER_TASKS)
   - Guide (? key, header button)               "// ===== Guide (Oct 15)" (GUIDE_ITEMS, GUIDE_CLIPS, guideOpen); clips in guide/<id>.webm
   New script goes just before the final "applyWaitRail();" at the end; new CSS just before the end of the style block.
 -->
@@ -4605,6 +4606,13 @@
     .install-pill:hover { background: color-mix(in srgb, var(--brand) 14%, var(--bg-card)); }
     .install-pill svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
+    /* small yes/no question (Oct 17), same look as "Which Done column?" */
+    .kd-p { margin: 4px 2px 14px; font-size: 13px; line-height: 1.5; color: var(--text-secondary); max-width: 360px; }
+    .kd-acts { display: flex; justify-content: flex-end; gap: 8px; }
+    .kd-acts button { margin: 0; font: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 9px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); }
+    .kd-acts .kd-yes { background: var(--brand); border-color: var(--brand); color: #fff; }
+    [data-theme="dark"] .kd-acts .kd-yes { color: #22242a; }
+
 </style>
 </head>
 <body>
@@ -4818,7 +4826,7 @@
     <div class="board" id="board">
       <div class="empty-state" id="boardEmptyState" style="width: 100%;">
         <p style="margin-bottom: 8px; font-size: 18px; font-weight: 600; color: var(--text-primary);">Open your Hodo folder</p>
-        <p style="margin-bottom: 22px; font-size: 13px; color: var(--text-muted);">The folder with your TASKS.md. Hodo keeps your tasks, people and areas there.</p>
+        <p style="margin-bottom: 22px; font-size: 13px; color: var(--text-muted);">New here? Make an empty folder (for example Documents\Hodo) and pick it: Hodo sets it up. Already using Hodo? Pick the folder with your TASKS.md.</p>
         <button id="openFolderLarge">Open your Hodo folder</button>
         <button id="openBtnLarge" class="koi-alt-open">Just a TASKS.md file</button>
       </div>
@@ -15629,6 +15637,86 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         showStatus('Open the downloaded file once to set up Ctrl+Alt+/');
       };
     })();
+
+
+    // ===== Start fresh in an empty folder (Oct 17) =====
+    // From the web address, a new person has no TASKS.md yet. Opening a folder without one offers to start Hodo there:
+    // a starter TASKS.md (a few example tasks that teach the basics) and memory/areas.md. Nothing is ever overwritten.
+    const KOI_STARTER_TASKS = `# Tasks
+<!-- hodo: column settings -->
+
+## Pending
+- [ ] **Try Hodo: capture a thought by voice** - Getting started · High
+  > Press C (or click the lightning button), hold V and say something like "Remind me to send the report to Sam on Thursday". Hodo turns it into a task.
+  - [ ] Capture one thing by typing
+  - [ ] Capture one thing by voice
+  - [ ] Add it from the Captured list to Pending
+- [ ] **Pick today's three in the Rundown** - Getting started · Medium
+  > Open the Rundown tab. Pick the three things that matter most today; Hodo keeps them in front of you.
+- [ ] **Book a dentist check-up** - Personal · Low
+- [ ] **Draft the kickoff email for the new project** - Work · Medium
+  > Who needs to be there, the goal, and the first meeting date.
+  - [ ] List who needs to be on it
+  - [ ] Write the goal in two lines
+  - [ ] Propose a first meeting date
+
+## In Progress
+- [ ] **Read two chapters of the book on the desk** - Learning · Low
+
+## Waiting On <!-- hodo: waiting -->
+- [ ] **Feedback on the proposal** - waiting on ? · Work · Medium
+  > Click "Someone" to set who you're waiting on. Hodo reminds you when it's time to nudge them.
+
+## Done <!-- hodo: done -->
+- [x] **Set up Hodo** - Getting started
+
+## Parked
+- [ ] **Learn to cook three new dishes** - Personal · big
+  > Something for later. Parked items wait here until you're ready; Hodo asks you to review them once a week.
+
+## Let go
+
+## Captured
+`;
+    const KOI_STARTER_AREAS = `# Areas
+The areas your tasks belong to (Settings → You → Areas). "Suggest when text mentions" = words that make Hodo suggest this area for a new task.
+
+| Area | Colour | Suggest when text mentions |
+|---|---|---|
+| Getting started | Amber | hodo, rundown, capture |
+| Work | Purple | meeting, report, client, project, email, deadline |
+| Personal | Teal | dentist, doctor, family, home, gym, groceries |
+| Learning | Blue | read, book, course, learn, study |
+`;
+    function koiAsk(title, text, yes, no) {
+      return new Promise(res => {
+        const ov = document.createElement('div'); ov.className = 'kd-ov';
+        ov.innerHTML = `<div class="kd-box" role="dialog" aria-label="${escapeHtml(title)}"><div class="kd-h">${escapeHtml(title)}</div><p class="kd-p">${escapeHtml(text)}</p>
+          <div class="kd-acts"><button type="button" class="kd-cancel" data-a="no">${escapeHtml(no)}</button><button type="button" class="kd-yes" data-a="yes">${escapeHtml(yes)}</button></div></div>`;
+        document.body.appendChild(ov);
+        const done = v => { ov.remove(); document.removeEventListener('keydown', key, true); res(v); };
+        const key = e => { if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); done(false); } };
+        document.addEventListener('keydown', key, true);
+        ov.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (b) done(b.dataset.a === 'yes'); else if (e.target === ov) done(false); });
+        setTimeout(() => { const b = ov.querySelector('.kd-yes'); if (b) b.focus(); }, 30);
+      });
+    }
+    async function koiStartFresh() {
+      if (typeof memoryDirHandle === 'undefined' || !memoryDirHandle || taskFileHandle || koiReopening) return;
+      try { await memoryDirHandle.getFileHandle('TASKS.md'); return; } catch (e) {}   // it has one: nothing to do
+      const ok = await koiAsk('Start Hodo in this folder?', `“${memoryDirHandle.name}” has no tasks yet. Hodo will add TASKS.md (with a few example tasks to show you around) and a memory folder for your areas. Nothing else in the folder is touched.`, 'Start here', 'Choose another folder');
+      if (!ok) { try { loadMemoryDirectory(); } catch (e) {} return; }
+      try {
+        const fh = await memoryDirHandle.getFileHandle('TASKS.md', { create: true });
+        const w = await fh.createWritable(); await w.write(KOI_STARTER_TASKS); await w.close();
+        const mem = await memoryDirHandle.getDirectoryHandle('memory', { create: true });
+        let hasAreas = true; try { await mem.getFileHandle('areas.md'); } catch (e) { hasAreas = false; }
+        if (!hasAreas) { const aw = await (await mem.getFileHandle('areas.md', { create: true })).createWritable(); await aw.write(KOI_STARTER_AREAS); await aw.close(); }
+        await loadMemoryHandle(memoryDirHandle);
+        showStatus('Hodo is set up in ' + memoryDirHandle.name);
+      } catch (e) { showStatus('Couldn’t start Hodo here: ' + e.message); }
+    }
+    { const _lmF = loadMemoryHandle; loadMemoryHandle = async function () { const r = await _lmF.apply(this, arguments); setTimeout(() => { koiStartFresh(); }, 0); return r; }; }
 
     applyWaitRail();
   </script>
