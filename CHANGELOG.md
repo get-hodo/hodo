@@ -1,6 +1,6 @@
 # Hodo: what changed
 
-## Hodo 1.4.1 · Oct 17, 2026
+## Hodo 1.4.1 · Oct 19, 2026
 - REWORKED: A new look for the progress button
 - SOLVED: Capture and the Captured count look like two separate buttons.
 - SOLVED: “See what’s new” is hard to read when you hover it.
