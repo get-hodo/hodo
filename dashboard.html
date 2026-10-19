@@ -61,8 +61,9 @@
   - Calendar row animation                     "Calendar: the week row opens and closes smoothly"
   - Burn (now: Erase in the Waste Yard)        "Deleting burns the task away"
   - Delete: crumple and toss to the Waste Yard "Delete = crumple and toss" (koiToss, koiBinEraseFx, koiBinEmptyFx); List rows just vanish for now (koiLvVanish)
-  - New stuff! replay every 5 min + theme redraw (koiNsRedraw)
+  - New stuff! theme redraw (koiNsRedraw), ongoing sparkles / underline (koiNsAlive), dismiss (koiNsDismiss)
   - Progress button outline = status track "Progress button, take 2" (koiProgEdge)
+  - Night Owl switch = lights off, then colours flicker on "Night Owl: lights off" (koiNeonDark)
   - Waste Yard                                 "// ===== Waste yard (Oct 9)"
   - Onboarding (PAUSED Oct 17, see "Welcome paused") "// ===== Onboarding (Oct 10)" (koiWelcomeShow, Getting started: GS_ITEMS)
   - Theme switch toast                         "vtHintShow"
@@ -4761,6 +4762,17 @@
     header .buttons #progBtn #progPct { color: var(--text-primary); padding-top: 0; }
     header .buttons #progBtn:hover { background: var(--bg-secondary); }
     header .buttons #progBtn:hover .pr-edge { filter: brightness(1.06); }
+    html.neon-run *, html.neon-run *::before, html.neon-run *::after { transition: none !important; }   /* Night Owl lights-on (Oct 19) */
+    /* Oct 19: New stuff! pill: a dismiss ×, Night Owl sparkles, the Early Bird hand-drawn underline */
+    .ns-close { all: unset; width: 20px; height: 20px; margin-left: -2px; border-radius: 6px; display: grid; place-items: center; font-size: 15px; line-height: 1; color: var(--text-muted); cursor: pointer; flex: none; }
+    .ns-close:hover { color: var(--text-primary); background: color-mix(in srgb, var(--text-primary) 8%, transparent); }
+    .ns-close:focus-visible { outline: 2px solid var(--brand, var(--accent)); outline-offset: 1px; }
+    .ns-pill .ns-dot, .ns-pill .ns-lab, .ns-pill .ns-ink, .ns-pill .ns-btn, .ns-pill .ns-close { position: relative; z-index: 1; }
+    .ns-spark { position: absolute; left: 0; top: 0; bottom: 0; right: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; }
+    .ns-spark i { position: absolute; width: 3px; height: 3px; margin: -1.5px 0 0 -1.5px; border-radius: 50%; background: #f3dfb8; box-shadow: 0 0 6px 2px rgba(243,223,184,.35); opacity: 0; }
+    .ns-lab { position: relative; }
+    .ns-uline { position: absolute; height: 10px; overflow: visible; pointer-events: none; z-index: 1; }
+    .ns-uline path { fill: none; stroke: var(--brand, var(--accent)); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
   </style>
 </head>
 <body>
@@ -7567,7 +7579,7 @@
       card.draggable = false;
       pop.appendChild(card);
       const others = sections.filter(s => s.id !== sec.id);
-      if (others.length) {
+      if (false && others.length) {   // Oct 19: the "Move to" row is gone; the card's status buttons at the top do this
         const bar = document.createElement('div'); bar.className = 'cal-pop-status-bar';
         bar.innerHTML = '<span class="lbl">Move to</span>';
         others.forEach(s => {
@@ -8509,7 +8521,7 @@
       const yb = (rects.length ? Math.max(...rects.map(q => q.bottom)) : tr.bottom) - r.top;
       const ym = ((rects.length ? Math.min(...rects.map(q => q.top)) : tr.top) - r.top + yb) / 2;
       if (th === 'green') cardConfetti(st, r, x0, x1, ym, full);
-      else if (th === 'dark') cardStar(st, r, x0, x1, ym, full);
+      else if (th === 'dark') { if (card.closest('.lv-item, .list-section')) cardStar(st, r, x0, x1, ym, full); else cardStarDiag(st, r, full); }
       else cardInk(st, r, rects.length ? rects : [tr], full);
       setTimeout(() => st.remove(), 2600);
     }
@@ -8583,7 +8595,28 @@
         if (t < dur) requestAnimationFrame(frame);
       })(t0);
     }
-    // Night Owl: a shooting star skimming the title
+    // Night Owl, Oct 19: the shooting star crosses the card from its upper-right corner to its lower-left corner,
+    // and twinkles light up all over the card (the List keeps the star skimming the title, below)
+    function cardStarDiag(st, r, full) {
+      const W = r.width, H = r.height, sx = W + 8, sy = -8, ex = -8, ey = H + 8, dx = ex - sx, dy = ey - sy;
+      const dist = Math.hypot(dx, dy), len = Math.min(120, dist * 0.42), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+      const star = document.createElement('div'); star.className = 'fx-star';
+      star.style.cssText = `left:${sx - len}px;top:${sy - 1}px;width:${len}px`;
+      st.appendChild(star);
+      star.animate([{ transform: `translate(0,0) rotate(${ang}deg)`, opacity: 0 },
+                    { transform: `translate(${dx * .18}px,${dy * .18}px) rotate(${ang}deg)`, opacity: 1, offset: .18 },
+                    { transform: `translate(${dx}px,${dy}px) rotate(${ang}deg)`, opacity: 0 }],
+        { duration: 1100, easing: 'cubic-bezier(.35,.55,.45,1)', fill: 'forwards' });
+      const n = full ? 12 : 7;
+      for (let k = 0; k < n; k++) {
+        const d = document.createElement('div'); d.className = 'fx-twinkle';
+        d.style.cssText = `left:${W * (.06 + Math.random() * .88)}px;top:${H * (.08 + Math.random() * .84)}px;opacity:0`;
+        st.appendChild(d);
+        d.animate([{ opacity: 0, transform: 'scale(.4)' }, { opacity: .9, transform: 'scale(1)', offset: .4 }, { opacity: 0 }],
+          { duration: 900, delay: 120 + k * 75 + Math.random() * 60, fill: 'forwards' });
+      }
+    }
+    // Night Owl: a shooting star skimming the title (List rows)
     function cardStar(st, r, x0, x1, ym, full) {
       const star = document.createElement('div'); star.className = 'fx-star';
       const len = Math.min(110, (x1 - x0) * 0.5);
@@ -13046,6 +13079,14 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
             noiseHit(t + 0.44, 0.42, 0.03, 'bandpass', 700, 0.9, lofiBus, { attack: 0.2, sweepTo: 2600 });
             kick(t + 0.98, 0.12); noiseHit(t + 0.98, 0.07, 0.04, 'bandpass', 1300, 1, lofiBus);
           },
+          // Night Owl switch (Oct 19): a home wall switch, quiet: the rocker snapping over (two tiny hits ~12 ms apart)
+          lightSwitch(t) { noiseHit(t, 0.022, 0.028, 'bandpass', 4200, 0.9); noiseHit(t + 0.012, 0.028, 0.04, 'bandpass', 2600, 0.9); tone(t + 0.012, 1500, 0.03, { gain: 0.012 }); },
+          // ...and the small dry tick of a lamp catching (no hum), from the side of the screen where it lights
+          lampTick(t, o = {}) {
+            const g = o.g || 0.05; let d = master;
+            if (o.pan && ctx.createStereoPanner) { d = ctx.createStereoPanner(); d.pan.value = o.pan; d.connect(master); }
+            noiseHit(t, 0.012, g, 'bandpass', 2800, 0.8, d); tone(t, 2400 + Math.random() * 500, 0.045, { gain: g * 0.3, dest: d });
+          },
           // Resumed (Oct 4): back in play. A light lift of air and an upward roll that settles brightly
           resume(t) {
             crackle(t, 1.1, 0.012);
@@ -14281,7 +14322,9 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
     const koiFmtTime = d => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase();
     window.koiThemeAuto = (function () {
       let mode = 'off', holdUntil = 0;
-      try { mode = localStorage.getItem('koi-theme-auto-mode') || (localStorage.getItem('koi-theme-auto') === '1' ? 'fixed' : 'off'); } catch (e) {}
+      try { mode = localStorage.getItem('koi-theme-auto-mode') || (localStorage.getItem('koi-theme-auto') === '1' ? 'fixed' : 'off'); holdUntil = +localStorage.getItem('koi-theme-hold') || 0; } catch (e) {}
+      // Oct 19: a theme picked by hand holds until the next scheduled change, even across closing and opening Hodo
+      const hold = v => { holdUntil = v; try { if (v) localStorage.setItem('koi-theme-hold', String(v)); else localStorage.removeItem('koi-theme-hold'); } catch (e) {} };
       // the day window [start, end) for a given date
       const dayWindow = (d) => {
         if (mode === 'sun') { const t = koiSunTimes(d, KOI_LAT, KOI_LNG); return [t.sunrise.getTime(), t.sunset.getTime()]; }
@@ -14293,8 +14336,9 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         if (now < a) return a; if (now < b) return b;
         const tm = new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1, 12); return dayWindow(tm)[0];
       };
-      const tick = () => { if (mode === 'off' || Date.now() < holdUntil) return; const w = want(); if (currentTheme() !== w) fadeToTheme(w); };
-      setInterval(tick, 60000); setTimeout(tick, 0);
+      // opening Hodo: the right theme is simply there (no sunrise, sunset or lights-on); only a change while Hodo is open plays one
+      const tick = (opening) => { if (mode === 'off' || Date.now() < holdUntil) return; const w = want(); if (currentTheme() !== w) { if (opening) applyTheme(w); else fadeToTheme(w); } };
+      setInterval(tick, 60000); tick(true);
       const note = () => {
         const el = document.getElementById('themeAutoNote'); if (!el) return;
         if (mode === 'off') { el.textContent = 'Hodo stays on the theme you pick.'; return; }
@@ -14309,16 +14353,16 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         note();
       };
       document.querySelectorAll('#themeAutoMode [data-am]').forEach(b => b.addEventListener('click', () => {
-        mode = b.dataset.am; holdUntil = 0; try { localStorage.setItem('koi-theme-auto-mode', mode); localStorage.removeItem('koi-theme-auto'); } catch (x) {}
+        mode = b.dataset.am; hold(0); try { localStorage.setItem('koi-theme-auto-mode', mode); localStorage.removeItem('koi-theme-auto'); } catch (x) {}
         sync(); tick(); koiDrift.update();
       }));
       document.querySelectorAll('.sp-themes [data-th]').forEach(b => b.addEventListener('click', () => {
         if (b.dataset.th === currentTheme()) return;
-        if (mode !== 'off') holdUntil = nextChange();
+        if (mode !== 'off') hold(nextChange());
         fadeToTheme(b.dataset.th);
       }));
       new MutationObserver(() => sync()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-      return { get on() { return mode !== 'off'; }, get mode() { return mode; }, manual() { if (mode !== 'off') holdUntil = nextChange(); }, sync, want };
+      return { get on() { return mode !== 'off'; }, get mode() { return mode; }, manual() { if (mode !== 'off') hold(nextChange()); }, sync, want };
     })();
     // Daylight drift: a faint multiply wash over Early Bird that follows the sun where you are, cool → neutral → warm
     window.koiDrift = (function () {
@@ -16160,7 +16204,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       nsEl.querySelectorAll('.ns-row').forEach(r => r.onclick = () => pick(+r.dataset.i));
       pick(0);
       try { if (!localStorage.getItem('koi-notes-seen-day')) localStorage.setItem('koi-notes-seen-day', new Date().toDateString()); } catch (e) {}
-      const close = () => { const el = nsEl; nsEl = null; if (el) el.remove(); };
+      const close = () => { const el = nsEl; nsEl = null; if (el) el.remove(); koiNsDismiss(); };   // Oct 19: seen = the pill goes
       nsEl.querySelector('.ns-x').onclick = close; nsEl.querySelector('.ns-ok').onclick = close;
       nsEl.addEventListener('click', e => { if (e.target === nsEl) close(); });
       nsEl.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const rs = [...nsEl.querySelectorAll('.ns-row')], cur = rs.findIndex(r => r.classList.contains('on')); const n = Math.max(0, Math.min(rs.length - 1, cur + (e.key === 'ArrowDown' ? 1 : -1))); pick(n); rs[n].focus(); } });
@@ -16176,39 +16220,96 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         + '<path class="drop" d="M0 -3.2 C1.6 -0.6 1.9 0.6 1.9 1.4 a1.9 1.9 0 0 1 -3.8 0 C-1.9 0.6 -1.6 -0.6 0 -3.2z"/>'
         + '<g filter="url(#nsInkF)"><circle class="blot" r="4.3"/></g>'
         + [[6.2, -3.4, .9], [-5.6, 3.6, .7], [5, 4.6, .55], [-4.4, -5, .5]].map(([x, y, r]) => `<circle class="speck" r="${r}" style="--to: translate(${x}px, ${y}px)"/>`).join('') + '</svg>';
-      b.innerHTML = `${dark ? '<span class="ns-dot" aria-hidden="true"></span>' : ink}<span class="ns-lab">New stuff!</span><button class="ns-btn" type="button">${mode === 'bring' ? 'Bring it in' : 'See what’s new'}</button>`;
+      b.innerHTML = `${dark ? '<span class="ns-dot" aria-hidden="true"></span>' : ink}<span class="ns-lab">New stuff!</span><button class="ns-btn" type="button">${mode === 'bring' ? 'Bring it in' : 'See what’s new'}</button><button class="ns-close" type="button" aria-label="Dismiss" title="Dismiss">×</button>`;
+      b.querySelector('.ns-close').onclick = () => { if (mode === 'bring') { nsBringHidden = true; const p = document.getElementById('nsPill'); if (p) p.remove(); } else koiNsDismiss(); };
       b.querySelector('.ns-btn').title = mode === 'bring' ? 'Hodo has been updated. Your tasks are saved, so this is safe.' : 'See what changed';
       b.querySelector('.ns-btn').onclick = () => { if (mode === 'bring') location.reload(); else koiNotesOpen(); };
       const anchor = document.getElementById('installBtn') || document.getElementById('guideBtn') || sw; anchor.parentNode.insertBefore(b, anchor);
-      if (dark && !reduceMotion && !still) koiNsMeteor(b.querySelector('.ns-dot'));
+      if (dark && !reduceMotion && !still) { const dot = b.querySelector('.ns-dot'); requestAnimationFrame(() => koiNsMeteor(dot)); }
+      koiNsAlive(b, dark, still ? 300 : 1300);
     }
     // a shooting star: comes in steep from the upper right, speeds up, its tail grows then burns away; a twinkle where it ends
+    // a shooting star: comes in steep from the upper right, speeds up, its tail grows then burns away; a twinkle where it ends.
+    // Oct 19: it homes in on the dot every frame (the pill is still being placed in the header when the star sets off)
     function koiNsMeteor(dot) {
-      const d = dot.getBoundingClientRect(), ex = d.left + d.width / 2, ey = d.top + d.height / 2;
-      const sx = ex + 150, sy = ey - 64, ang = Math.atan2(ey - sy, ex - sx) * 180 / Math.PI;
+      const at = () => { const d = dot.getBoundingClientRect(); return [d.left + d.width / 2, d.top + d.height / 2]; };
+      const OX = 150, OY = -64, ang = Math.atan2(-OY, -OX) * 180 / Math.PI;
       const m = document.createElement('div'); m.className = 'ns-meteor'; m.innerHTML = '<i></i><b></b>'; document.body.appendChild(m);
       const D = 620, ease = 'cubic-bezier(.45,.05,.8,.45)';
-      m.animate([{ transform: `translate(${sx}px, ${sy}px) rotate(${ang}deg)`, opacity: 0 }, { opacity: 1, offset: .12 },
-                 { transform: `translate(${ex}px, ${ey}px) rotate(${ang}deg)`, opacity: 1 }], { duration: D, easing: ease, fill: 'forwards' });
+      const bez = p => { let lo = 0, hi = 1; for (let k = 0; k < 18; k++) { const t = (lo + hi) / 2, x = 3 * t * (1 - t) * (1 - t) * .45 + 3 * t * t * (1 - t) * .8 + t * t * t; if (x < p) lo = t; else hi = t; } const t = (lo + hi) / 2; return 3 * t * (1 - t) * (1 - t) * .05 + 3 * t * t * (1 - t) * .45 + t * t * t; };
       m.querySelector('i').animate([{ transform: 'scaleX(.1)', opacity: .6 }, { transform: 'scaleX(1)', opacity: 1, offset: .6 }, { transform: 'scaleX(.35)', opacity: .2 }], { duration: D, easing: ease, fill: 'forwards' });
       m.querySelector('b').animate([{ transform: 'scale(.6)' }, { transform: 'scale(1.1)', offset: .8 }, { transform: 'scale(.4)', opacity: 0 }], { duration: D, easing: ease, fill: 'forwards' });
-      setTimeout(() => {
+      const t0 = performance.now();
+      const step = now => {
+        const p = Math.min(1, (now - t0) / D), e = bez(p), [ex, ey] = at();
+        m.style.transform = `translate(${ex + OX * (1 - e)}px, ${ey + OY * (1 - e)}px) rotate(${ang}deg)`;
+        m.style.opacity = p < .12 ? p / .12 : 1;
+        if (p < 1) { requestAnimationFrame(step); return; }
         m.remove();
         const t = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); t.setAttribute('class', 'ns-twinkle'); t.setAttribute('viewBox', '-9 -9 18 18');
         t.innerHTML = '<path d="M0 -8 L1.2 -1.2 L8 0 L1.2 1.2 L0 8 L-1.2 1.2 L-8 0 L-1.2 -1.2 Z"/>'; t.style.left = ex + 'px'; t.style.top = ey + 'px';
         document.body.appendChild(t);
         t.animate([{ transform: 'scale(0) rotate(0deg)', opacity: 1 }, { transform: 'scale(1.15) rotate(25deg)', opacity: 1, offset: .35 }, { transform: 'scale(0) rotate(45deg)', opacity: 0 }], { duration: 420, easing: 'ease-out', fill: 'forwards' });
         setTimeout(() => t.remove(), 450);
-      }, D - 10);
+      };
+      requestAnimationFrame(step);
+    }
+    // Oct 19: while the pill is there it keeps a quiet life of its own: sparkles behind "New stuff!" (Night Owl), or an
+    // ink underline drawn by hand under it, right then back left, that stays 5 s, fades and is drawn again (Early Bird)
+    function koiNsAlive(b, dark, delay) {
+      if (reduceMotion) return;
+      const lab = b.querySelector('.ns-lab'); if (!lab) return;
+      const alive = () => b.isConnected && document.getElementById('nsPill') === b;
+      if (dark) {
+        const box = document.createElement('span'); box.className = 'ns-spark'; box.setAttribute('aria-hidden', 'true'); b.prepend(box);
+        const spark = () => {
+          if (!alive()) return;
+          if (!document.hidden) {
+            const w = lab.offsetLeft + lab.offsetWidth + 4, d = document.createElement('i');
+            d.style.left = (4 + Math.random() * (w - 8)) + 'px'; d.style.top = (5 + Math.random() * 22) + 'px';
+            box.appendChild(d);
+            d.animate([{ opacity: 0, transform: 'scale(.4)' }, { opacity: .95, transform: 'scale(1)', offset: .4 }, { opacity: 0, transform: 'scale(.6)' }], { duration: 900 + Math.random() * 500, easing: 'ease-out' }).onfinish = () => d.remove();
+          }
+          setTimeout(spark, 170 + Math.random() * 300);
+        };
+        setTimeout(spark, delay);
+        return;
+      }
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'ns-uline'); svg.setAttribute('aria-hidden', 'true');
+      b.appendChild(svg);   // beside the label, not in it: the label's write-in clip would hide anything below it
+      const r = (a, b2) => a + Math.random() * (b2 - a);
+      const draw = () => {
+        if (!alive()) return;
+        if (document.hidden) { setTimeout(draw, 2000); return; }
+        const W = lab.offsetWidth + 6, H = 10; svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.style.left = (lab.offsetLeft - 3) + 'px'; svg.style.top = (lab.offsetTop + lab.offsetHeight - 4) + 'px'; svg.style.width = W + 'px';
+        // right: a slightly rising, wavy stroke; then back left, a little lower and shorter, like a quick second pass
+        const y1 = r(4.2, 5.2), y2 = r(3.2, 4.2), x2 = W - r(1, 4), xb = r(6, 16), yb = r(6.6, 7.8);
+        const d = `M ${r(0, 3).toFixed(1)} ${y1.toFixed(1)} C ${(W * .3).toFixed(1)} ${(y1 + r(-1.4, .4)).toFixed(1)}, ${(W * .65).toFixed(1)} ${(y2 + r(-.4, 1.2)).toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}`
+                + ` C ${(W * .7).toFixed(1)} ${(y2 + r(1.6, 2.6)).toFixed(1)}, ${(W * .35).toFixed(1)} ${(yb + r(-.6, .8)).toFixed(1)}, ${xb.toFixed(1)} ${yb.toFixed(1)}`;
+        svg.innerHTML = `<path d="${d}"/>`;
+        const path = svg.firstChild, L = path.getTotalLength();
+        path.style.strokeDasharray = L; path.style.strokeDashoffset = L; svg.style.opacity = 1;
+        path.animate([{ strokeDashoffset: L }, { strokeDashoffset: L * .44, offset: .55 }, { strokeDashoffset: 0 }], { duration: 1000, easing: 'cubic-bezier(.4,.1,.35,1)', fill: 'forwards' });
+        setTimeout(() => { if (!alive()) return; svg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'ease-in', fill: 'forwards' }); }, 1000 + 5000);
+        setTimeout(draw, 1000 + 5000 + 600 + 900);
+      };
+      setTimeout(draw, delay);
     }
 
     // when the pill shows: after an update until the list has been opened once (then until that day ends), or when a
     // newer Hodo is on the website. Settings → Feedback can switch the notices off.
     const nsOff = () => { try { return localStorage.getItem('koi-notes-off') === '1'; } catch (e) { return false; } };
-    let nsNewer = null, nsAnimated = false;
+    let nsNewer = null, nsAnimated = false, nsBringHidden = false;
+    // Oct 19: dismissing (the pill's ×, or closing the list after opening it) removes the pill until the next update;
+    // the list stays reachable from the Guide's "What's new" link
+    function koiNsDismiss() {
+      try { if (localStorage.getItem('koi-notes-pending')) { localStorage.removeItem('koi-notes-pending'); localStorage.removeItem('koi-notes-seen-day'); localStorage.removeItem('koi-notes-from'); } } catch (e) {}
+      const b = document.getElementById('nsPill'); if (b && !(nsNewer && !nsBringHidden && b.querySelector('.ns-btn[data-m="bring"]'))) b.remove();
+    }
     function koiNsPaint() {
       const drop = () => { const b = document.getElementById('nsPill'); if (b) b.remove(); };
-      if (nsNewer) { if (!document.querySelector('#nsPill .ns-btn[data-m="bring"]')) { koiNewStuffPill('bring', false); nsAnimated = true; document.querySelector('#nsPill .ns-btn').dataset.m = 'bring'; } return; }
+      if (nsNewer) { if (nsBringHidden) return; if (!document.querySelector('#nsPill .ns-btn[data-m="bring"]')) { koiNewStuffPill('bring', false); nsAnimated = true; document.querySelector('#nsPill .ns-btn').dataset.m = 'bring'; } return; }
       if (nsOff()) { drop(); return; }
       let pend = null, day = null; try { pend = localStorage.getItem('koi-notes-pending'); day = localStorage.getItem('koi-notes-seen-day'); } catch (e) {}
       if (pend !== KOI_VERSION || !KOI_NOTES[KOI_VERSION]) { drop(); return; }
@@ -16345,14 +16446,13 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     { const i = MU.findIndex(t => t.id === 'rebel'); if (i >= 0) MU.splice(i, 1); }
     if (mu.cur === 'rebel') { mu.cur = 'velvet'; muLS.set('koi-mu-cur', 'velvet'); }
     { const g = GUIDE_ITEMS.find(x => x.id === 'music'); if (g) g.d = 'Two moods to work to: Stoic Winner and Quiet Grinder.'; }
-    // Oct 17: New stuff! plays its animation each time Hodo opens and again every 5 minutes while the pill is there
+    // New stuff! plays its entrance each time Hodo opens (Oct 19: no more 5-minute replays; the pill has its own quiet life instead)
     function koiNsRedraw(still) {
       const b = document.getElementById('nsPill'); if (!b) return;
       const bring = b.querySelector('.ns-btn').dataset.m === 'bring';
       koiNewStuffPill(bring ? 'bring' : 'see', still);
       if (bring) document.querySelector('#nsPill .ns-btn').dataset.m = 'bring';
     }
-    setInterval(() => { const b = document.getElementById('nsPill'); if (b && !document.hidden && !b.matches(':hover') && !nsEl) koiNsRedraw(false); }, 5 * 60 * 1000);
     // switching theme redraws it in that theme's style (ink drop / shooting star) without playing it
     new MutationObserver(() => koiNsRedraw(true)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     // ===== Progress button, take 2 (Oct 17): the button's outline is the status track =====
@@ -16389,13 +16489,113 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     (function koiTitleBar() {
       const m = document.getElementById('koiThemeColor'); if (!m) return;
       let last = '';
-      const paint = () => { const c = getComputedStyle(document.body).backgroundColor; if (c && c !== last && !/rgba\(0, 0, 0, 0\)|transparent/.test(c)) { last = c; m.setAttribute('content', c); } };
+      let tw = null;   // Oct 19: during the 7 s sunrise the bar brightens with the daylight instead of jumping to cream
+      const rgbOf = c => (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+      const paint = () => { if (tw) return; const c = getComputedStyle(document.body).backgroundColor; if (c && c !== last && !/rgba\(0, 0, 0, 0\)|transparent/.test(c)) { last = c; m.setAttribute('content', c); } };
+      // how much daylight has come up at each point of the sunrise (follows its middle band: nothing for the first 22%)
+      const DAWN = [[0, 0], [.22, 0], [.36, .03], [.5, .14], [.64, .36], [.78, .64], [.9, .87], [1, 1]];
+      const dawn = p => { for (let i = 1; i < DAWN.length; i++) if (p <= DAWN[i][0]) { const [x0, y0] = DAWN[i - 1], [x1, y1] = DAWN[i]; return y0 + (y1 - y0) * (p - x0) / (x1 - x0); } return 1; };
+      const sunrise = () => {
+        const root = document.documentElement;
+        if (tw || !root.classList.contains('vt-sunrise') || root.getAttribute('data-theme') === 'dark' || !last) return;
+        const from = rgbOf(last), to = rgbOf(getComputedStyle(document.body).backgroundColor), t0 = performance.now(), D = 7000;
+        tw = setInterval(() => {
+          const p = Math.min(1, (performance.now() - t0) / D), k = dawn(p);
+          if (!root.classList.contains('vt-sunrise') || p >= 1) { clearInterval(tw); tw = null; last = ''; paint(); return; }
+          m.setAttribute('content', `rgb(${to.map((v, i) => Math.round(from[i] + (v - from[i]) * k)).join(', ')})`);
+        }, 80);
+      };
       paint();
-      const mo = new MutationObserver(() => { requestAnimationFrame(paint); setTimeout(paint, 450); });   // again after any colour fade
+      const mo = new MutationObserver(() => { sunrise(); requestAnimationFrame(paint); setTimeout(paint, 450); });   // again after any colour fade
       mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
       mo.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
       setTimeout(paint, 1500);
     })();
+    // ===== Night Owl: lights off, then the colours flicker on (Oct 19) =====
+    // 2 s in total: the screen turns dark at once with every coloured piece unlit (black) for 0.3 s; then each coloured
+    // piece flickers on in its circuit, in uneven on / off / dim steps, and every piece is lit and steady by 2 s.
+    const KOI_NEON = { dark: 300, total: 2000 };
+    function koiNeonDark() {
+      const root = document.documentElement;
+      root.style.setProperty('--fade-dur', '0ms'); root.classList.add('theme-fading', 'neon-run');
+      applyTheme('dark');
+      const PROPS = ['color', 'background-color', 'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color', 'fill', 'stroke', 'outline-color', 'text-decoration-color'];
+      const rgb = v => { let m = /rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/.exec(v || ''); if (m) return [+m[1], +m[2], +m[3], m[4] == null ? 1 : +m[4]];
+        m = /color\(srgb\s+([\d.e-]+)\s+([\d.e-]+)\s+([\d.e-]+)(?:\s*\/\s*([\d.]+))?\)/.exec(v || ''); return m ? [m[1] * 255, m[2] * 255, m[3] * 255, m[4] == null ? 1 : +m[4]] : null; };
+      const vividIn = v => { const re = /(rgba?\([^)]*\)|color\(srgb[^)]*\))/g; let x; while ((x = re.exec(v || ''))) if (vivid(x[1])) return true; return false; };
+      const vivid = v => { const c = rgb(v); if (!c || c[3] < .2) return null; const mx = Math.max(c[0], c[1], c[2]), mn = Math.min(c[0], c[1], c[2]); return mx - mn >= 40 && mx > 70 ? c : null; };
+      const EMOJI = /\p{Extended_Pictographic}/u;
+      const items = [];
+      const vw = innerWidth, vh = innerHeight;
+      document.querySelectorAll('body *').forEach(el => {
+        if (el.closest('script,style')) return;
+        const r = el.getBoundingClientRect(); if (!r.width || !r.height || r.bottom < 0 || r.top > vh || r.right < 0 || r.left > vw) return;
+        const cs = getComputedStyle(el); if (cs.visibility === 'hidden' || cs.display === 'none') return;
+        const hits = [];
+        PROPS.forEach(p => {
+          if (p.startsWith('border-') && parseFloat(cs.getPropertyValue(p.replace('-color', '-width'))) === 0) return;
+          const c = vivid(cs.getPropertyValue(p)); if (c) hits.push({ p, c, was: el.style.getPropertyValue(p), pri: el.style.getPropertyPriority(p) });
+        });
+        const emoji = [...el.childNodes].some(n => n.nodeType === 3 && EMOJI.test(n.textContent));
+        const grad = cs.backgroundImage !== 'none' && vividIn(cs.backgroundImage);   // coloured gradients (progress bars)
+        const glow = cs.boxShadow !== 'none' && vividIn(cs.boxShadow);               // coloured glows and inset edges
+        if (hits.length || emoji || grad || glow) items.push({ el, hits, emoji: emoji || grad, glow, wasF: el.style.filter, wasS: el.style.boxShadow, wasI: el.style.backgroundImage });
+      });
+      const set = (it, s) => {   // s: 'off' | 'dim' | 'on'
+        it.hits.forEach(h => {
+          if (s === 'on') { if (h.was) it.el.style.setProperty(h.p, h.was, h.pri); else it.el.style.removeProperty(h.p); return; }
+          const k = s === 'off' ? 0 : .38;
+          it.el.style.setProperty(h.p, s === 'off' ? '#000' : `rgba(${h.c[0] * k | 0}, ${h.c[1] * k | 0}, ${h.c[2] * k | 0}, ${h.c[3]})`, 'important');
+        });
+        if (it.emoji) {   // emoji and coloured gradients: filters don't reach inline text, so emoji fade by opacity
+          const inl = getComputedStyle(it.el).display === 'inline';
+          if (s === 'on') { it.el.style.filter = it.wasF; it.el.style.removeProperty('opacity'); }
+          else if (inl) it.el.style.setProperty('opacity', s === 'off' ? '0' : '.35', 'important');
+          else it.el.style.setProperty('filter', s === 'off' ? 'brightness(0)' : 'brightness(.38)', 'important');
+        }
+        if (it.glow) { if (s === 'on') it.el.style.boxShadow = it.wasS; else it.el.style.setProperty('box-shadow', 'none', 'important'); }
+      };
+      items.forEach(it => set(it, 'off'));
+      // lights come on in circuits, like separate signs in a street: the header, the page bar, each column, the rest.
+      // A circuit blinks as one (a few slow, uneven flashes, some only half-lit), then catches and stays on.
+      const PATTERNS = [
+        ['on', 70, 'off', 180, 'on', 50, 'off', 260, 'on'],
+        ['dim', 90, 'off', 140, 'on', 60, 'off', 220, 'dim', 80, 'off', 110, 'on'],
+        ['on', 40, 'off', 300, 'on', 120, 'off', 160, 'on'],
+        ['on', 80, 'off', 120, 'dim', 60, 'off', 240, 'on'],
+        ['dim', 60, 'off', 200, 'on', 90, 'off', 150, 'on']
+      ];
+      const circuit = el => { const h = el.closest('header'); if (h) return 'header'; const c = el.closest('.column, .list-section, .cal-day, .ns-pill'); if (c) return c; const b = el.closest('.page-bar, .toolbar, .view-bar'); return b || 'rest'; };
+      const groups = new Map();
+      items.forEach(it => { const k = circuit(it.el); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(it); });
+      const keys = [...groups.keys()].sort(() => Math.random() - .5);
+      const timers = [];
+      const pan = el => { const r = el.getBoundingClientRect(); return Math.max(-.4, Math.min(.4, ((r.left + r.width / 2) / innerWidth * 2 - 1) * .4)); };
+      try { koiSound.play('lightSwitch'); } catch (e) {}
+      keys.forEach((k, gi) => {
+        const pat = PATTERNS[gi % PATTERNS.length];
+        const len = pat.filter(x => typeof x === 'number').reduce((a, b) => a + b, 0);
+        const latest = KOI_NEON.total - len - 60;
+        const start = Math.min(latest, KOI_NEON.dark + 20 + (gi / Math.max(1, keys.length - 1)) * (latest - KOI_NEON.dark - 20) * .75 + Math.random() * 90);
+        groups.get(k).forEach(it => {
+          let t = start + Math.random() * 35;   // a circuit lights together, give or take a hair
+          const lead = it === groups.get(k)[0];
+          for (let i = 0; i < pat.length; i += 2) { const st = pat[i], at = t; timers.push(setTimeout(() => { set(it, st); if (lead && st !== 'off') { try { koiSound.play('lampTick', 0, { g: st === 'on' ? 0.05 : 0.026, pan: pan(it.el) }); } catch (e) {} } }, at)); if (i + 1 < pat.length) t += pat[i + 1]; }
+        });
+      });
+      const finish = () => { timers.forEach(clearTimeout); items.forEach(it => set(it, 'on')); root.classList.remove('theme-fading', 'neon-run'); if (window.__koiNeon === run) window.__koiNeon = null; };
+      const run = { finish }; window.__koiNeon = run;
+      timers.push(setTimeout(finish, KOI_NEON.total));
+    }
+    { const _ft = fadeToTheme; fadeToTheme = function (name) {
+        const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (window.__koiNeon) window.__koiNeon.finish();
+        if (name === 'dark' && currentTheme() === 'default' && !calm) { koiNeonDark(); return; }
+        return _ft.apply(this, arguments);
+      }; }
+    // while the lights come on, T (or the button) finishes it at once instead of switching back, like the sunrise
+    { const _tt = toggleTheme; toggleTheme = function () { if (window.__koiNeon) { window.__koiNeon.finish(); return; } return _tt.apply(this, arguments); }; }
+    document.getElementById('themeToggle').addEventListener('click', e => { if (window.__koiNeon) { window.__koiNeon.finish(); e.stopImmediatePropagation(); } }, true);
     applyWaitRail();
   </script>
 </body>
