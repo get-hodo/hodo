@@ -4773,6 +4773,17 @@
     .ns-lab { position: relative; }
     .ns-uline { position: absolute; height: 10px; overflow: visible; pointer-events: none; z-index: 1; }
     .ns-uline path { fill: none; stroke: var(--brand, var(--accent)); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+    /* Oct 19: the pill shows calmly first; the entrance (class "go") comes 3 s later */
+    .ns-pill.eb .ns-lab, .ns-pill.no .ns-lab, .ns-pill .ns-btn { opacity: 1 !important; clip-path: none !important; animation: none !important; }
+    .ns-pill .ns-ink .drop { display: none; }
+    .ns-pill.eb:not(.go):not(.still) .ns-ink .blot { animation: none; transform: scale(0); }
+    .ns-pill.eb:not(.go):not(.still) .ns-ink .speck { animation: none; opacity: 0; }
+    .ns-pill.eb.go:not(.still) .ns-ink .blot { animation: nsBlot .55s 0s cubic-bezier(.2,.9,.3,1.15) forwards; }
+    .ns-pill.eb.go:not(.still) .ns-ink .speck { animation: nsSpeck .4s .02s cubic-bezier(.2,.8,.3,1) forwards; }
+    .ns-pill.no:not(.go):not(.still) .ns-dot { animation: none; transform: scale(0); }
+    .ns-pill.no.go:not(.still) .ns-dot { animation: nsGlow .5s 0s ease-out forwards; }
+    .ns-fall { position: fixed; top: 0; width: 12px; height: 16px; z-index: 9500; pointer-events: none; overflow: visible; }
+    .ns-fall path { fill: var(--brand, var(--accent)); }
   </style>
 </head>
 <body>
@@ -16225,13 +16236,18 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       b.querySelector('.ns-btn').title = mode === 'bring' ? 'Hodo has been updated. Your tasks are saved, so this is safe.' : 'See what changed';
       b.querySelector('.ns-btn').onclick = () => { if (mode === 'bring') location.reload(); else koiNotesOpen(); };
       const anchor = document.getElementById('installBtn') || document.getElementById('guideBtn') || sw; anchor.parentNode.insertBefore(b, anchor);
-      if (dark && !reduceMotion && !still) { const dot = b.querySelector('.ns-dot'); requestAnimationFrame(() => koiNsMeteor(dot)); }
-      koiNsAlive(b, dark, still ? 300 : 1300);
+      // Oct 19: the pill (words, button, ×) shows first and calmly; 3 s later the entrance plays: Night Owl's shooting star
+      // lands and lights the dot; Early Bird's ink drop falls from the top edge of the window and lands as the blot
+      if (still || reduceMotion) { b.classList.add('go'); koiNsAlive(b, dark, 300); return; }
+      setTimeout(() => {
+        if (!b.isConnected) return;
+        const land = () => { if (!b.isConnected) return; b.classList.add('go'); koiNsAlive(b, dark, dark ? 700 : 900); };
+        if (dark) koiNsMeteor(b.querySelector('.ns-dot'), land); else koiNsInkDrop(b.querySelector('.ns-ink'), land);
+      }, 3350);
     }
-    // a shooting star: comes in steep from the upper right, speeds up, its tail grows then burns away; a twinkle where it ends
     // a shooting star: comes in steep from the upper right, speeds up, its tail grows then burns away; a twinkle where it ends.
     // Oct 19: it homes in on the dot every frame (the pill is still being placed in the header when the star sets off)
-    function koiNsMeteor(dot) {
+    function koiNsMeteor(dot, landed) {
       const at = () => { const d = dot.getBoundingClientRect(); return [d.left + d.width / 2, d.top + d.height / 2]; };
       const OX = 150, OY = -64, ang = Math.atan2(-OY, -OX) * 180 / Math.PI;
       const m = document.createElement('div'); m.className = 'ns-meteor'; m.innerHTML = '<i></i><b></b>'; document.body.appendChild(m);
@@ -16245,7 +16261,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         m.style.transform = `translate(${ex + OX * (1 - e)}px, ${ey + OY * (1 - e)}px) rotate(${ang}deg)`;
         m.style.opacity = p < .12 ? p / .12 : 1;
         if (p < 1) { requestAnimationFrame(step); return; }
-        m.remove();
+        m.remove(); if (landed) landed();
         const t = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); t.setAttribute('class', 'ns-twinkle'); t.setAttribute('viewBox', '-9 -9 18 18');
         t.innerHTML = '<path d="M0 -8 L1.2 -1.2 L8 0 L1.2 1.2 L0 8 L-1.2 1.2 L-8 0 L-1.2 -1.2 Z"/>'; t.style.left = ex + 'px'; t.style.top = ey + 'px';
         document.body.appendChild(t);
@@ -16254,8 +16270,19 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       };
       requestAnimationFrame(step);
     }
+    // Oct 19: the ink drop falls from the top edge of the window onto the pill, speeding up, then lands as the blot
+    function koiNsInkDrop(ink, landed) {
+      if (!ink) { if (landed) landed(); return; }
+      const r = ink.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+      const d = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); d.setAttribute('class', 'ns-fall'); d.setAttribute('viewBox', '0 0 24 32');
+      d.innerHTML = '<path d="M12 1 C17 10 20 15 20 20 a8 8 0 0 1 -16 0 C4 15 7 10 12 1Z"/><ellipse cx="9.4" cy="18" rx="2" ry="3.2" fill="#fff" opacity=".5"/>';
+      d.style.left = (x - 6) + 'px'; document.body.appendChild(d);
+      const H = y - 14, D = Math.max(320, Math.min(620, 220 + H * 3.2));
+      d.animate([{ transform: 'translateY(-20px) scaleY(.92)' }, { transform: `translateY(${H - 6}px) scaleY(1.12)`, offset: .92 }, { transform: `translateY(${H}px) scale(1.25, .6)`, opacity: .9 }],
+        { duration: D, easing: 'cubic-bezier(.55,0,1,.55)', fill: 'forwards' }).onfinish = () => { d.remove(); if (landed) landed(); };
+    }
     // Oct 19: while the pill is there it keeps a quiet life of its own: sparkles behind "New stuff!" (Night Owl), or an
-    // ink underline drawn by hand under it, right then back left, that stays 5 s, fades and is drawn again (Early Bird)
+    // ink underline drawn by hand under it, right then back left, that stays 3 s, fades and is drawn again (Early Bird)
     function koiNsAlive(b, dark, delay) {
       if (reduceMotion) return;
       const lab = b.querySelector('.ns-lab'); if (!lab) return;
@@ -16288,11 +16315,12 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         const d = `M ${r(0, 3).toFixed(1)} ${y1.toFixed(1)} C ${(W * .3).toFixed(1)} ${(y1 + r(-1.4, .4)).toFixed(1)}, ${(W * .65).toFixed(1)} ${(y2 + r(-.4, 1.2)).toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}`
                 + ` C ${(W * .7).toFixed(1)} ${(y2 + r(1.6, 2.6)).toFixed(1)}, ${(W * .35).toFixed(1)} ${(yb + r(-.6, .8)).toFixed(1)}, ${xb.toFixed(1)} ${yb.toFixed(1)}`;
         svg.innerHTML = `<path d="${d}"/>`;
+        svg.getAnimations().forEach(a => a.cancel());   // the last fade-out must not keep it hidden
         const path = svg.firstChild, L = path.getTotalLength();
         path.style.strokeDasharray = L; path.style.strokeDashoffset = L; svg.style.opacity = 1;
         path.animate([{ strokeDashoffset: L }, { strokeDashoffset: L * .44, offset: .55 }, { strokeDashoffset: 0 }], { duration: 1000, easing: 'cubic-bezier(.4,.1,.35,1)', fill: 'forwards' });
-        setTimeout(() => { if (!alive()) return; svg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'ease-in', fill: 'forwards' }); }, 1000 + 5000);
-        setTimeout(draw, 1000 + 5000 + 600 + 900);
+        setTimeout(() => { if (!alive()) return; svg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, easing: 'ease-in-out', fill: 'forwards' }); }, 1000 + 3000);
+        setTimeout(draw, 1000 + 3000 + 700 + 900);
       };
       setTimeout(draw, delay);
     }
