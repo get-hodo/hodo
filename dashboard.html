@@ -86,7 +86,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#faf9f5">
+  <meta name="theme-color" content="#faf9f5" id="koiThemeColor">
   <title>Hodo</title>
   <link rel="icon" id="favicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22246%20250%20760%20760%22%3E%3Cg%20fill%3D%22%23c25a33%22%3E%3Crect%20x%3D%22323%22%20y%3D%22497%22%20width%3D%22170%22%20height%3D%22219%22%20rx%3D%2285%22%2F%3E%3Crect%20x%3D%22541%22%20y%3D%22410%22%20width%3D%22171%22%20height%3D%22323%22%20rx%3D%2285.5%22%2F%3E%3Crect%20x%3D%22764%22%20y%3D%22310%22%20width%3D%22173%22%20height%3D%22402%22%20rx%3D%2286.5%22%2F%3E%3Cpath%20d%3D%22M300%2C716%20Q627%2C914%20950%2C716%20A44%2C44%200%200%201%20988%2C782%20C880%2C1006%20370%2C1006%20266%2C782%20A44%2C44%200%200%201%20300%2C716%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
   <!-- Oct 19: Inter ships inside Hodo (SIL Open Font License, rsms/inter) so opening never waits on Google's servers -->
@@ -16385,6 +16385,17 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         requestAnimationFrame(step);
       }; }
     setTimeout(() => { try { progPieCopy(); } catch (e) {} }, 0);
+    // Oct 19: the installed app's title bar follows Hodo's theme (Chrome paints it in the page's theme colour)
+    (function koiTitleBar() {
+      const m = document.getElementById('koiThemeColor'); if (!m) return;
+      let last = '';
+      const paint = () => { const c = getComputedStyle(document.body).backgroundColor; if (c && c !== last && !/rgba\(0, 0, 0, 0\)|transparent/.test(c)) { last = c; m.setAttribute('content', c); } };
+      paint();
+      const mo = new MutationObserver(() => { requestAnimationFrame(paint); setTimeout(paint, 450); });   // again after any colour fade
+      mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
+      mo.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
+      setTimeout(paint, 1500);
+    })();
     applyWaitRail();
   </script>
 </body>
