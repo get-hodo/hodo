@@ -26,7 +26,7 @@
   - Settings sheet                             "SETTINGS SHEET (Oct 2)"
   - Bulk actions                               "Bulk actions: selection, bar, box-select"
   - Safety net, style audit                    "Task file safety net", "Style audit fixes"
-  - Onboarding                                 "Onboarding (Oct 10): Welcome card"
+  - First-run welcome                          "First-run welcome (Oct 10): Welcome card"
   - Guide (? drawer)                           "Guide (Oct 15): the ? drawer"
 
   SCRIPT (script block)                        search for
@@ -65,8 +65,9 @@
   - Progress button outline = status track "Progress button, take 2" (koiProgEdge)
   - Night Owl switch = lights off, then colours flicker on "Night Owl: lights off" (koiNeonDark)
   - List: status first, Done celebrates in place, right-click menu "List (Oct 20)" (koiListDone, lvCtx)
+  - Copy tasks for Docs / Excel rows / Excel columns "Copy out (Oct 20)" (koiCopyOpen, koiCopyDo, cpDocs, cpExcel)
   - Waste Yard                                 "// ===== Waste yard (Oct 9)"
-  - Onboarding (PAUSED Oct 17, see "Welcome paused") "// ===== Onboarding (Oct 10)" (koiWelcomeShow, Getting started: GS_ITEMS)
+  - First-run welcome (PAUSED Oct 17, see "Welcome paused") "// ===== First-run welcome (Oct 10)" (koiWelcomeShow, Getting started: GS_ITEMS)
   - Theme switch toast                         "vtHintShow"
   - Rule fixes (RULES.md C-xx decisions)       "Rule fixes, group 1", "Rule fixes, group 2"
   - Column settings (Done / Waiting)           "Column settings (Oct 15" (KOI_COLNOTE_RE, isDoneSection/isWaitSection overrides, koiPickDone, koiColPopOpen) (koiPreDel, koiColNameProblem, koiDescribeDropped, guard input block, koiNearestYear, koiDateRatchet, koiStepRemove)
@@ -4293,7 +4294,7 @@
     .task-card.is-compact .qa-a[data-qa="view"] .v-co { display: none; }
     .task-card.view-set .qa-a[data-qa="view"] { color: var(--brand); }
     #board .task-card .qa-a[data-qa="more"] { display: none; }
-    #board .wait-rail .task-card .qa-a:is([data-qa="view"], [data-qa="dup"], [data-qa="delete"]) { display: none; }
+    #board .wait-rail .task-card .qa-a:is([data-qa="view"], [data-qa="copy"], [data-qa="dup"], [data-qa="delete"]) { display: none; }
     #board .wait-rail .task-card .qa-a[data-qa="more"] { display: inline-flex; }
     .qa-menu { position: fixed; z-index: 8500; display: flex; flex-direction: column; min-width: 130px; padding: 4px; border-radius: 10px;
       background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(20,20,19,.14); }
@@ -4464,7 +4465,7 @@
 .fx-toast.vt-hint kbd { font: inherit; font-weight: 700; font-size: .92em; padding: 0 5px; margin: 0 1px; border-radius: 5px; border: 1px solid currentColor; opacity: .9; }
 ::view-transition-group(vthint) { animation-duration: .35s; }
 
-/* ===== Onboarding (Oct 10): Welcome card + Getting started ===== */
+/* ===== First-run welcome (Oct 10): Welcome card + Getting started ===== */
 .pp.wc { width: min(540px, calc(100vw - 32px)); }
 .wc-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--border-light); }
 .wc-row:first-of-type { border-top: 0; }
@@ -4806,6 +4807,26 @@
     [data-theme="dark"] .lv-peel .lp-flap { background: color-mix(in srgb, var(--bg-card) 90%, #fff); box-shadow: -5px 3px 12px rgba(0,0,0,.45); }
     [data-theme="dark"] .lv-peel .lp-flap::after { background: linear-gradient(to left, rgba(0,0,0,.4) 0, rgba(255,255,255,.16) 7px, rgba(255,255,255,.04) 18px, rgba(255,255,255,0) 34px, rgba(0,0,0,0) 70%, rgba(0,0,0,.18) 100%); }
     .lv-peel .lp-stuck { box-shadow: none !important; }
+    .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
+    .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
+    .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
+    .cp-pop button:hover, .cp-pop button:focus-visible { background: var(--bg-secondary); }
+    .cp-pop svg, .lv-ctx .cp-chev { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .cp-pop hr { border: 0; border-top: 1px solid var(--border-light); margin: 3px 2px; }
+    .cp-sw { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; color: var(--text-secondary); user-select: none; }
+    .cp-sw:hover { background: var(--bg-secondary); }
+    .cp-sw input { position: absolute; opacity: 0; pointer-events: none; }
+    .cp-sw i { width: 24px; height: 14px; border-radius: 8px; background: var(--border); position: relative; flex: none; transition: background .15s; }
+    .cp-sw i::after { content: ''; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; border-radius: 50%; background: var(--bg-card); box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .15s; }
+    .cp-sw input:checked + i { background: var(--brand); }
+    .cp-sw input:checked + i::after { transform: translateX(10px); }
+    .cp-pop kbd { margin-left: auto; padding-left: 14px; font: 600 10.5px/1 inherit; font-family: inherit; color: var(--text-muted); }
+    .cp-pop kbd::before { content: ''; }
+    .cp-pop button kbd, .cp-sw kbd { min-width: 16px; height: 16px; padding: 0 4px; margin-left: auto; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-secondary); box-sizing: border-box; }
+    .cp-pop button span, .cp-sw span { margin-right: 12px; }
+    .lv-ctx .cp-chev { margin-left: auto; width: 12px; height: 12px; opacity: .5; }
+    .lv-ctx button.cp-open { background: var(--bg-secondary); }
+    .qa-a.cp-open { color: var(--brand); }
     .lv-ctx { position: fixed; z-index: 2600; min-width: 180px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 13px; animation: nsFade .12s ease-out both; }
     .lv-ctx .cx-l { display: none; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 6px 8px 4px; }
     .lv-ctx button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 4px 8px; font-size: 12.5px; border-radius: 7px; cursor: pointer; }   /* compact: short mouse travel (Oct 20) */
@@ -7144,7 +7165,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '1.5';
+    const KOI_VERSION = '1.6';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -14612,6 +14633,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         view: '<svg class="v-ex" viewBox="0 0 16 16"><path d="M5 5.5 8 2.5l3 3M5 10.5l3 3 3-3"/><path d="M3 8h10" opacity=".45"/></svg><svg class="v-co" viewBox="0 0 16 16"><path d="M5 3.5 8 6.5l3-3M5 12.5l3-3 3 3"/><path d="M3 8h10" opacity=".45"/></svg>',
         dup: '<svg viewBox="0 0 16 16"><rect x="5.3" y="5.3" width="8.2" height="8.2" rx="1.6"/><path d="M10.7 5.3V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5.2A1.5 1.5 0 0 0 4 10.7h1.3"/></svg>',
         delete: '<svg viewBox="0 0 16 16"><path d="M2.8 4.4h10.4M6.3 4.4V3a.8.8 0 0 1 .8-.8h1.8a.8.8 0 0 1 .8.8v1.4M4.2 4.4l.6 8.4a1.2 1.2 0 0 0 1.2 1.1h4a1.2 1.2 0 0 0 1.2-1.1l.6-8.4M6.7 7v4.2M9.3 7v4.2"/></svg>',
+        copy: '<svg viewBox="0 0 16 16"><rect x="3.4" y="2.8" width="9.2" height="11.4" rx="1.6"/><path d="M6.2 2.8v-.3c0-.4.3-.7.7-.7h2.2c.4 0 .7.3.7.7v.3M5.9 7.2h4.2M5.9 9.6h4.2M5.9 12h2.6"/></svg>',
         more: '<svg viewBox="0 0 16 16"><circle class="f" cx="3.6" cy="8" r="1.1"/><circle class="f" cx="8" cy="8" r="1.1"/><circle class="f" cx="12.4" cy="8" r="1.1"/></svg>'
       };
       const kindOf = id => isWaitSection(id) ? 'wait' : (statusKey(id) || 'other');
@@ -14621,7 +14643,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         const f = findTaskById(task.id); const here = f ? f.sectionId : task.section;
         const st = sections.map(s => `<button type="button" class="qa-s${s.id === here ? ' on' : ''}" data-st="${s.id}" style="--c:${colorOf(s.id)}" title="${s.id === here ? nice(s.name) + ' (now)' : 'Move to ' + escapeHtml(nice(s.name))}" aria-label="${escapeHtml(nice(s.name))}">${ICON[kindOf(s.id)]}</button>`).join('');
         // all actions sit in the strip; only the narrow Waiting On rail folds Card view, Duplicate and Delete under ⋯
-        const act = [['focus', 'Focus on this'], ['sink', 'Park it: important, but not for now'], ['details', 'Open details'], ['view', 'Expand or collapse this card'], ['dup', 'Duplicate (Ctrl+D)'], ['delete', 'Delete task']]
+        const act = [['focus', 'Focus on this'], ['sink', 'Park it: important, but not for now'], ['details', 'Open details'], ['view', 'Expand or collapse this card'], ['copy', 'Copy out: for Docs or Excel'], ['dup', 'Duplicate (Ctrl+D)'], ['delete', 'Delete task']]
           .map(([a, t]) => `<button type="button" class="qa-a" data-qa="${a}" title="${t}" aria-label="${t}">${ICON[a]}</button>`).join('');
         return `<div class="qa-st">${st}</div><div class="qa-act">${act}<button type="button" class="qa-a" data-qa="more" title="More" aria-label="More">${ICON.more}</button></div>`;
       }
@@ -14638,7 +14660,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       function closeMenu() { menu.hidden = true; menuCard = null; document.querySelectorAll('.qa-a.open').forEach(b => b.classList.remove('open')); }
       function openMenu(card, btn) {
         const has = a => !!card.querySelector(`.card-tools [data-action="${a}"]`);
-        menu.innerHTML = (has('view') ? '<button type="button" data-qa="view">Card view</button>' : '') + (has('dup') ? '<button type="button" data-qa="dup">Duplicate</button>' : '') + (has('delete') ? '<button type="button" data-qa="delete" class="qa-del">Delete</button>' : '');
+        menu.innerHTML = (has('view') ? '<button type="button" data-qa="view">Card view</button>' : '') + '<button type="button" data-qa="copy">Copy out…</button>' + (has('dup') ? '<button type="button" data-qa="dup">Duplicate</button>' : '') + (has('delete') ? '<button type="button" data-qa="delete" class="qa-del">Delete</button>' : '');
         menu.hidden = false; menuCard = card; btn.classList.add('open');
         const r = btn.getBoundingClientRect(), w = menu.offsetWidth, h = menu.offsetHeight;
         menu.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
@@ -14646,6 +14668,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       }
       menu.addEventListener('click', e => {
         const b = e.target.closest('button'); if (!b || !menuCard) return;
+        if (b.dataset.qa === 'copy') { const c = menuCard, more = c.querySelector('[data-qa="more"]'); closeMenu(); if (window.koiCopyOpen) koiCopyOpen(more || c, koiCopyIds(c.dataset.id)); return; }   // Oct 20
         const real = menuCard.querySelector(`.card-tools [data-action="${b.dataset.qa}"]`); closeMenu(); if (real) real.click();
       });
       document.addEventListener('mousedown', e => { if (!menu.hidden && !e.target.closest('.qa-menu, [data-qa="more"]')) closeMenu(); }, true);
@@ -14803,7 +14826,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         const open = lvExpanded.has(t.title);
         const tools = row.querySelector('.lv-tools');
         const acts = [['focus', 'Focus on this'], ['sink', 'Park it: important, but not for now'], ['details', 'Open details'],
-          ...(hasMore ? [['view', open ? 'Collapse this row' : 'Expand this row']] : []), ['dup', 'Duplicate (Ctrl+D)'], ['delete', 'Delete task']];
+          ...(hasMore ? [['view', open ? 'Collapse this row' : 'Expand this row']] : []), ['copy', 'Copy out: for Docs or Excel'], ['dup', 'Duplicate (Ctrl+D)'], ['delete', 'Delete task']];
         if (tools) tools.innerHTML = acts.map(([a, tt]) => `<button type="button" class="qa-a" data-qa="${a}" title="${tt}" aria-label="${tt}">${a === 'view' ? (open ? Q.ICON.view.replace('class="v-ex"', 'class="v-ex" style="display:none"') : Q.ICON.view.replace('class="v-co"', 'class="v-co" style="display:none"')) : Q.ICON[a]}</button>`).join('');
         row.addEventListener('click', e => {
           const b = e.target.closest('.qa-s, .qa-a'); if (!b) return;
@@ -15157,7 +15180,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
           : '<div class="kbin-empty">Nothing here. Deleted tasks will wait here for 30 days.</div>'}</div>`;
     }
 
-    // ===== Onboarding (Oct 10): Welcome card after the first-run card, then a self-ticking "Getting started" list =====
+    // ===== First-run welcome (Oct 10): Welcome card after the first-run card, then a self-ticking "Getting started" list =====
     // Teaches by doing: each item ticks itself the moment you do the thing anywhere in Hodo. Progress lives in this browser
     // (localStorage 'koi-gs'); nothing is written to TASKS.md. Settings → Keyboard → "Show the welcome again" replays it.
     const GS_KEY = 'koi-gs';
@@ -15666,7 +15689,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'music', g: 'capture', t: 'Music', d: 'Three moods to work to: Stoic Winner, Quiet Grinder and Cyber Rebel.', keys: ['B'], kw: 'soundtrack' },
       { id: 'revday', g: 'capture', t: 'Weekly review day', d: 'The day Parked’s review comes due. Settings → Files & rhythm.', kw: 'parked review day' },
       { id: 'backups', g: 'capture', t: 'Backups folder', d: 'A daily copy of your tasks, kept for 30 days.', kw: 'backup safety' },
-      { id: 'welcome', g: 'capture', t: 'Show the welcome again', d: 'Replays the welcome and the Getting started list. Settings → Keyboard.', kw: 'onboarding start tour' },
+      { id: 'welcome', g: 'capture', t: 'Show the welcome again', d: 'Replays the welcome and the Getting started list. Settings → Keyboard.', kw: 'welcome start tour first run' },
     ];
     const GUIDE_CLIPS = new Set(['add',  'adddetails',  'box',  'erase',  'bulk',  'cal',  'calmove',  'capbar',  'colset',  'delete',  'drag',  'dup',  'focus',  'k-guide',  'k-t',  'list',  'park',  'restore',  'search',  'status',  'step']);   // filled by tools/guide/record_clips.py when clips are recorded
     const GUIDE_IC = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><path d="M12 17.2h.01"/></svg>';
@@ -16268,6 +16291,10 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '1.6': [
+        { k: 'new', t: 'Copy out', d: 'Copy tasks straight into Google Docs or Excel. Click the Copy out button on a task (or on the selection bar) and choose:<ul><li><b>For Docs:</b> a numbered list with each task’s priority, status, dates, description and sub-tasks.</li><li><b>For Excel, as rows:</b> one task per row.</li><li><b>For Excel, as columns:</b> one task per column.</li></ul>Turn on “With headers” to add the field names. Leave it off to paste under headers you already have. If the task is part of a selection, the whole selection is copied.' },
+        { k: 'new', t: 'Copy out and Select all from the keyboard', d: '<ul><li><kbd>Ctrl</kbd>+<kbd>C</kbd> opens Copy out for your selection, or for the task under your pointer.</li><li>In the pop-up, <kbd>1</kbd>, <kbd>2</kbd> and <kbd>3</kbd> pick the format, and <kbd>H</kbd> turns headers on or off.</li><li><kbd>Ctrl</kbd>+<kbd>A</kbd> selects every task on screen; press it again to clear.</li></ul>' }
+      ],
       '1.5': [
         { k: 'new', t: 'Right-click a task in the List', d: 'Right-click any row in the List for a small menu right where your pointer is: change its status, or focus, park, open, duplicate or delete it, without going to the far right of the screen.' },
         { k: 'reworked', t: 'Status comes first in the List', d: 'Now each row starts with its status symbol. Hover it to see all four statuses and switch in one click; the title stays right where it is.' },
@@ -16776,7 +16803,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     }, true);
     // Right-click a List row: change its status or use its tools without going to the far right
     let lvCtx = null;
-    const lvCtxClose = () => { if (lvCtx) { lvCtx.remove(); lvCtx = null; } };
+    const lvCtxClose = () => { if (lvCtx) { lvCtx.remove(); lvCtx = null; koiCopyClose(); } };
     document.addEventListener('contextmenu', e => {
       const row = e.target.closest && e.target.closest('#listView .lv-row'); if (!row) return;
       if (e.target.closest('input, textarea, [contenteditable="true"]')) return;
@@ -16785,7 +16812,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const Q = window.koiQA, here = f.sectionId;
       const ico = k => (Q.ICON[k] || '');
       const st = sections.map(s2 => `<button type="button" data-st="${s2.id}" class="${s2.id === here ? 'on' : ''}" style="--c:${Q.colorOf(s2.id)}">${row.querySelector(`.qa-s[data-st="${s2.id}"]`) ? row.querySelector(`.qa-s[data-st="${s2.id}"]`).innerHTML.replace(/<span class="qa-lbl">[\s\S]*?<\/span>/, '') : ''}<span>${escapeHtml(Q.nice(s2.name))}</span></button>`).join('');
-      const tools = [...row.querySelectorAll('.lv-tools .qa-a')].map(a => `<button type="button" data-qa="${a.dataset.qa}" class="${a.dataset.qa === 'delete' ? 'danger' : ''}">${a.innerHTML}<span>${escapeHtml((a.getAttribute('aria-label') || a.title || '').split(':')[0])}</span></button>`).join('');
+      const tools = [...row.querySelectorAll('.lv-tools .qa-a')].map(a => `<button type="button" data-qa="${a.dataset.qa}" class="${a.dataset.qa === 'delete' ? 'danger' : ''}">${a.innerHTML}<span>${a.dataset.qa === 'copy' ? 'Copy out' : escapeHtml((a.getAttribute('aria-label') || a.title || '').split(':')[0])}</span>${a.dataset.qa === 'copy' ? CP_IC.chev : ''}</button>`).join('');
       lvCtx = document.createElement('div'); lvCtx.className = 'lv-ctx'; lvCtx.setAttribute('role', 'menu');
       lvCtx.innerHTML = `<div class="cx-l">Status</div><div class="cx-st">${st}</div><hr>${tools}`;
       document.body.appendChild(lvCtx);
@@ -16795,15 +16822,250 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       lvCtx.style.left = Math.max(8, Math.min(e.clientX - 14, innerWidth - w - 8)) + 'px'; lvCtx.style.top = Math.max(8, Math.min(e.clientY - hrTop, innerHeight - h - 8)) + 'px';
       lvCtx.addEventListener('click', ev => {
         const b = ev.target.closest('button'); if (!b || b.classList.contains('on')) return;
+        if (b.dataset.qa === 'copy') { ev.stopPropagation(); if (!b.classList.contains('cp-open')) koiCopyOpen(b, koiCopyIds(f.task.id), 'right'); return; }
         ev.stopPropagation(); lvCtxClose();
         const real = b.dataset.st ? row.querySelector(`.qa-s[data-st="${b.dataset.st}"]`) : row.querySelector(`.lv-tools .qa-a[data-qa="${b.dataset.qa}"]`);
         if (real) real.click();
       });
+      // Copy opens its three choices as soon as the pointer is on it; moving to another item closes them (Oct 20)
+      lvCtx.addEventListener('mouseover', ev => {
+        const b = ev.target.closest('button'); if (!b) return;
+        if (b.dataset.qa === 'copy') { if (!b.classList.contains('cp-open')) koiCopyOpen(b, koiCopyIds(f.task.id), 'right'); }
+        else if (cpPop) koiCopyClose();
+      });
       const first = lvCtx.querySelector('button:not(.on)'); if (first) first.focus();
     });
-    document.addEventListener('mousedown', e => { if (lvCtx && !lvCtx.contains(e.target)) lvCtxClose(); }, true);
+    document.addEventListener('mousedown', e => { if (lvCtx && !lvCtx.contains(e.target) && !e.target.closest('.cp-pop')) lvCtxClose(); }, true);
     document.addEventListener('keydown', e => { if (lvCtx && e.key === 'Escape') { e.stopPropagation(); lvCtxClose(); } }, true);
-    window.addEventListener('scroll', lvCtxClose, true); window.addEventListener('blur', lvCtxClose);
+    window.addEventListener('scroll', e => { if (!(e.target && e.target.closest && e.target.closest('.cp-pop'))) lvCtxClose(); }, true); window.addEventListener('blur', lvCtxClose);
+    // ===== Copy out: tasks for Docs or Excel (Oct 20) =====
+    // One Copy out button among the quick actions (cards, List rows, the calendar pop-up, the selection bar). Clicking it
+    // opens three choices: for Docs (a numbered list with priority, status, dates, description and sub-tasks), for Excel
+    // as rows (one task per row) or as columns (one task per column). In the List's right-click menu the choices open on
+    // hover. A remembered "With headers" switch adds the field names (off: data only, to paste under headers you have).
+    // If the task is part of a selection, the whole selection is copied, in board order. Two versions go on the
+    // clipboard: formatted (Docs, Word, Excel, Sheets) and plain text (tab-separated for spreadsheets).
+    const CP_IC = {
+      docs: '<svg viewBox="0 0 16 16"><path d="M4 1.8h5.4L12.5 5v8.6c0 .4-.3.7-.7.7H4c-.4 0-.7-.3-.7-.7V2.5c0-.4.3-.7.7-.7z"/><path d="M9.2 1.9V5h3.2M5.6 8h4.8M5.6 10.4h4.8M5.6 12.6h2.8"/></svg>',
+      rows: '<svg viewBox="0 0 16 16"><rect x="2" y="2.6" width="12" height="10.8" rx="1.6"/><path d="M2 6.2h12M2 9.8h12M6 2.6v10.8"/></svg>',
+      cols: '<svg viewBox="0 0 16 16"><rect x="2" y="2.6" width="12" height="10.8" rx="1.6"/><path d="M6 2.6v10.8M10 2.6v10.8M2 6.2h12"/></svg>',
+      chev: '<svg class="cp-chev" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5"/></svg>'
+    };
+    const CP_FIELDS = ['Title', 'Status', 'Priority', 'Area', 'Who', 'Due', 'Deadline', 'Progress', 'Description', 'Sub-tasks'];
+    let cpHeaders = false; try { cpHeaders = localStorage.getItem('koi-copy-headers') === '1'; } catch (e) {}
+    function cpList(ids) {
+      const want = new Set(ids.map(String)), out = [];
+      sections.forEach(s => (tasks[s.id] || []).forEach(t => { if (want.has(String(t.id))) out.push({ t, sec: s }); }));
+      return out;
+    }
+    const cpIso = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+    const cpNice = d => d ? d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + (d.getFullYear() !== new Date().getFullYear() ? ', ' + d.getFullYear() : '') : '';
+    function cpData({ t, sec }) {
+      const info = splitNoteCapsules(t.note || ''), Q = window.koiQA;
+      const p = whoPerson(info);
+      const subs = (t.subtasks || []).filter(s => (s.text || '').trim());
+      const done = subs.filter(s => s.checked).length;
+      const desc = [String(t.description || '').trim(), info.rest].filter(Boolean).join('\n');
+      return {
+        title: cleanTitle(t.title || t.text || ''), status: Q ? Q.nice(sec.name) : sec.name, stKey: isWaitSection(sec.id) ? 'wait' : statusKey(sec.id),
+        priority: info.priority ? info.priority[0].toUpperCase() + info.priority.slice(1) : '',
+        area: info.workstreams[0] || '', who: p ? `${p.role === 'wait' ? 'Waiting on' : p.role === 'with' ? 'With' : 'For'} ${whoFull(p.name)}` : '',
+        dueKind: info.date && info.date.kind, due: info.date && info.date.date ? info.date.date : null, deadline: info.deadline || null,
+        progress: subs.length ? Math.round(done / subs.length * 100) + '%' : '', desc, subs
+      };
+    }
+    const cpEsc = s => escapeHtml(String(s == null ? '' : s));
+    function cpExcel(list, dir, headers) {
+      const ds = list.map(cpData);
+      const cell = (d, f) => f === 'Title' ? d.title : f === 'Status' ? d.status : f === 'Priority' ? d.priority : f === 'Area' ? d.area : f === 'Who' ? d.who
+        : f === 'Due' ? cpIso(d.due) : f === 'Deadline' ? cpIso(d.deadline) : f === 'Progress' ? d.progress : f === 'Description' ? d.desc
+        : d.subs.map(s => '- ' + (s.checked ? '✓ ' : '') + s.text.trim()).join('\n');   // Oct 20: each sub-task starts with "- "
+      let grid = dir === 'rows' ? ds.map(d => CP_FIELDS.map(f => cell(d, f))) : CP_FIELDS.map(f => ds.map(d => cell(d, f)));
+      if (headers) grid = dir === 'rows' ? [CP_FIELDS.slice(), ...grid] : grid.map((r, i) => [CP_FIELDS[i], ...r]);
+      const tsv = v => /[\t\n"]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+      const text = grid.map(r => r.map(tsv).join('\t')).join('\n');
+      const isHead = (i, j) => headers && (dir === 'rows' ? i === 0 : j === 0);
+      const html = '<meta charset="utf-8"><table>' + grid.map((r, i) => '<tr>' + r.map((v, j) => {
+        const h = isHead(i, j), tag = h ? 'th' : 'td';
+        const txt = !h && !/^(Due|Deadline|Progress)$/.test(dir === 'rows' ? CP_FIELDS[j] : CP_FIELDS[i]);   // text cells stay text (a leading "- " is not a formula)
+        return `<${tag} style="vertical-align:top;text-align:left${h ? ';font-weight:bold' : ''}${txt ? ";mso-number-format:'\\@'" : ''}">${cpEsc(v).replace(/\n/g, '<br style="mso-data-placement:same-cell">')}</${tag}>`;
+      }).join('') + '</tr>').join('') + '</table>';
+      return { text, html };
+    }
+    // For Docs (Oct 20, from the reference doc set up for it): every task is a numbered item.
+    //   Title: Heading 2, bold 15 pt, black, 10 pt above.
+    //   Details line: Subtitle, grey #666666 11 pt, 10 pt below; labels normal, values bold; "  ·  " between;
+    //     Priority · Status · Due · Deadline · For/With/Waiting on · Area · Progress. Priority and Status values carry
+    //     colour (High #E06666, Medium #F1C232, Low #6D9EEB; Pending #F1C232, In Progress #3C78D8, Waiting On #B85C38,
+    //     Done #6AA84F); a late deadline is red.
+    //   Then numbered sub-headings (Heading 3, bold 12 pt, #434343): Description (11 pt text, line breaks kept, 10 pt
+    //     above) and Sub-tasks (a checklist, 10 pt above each, finished ones struck through). Empty ones are left out.
+    //   Arial, line spacing 1.15, indents step 36 pt.
+    const CP_PRIO_C = { High: '#e06666', Medium: '#f1c232', Low: '#6d9eeb' };
+    const CP_ST_C = { pending: '#f1c232', progress: '#3c78d8', wait: '#b85c38', done: '#6aa84f' };
+    function cpDocs(list) {
+      const ds = list.map(cpData);
+      const late = d => d.deadline && d.stKey !== 'done' && d.deadline < new Date(new Date().setHours(0, 0, 0, 0));
+      const meta = d => {
+        const m = [];
+        if (d.priority) m.push(['Priority', d.priority, CP_PRIO_C[d.priority]]);
+        m.push(['Status', d.status, CP_ST_C[d.stKey]]);
+        if (d.due) m.push([d.dueKind === 'done' ? 'Completed' : 'Due', cpNice(d.due)]);
+        else if (d.dueKind === 'none') m.push(['Due', 'No date']);
+        if (d.deadline) m.push(['Deadline', cpNice(d.deadline), late(d) ? '#e06666' : '']);
+        if (d.who) { const mm = /^(Waiting on|With|For) (.+)$/.exec(d.who); if (mm) m.push([mm[1], mm[2]]); }
+        if (d.area) m.push(['Area', d.area]);
+        if (d.progress) m.push(['Progress', d.progress]);
+        return m;
+      };
+      // plain text, for apps that don't take formatting
+      const text = ds.map((d, i) => {
+        const L = [`${i + 1}. ${d.title}`, '   ' + meta(d).map(([k, v]) => `${k}: ${v}`).join('  ·  ')];
+        let n = 0;
+        if (d.desc || d.subs.length) L.push('');
+        if (d.desc) { L.push(`   ${++n}. Description`); d.desc.split('\n').forEach(x => L.push('      ' + x)); if (d.subs.length) L.push(''); }
+        if (d.subs.length) { L.push(`   ${++n}. Sub-tasks`); d.subs.forEach(s => L.push(`      ${s.checked ? '☑' : '☐'} ${s.text.trim()}`)); }
+        return L.join('\n');
+      }).join('\n\n\n');
+      const F = 'font-family:Arial,sans-serif;line-height:1.15;';
+      const BLANK = `<p dir="ltr" style="${F}margin:0;font-size:9pt;font-weight:400;"><br></p>`;   // Oct 20: Docs keeps real empty lines, not margins
+      const sp = (txt, st) => `<span style="${F}${st}">${txt}</span>`;
+      const html = '<meta charset="utf-8"><ol style="margin:0;padding-left:36pt;list-style-type:decimal;' + F + '">' + ds.map(d => {
+        let h = `<li dir="ltr" aria-level="1" style="list-style-type:decimal;${F}font-size:12pt;font-weight:700;color:#000000;">`;
+        h += `<h2 dir="ltr" role="presentation" style="${F}margin:0;font-size:12pt;font-weight:700;color:#000000;">${sp(cpEsc(d.title), 'font-size:12pt;font-weight:700;color:#000000;')}</h2>`;
+        h += `<p dir="ltr" role="presentation" style="${F}margin:0;font-size:9pt;font-weight:400;color:#666666;">` +
+          meta(d).map(([k, v, c]) => sp(cpEsc(k) + ': ', 'font-size:9pt;font-weight:400;color:#666666;') + sp(cpEsc(v), `font-size:9pt;font-weight:700;color:${c || '#666666'};`)).join(sp('&nbsp; ·&nbsp; ', 'font-size:9pt;font-weight:400;color:#666666;')) + '</p>';
+        const parts = [];
+        if (d.desc) parts.push(`<h3 dir="ltr" role="presentation" style="${F}margin:0;font-size:10pt;font-weight:700;color:#434343;">${sp('Description', 'font-size:10pt;font-weight:700;color:#434343;')}</h3>` +
+          `<p dir="ltr" style="${F}margin:0;font-size:9pt;font-weight:400;color:#000000;">${sp(cpEsc(d.desc).replace(/\n/g, '<br>'), 'font-size:9pt;font-weight:400;color:#000000;')}</p>` + (d.subs.length ? BLANK : ''));
+        if (d.subs.length) parts.push(`<h3 dir="ltr" role="presentation" style="${F}margin:0;font-size:10pt;font-weight:700;color:#434343;">${sp('Sub-tasks', 'font-size:10pt;font-weight:700;color:#434343;')}</h3>` +
+          d.subs.map(s => `<p dir="ltr" style="${F}margin:0 0 0 36pt;font-size:9pt;font-weight:400;color:#000000;">${sp((s.checked ? '☑ ' : '☐ ') + cpEsc(s.text.trim()), 'font-size:9pt;font-weight:400;color:#000000;' + (s.checked ? 'text-decoration:line-through;' : ''))}</p>`).join(''));   // plain indented lines: a list here would end the item early in Docs
+        if (parts.length) h += BLANK;   // one empty line between the details line and the first heading
+        // the two closing empty lines go inside the last part: in Docs, anything after a nested list becomes a new numbered item
+        if (parts.length) parts[parts.length - 1] += BLANK + BLANK;
+        if (parts.length) h += '<ol style="margin:0;padding-left:36pt;list-style-type:decimal;">' + parts.map(x => `<li dir="ltr" aria-level="2" style="list-style-type:decimal;${F}font-size:10pt;font-weight:700;color:#434343;">${x}</li>`).join('') + '</ol>';
+        return h + (parts.length ? '' : BLANK + BLANK) + '</li>';   // two empty lines close every task
+      }).join('') + '</ol>';
+      return { text, html };
+    }
+    function cpWrite(c) {
+      let ok = false;
+      const on = e => { e.preventDefault(); e.clipboardData.setData('text/html', c.html); e.clipboardData.setData('text/plain', c.text); ok = true; };
+      document.addEventListener('copy', on, true);
+      try { document.execCommand('copy'); } catch (e) {}
+      document.removeEventListener('copy', on, true);
+      if (ok) return Promise.resolve(true);
+      try { return navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([c.html], { type: 'text/html' }), 'text/plain': new Blob([c.text], { type: 'text/plain' }) })]).then(() => true, () => false); }
+      catch (e) { return Promise.resolve(false); }
+    }
+    window.koiCopyLast = null;   // what the last copy put on the clipboard (for the checks)
+    function koiCopyDo(kind, ids) {
+      const list = cpList(ids); if (!list.length) return;
+      const c = kind === 'docs' ? cpDocs(list) : cpExcel(list, kind, cpHeaders);
+      window.koiCopyLast = { kind, ...c };
+      const what = list.length === 1 ? `“${list[0].t.title.length > 40 ? cleanTitle(list[0].t.title).slice(0, 38) + '…' : cleanTitle(list[0].t.title)}” copied` : `${list.length} tasks copied`;
+      const where = kind === 'docs' ? 'for Docs' : kind === 'rows' ? 'for Excel, as rows' : 'for Excel, as columns';
+      cpWrite(c).then(ok => toast(ok ? `${what} ${where}` : 'Couldn’t reach the clipboard. Try again.'));
+    }
+    let cpPop = null;
+    function koiCopyClose() { if (cpPop) { cpPop.remove(); cpPop = null; } document.querySelectorAll('.cp-open').forEach(x => x.classList.remove('cp-open')); }
+    function koiCopyIds(id) { id = String(id); return koiSel.has(id) && koiSel.size > 1 ? [...koiSel] : [id]; }
+    function koiCopyOpen(anchor, ids, side) {
+      koiCopyClose(); if (!ids.length) return;
+      const n = cpList(ids).length;
+      cpPop = document.createElement('div'); cpPop.className = 'cp-pop'; cpPop.setAttribute('role', 'menu');
+      cpPop.innerHTML = `<div class="cp-l">${n > 1 ? `Copy out ${n} tasks` : 'Copy out this task'}</div>
+        <button type="button" data-cp="docs">${CP_IC.docs}<span>For Docs</span><kbd>1</kbd></button>
+        <button type="button" data-cp="rows">${CP_IC.rows}<span>For Excel, as rows</span><kbd>2</kbd></button>
+        <button type="button" data-cp="cols">${CP_IC.cols}<span>For Excel, as columns</span><kbd>3</kbd></button>
+        <hr><label class="cp-sw"><input type="checkbox"${cpHeaders ? ' checked' : ''}><i></i><span>With headers</span><kbd>H</kbd></label>`;
+      document.body.appendChild(cpPop); anchor.classList.add('cp-open');
+      const r = anchor.getBoundingClientRect(), w = cpPop.offsetWidth, h = cpPop.offsetHeight;
+      let L, T;
+      if (side === 'right') { L = r.right + 4; if (L + w > innerWidth - 8) L = r.left - w - 4; T = Math.min(r.top - 30, innerHeight - h - 8); }
+      else { L = Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8); T = r.bottom + 6; if (T + h > innerHeight - 8) T = r.top - h - 6; }
+      cpPop.style.left = Math.max(8, L) + 'px'; cpPop.style.top = Math.max(8, T) + 'px';
+      cpPop.addEventListener('mousedown', e => e.stopPropagation());
+      cpPop.addEventListener('click', e => {
+        e.stopPropagation();
+        const sw = e.target.closest('.cp-sw input');
+        if (sw) { cpHeaders = sw.checked; try { localStorage.setItem('koi-copy-headers', cpHeaders ? '1' : '0'); } catch (x) {} return; }
+        const b = e.target.closest('[data-cp]'); if (!b) return;
+        koiCopyClose(); try { lvCtxClose(); } catch (x) {}
+        koiCopyDo(b.dataset.cp, ids);
+      });
+      return cpPop;
+    }
+    document.addEventListener('mousedown', e => { if (cpPop && !cpPop.contains(e.target) && !e.target.closest('.cp-open')) koiCopyClose(); }, true);
+    document.addEventListener('keydown', e => { if (cpPop && e.key === 'Escape') { e.stopPropagation(); koiCopyClose(); } }, true);
+    window.addEventListener('scroll', e => { if (cpPop && !(e.target && e.target.closest && e.target.closest('.cp-pop'))) koiCopyClose(); }, true);
+    // clicks inside the Copy pop-up never count as clicking away (from a selection, a pop-up or the task panel)
+    setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .cp-pop'; }); } catch (e) {} }, 0);
+    // the Copy button on cards, List rows and the calendar pop-up
+    document.addEventListener('click', e => {
+      const b = e.target.closest && e.target.closest('.qa-a[data-qa="copy"]'); if (!b) return;
+      e.stopPropagation(); e.preventDefault();
+      if (b.classList.contains('cp-open')) { koiCopyClose(); return; }
+      const holder = b.closest('.task-card, .lv-item'); const id = holder && (holder.dataset.id || holder.dataset.taskId); if (!id) return;
+      koiCopyOpen(b, koiCopyIds(id));
+    }, true);
+    // ...and on the selection bar
+    { const _sbr = selBarRender;
+      selBarRender = function () {
+        const r = _sbr.apply(this, arguments);
+        if (selBarEl && !selConfirm) { const d = selBarEl.querySelector('[data-sb="dup"]'); if (d && !selBarEl.querySelector('[data-sb="copy"]')) d.insertAdjacentHTML('beforebegin', `<button class="sb-b" data-sb="copy"${koiSel.size ? '' : ' disabled'} title="Copy out: for Docs or Excel">${window.koiQA.ICON.copy}Copy out${SB_IC.chev}</button>`); }
+        return r;
+      }; }
+    document.addEventListener('click', e => {
+      const b = e.target.closest && e.target.closest('.sel-bar [data-sb="copy"]'); if (!b) return;
+      e.stopPropagation(); e.preventDefault(); selClosePop();
+      if (b.classList.contains('cp-open')) { koiCopyClose(); return; }
+      koiCopySelOpen();
+    }, true);
+    function koiCopySelOpen() {
+      if (!koiSel.size) return;
+      selBarRender(); const b = selBarEl && selBarEl.querySelector('[data-sb="copy"]'); if (!b) return;
+      const p = koiCopyOpen(b, [...koiSel]);
+      if (p) { const r = b.getBoundingClientRect(); p.style.top = Math.max(8, r.top - p.offsetHeight - 8) + 'px'; }
+    }
+    // Keys (Oct 20): Ctrl+C opens Copy out for the selection, else the task under the pointer, else the open task
+    // (like Ctrl+D). Typing or highlighted text keeps the normal copy. Ctrl+A selects every task on screen (search and
+    // filters respected, collapsed groups skipped); again clears it. In the pop-up: 1 Docs, 2 rows, 3 columns, H headers.
+    const cpTyping = e => e.target && (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable);
+    document.addEventListener('keydown', e => {
+      if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return;
+      const k = (e.key || '').toLowerCase();
+      if (k !== 'c' && k !== 'a') return;
+      if (cpTyping(e) || activeMainTab !== 'tasks' || document.querySelector('.qc-overlay, .kd-ov, .kg-ov')) return;
+      if (k === 'c') {
+        const txt = String(window.getSelection ? window.getSelection() : '').trim(); if (txt) return;
+        if (koiSel.size) { e.preventDefault(); koiCopySelOpen(); return; }
+        let f = null;
+        if (koiHoverId != null) f = findTaskById(koiHoverId);
+        if (!f && typeof tpEl !== 'undefined' && tpEl && tpTask) f = findTaskById(tpTask.id);
+        if (!f) return;
+        e.preventDefault();
+        const id = String(f.task.id);
+        const el = [...document.querySelectorAll(`#board .task-card[data-id="${CSS.escape(id)}"], #listView .lv-item[data-task-id="${CSS.escape(id)}"], .cal-pop .task-card[data-id="${CSS.escape(id)}"], #calendarView .cal-chip[data-id="${CSS.escape(id)}"]`)].find(x => x.offsetParent);
+        const btn = el && [...el.querySelectorAll('.qa-a[data-qa="copy"]')].find(x => x.offsetParent && getComputedStyle(x).display !== 'none');
+        const anchor = btn || (el ? (el.querySelector('.lv-row') || el) : (typeof tpEl !== 'undefined' && tpEl) || document.body);
+        koiCopyOpen(anchor, [id]);
+        return;
+      }
+      e.preventDefault();
+      const shown = [...document.querySelectorAll(SEL_ITEM)].filter(x => !x.classList.contains('kf-hide') && x.offsetParent).map(selIdOf).filter(Boolean);
+      if (!shown.length) return;
+      koiCopyClose();
+      if (shown.every(id => koiSel.has(id))) selClear(false);
+      else { shown.forEach(id => koiSel.add(id)); selPaint(); }
+      selBarRender();
+    }, true);
+    document.addEventListener('keydown', e => {
+      if (!cpPop || e.ctrlKey || e.metaKey || e.altKey || cpTyping(e)) return;
+      const pick = { '1': 'docs', '2': 'rows', '3': 'cols' }[e.key];
+      if (pick) { e.preventDefault(); e.stopImmediatePropagation(); const b = cpPop.querySelector(`[data-cp="${pick}"]`); if (b) b.click(); return; }
+      if (e.key === 'h' || e.key === 'H') { e.preventDefault(); e.stopImmediatePropagation(); const i = cpPop.querySelector('.cp-sw input'); if (i) i.click(); }
+    }, true);
     applyWaitRail();
   </script>
 </body>
