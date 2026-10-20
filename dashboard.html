@@ -10908,17 +10908,9 @@ How to decide:
     // ---- header button (opens the drawer; drop a card on it to park it) ----
     const PK_IC = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.2" y="2.2" width="11.6" height="11.6" rx="3"/><path d="M6.4 11.2V4.9h2.3a1.9 1.9 0 0 1 0 3.8H6.4"/></svg>';
     const pkBtn = document.getElementById('parkBtn');
-    // Click (and P): always the drawer, scrolled to what needs you (back today, then going quiet). The weekly review is one click inside.
-    function pkOpenSmart() {
-      deepOpen('deep');
-      setTimeout(() => {
-        if (!deepEl) return;
-        const inner = deepEl.querySelector('.pk-inner'), tgt = deepEl.querySelector('.pk-row.is-ready') || (deepEl.querySelector('.pk-stale') || {}).closest && deepEl.querySelector('.pk-stale').closest('.pk-row');
-        if (!inner || !tgt) return;
-        inner.scrollTo({ top: Math.max(0, tgt.offsetTop - inner.offsetTop - 70), behavior: reduceMotion ? 'auto' : 'smooth' });
-        if (!reduceMotion) tgt.animate([{ boxShadow: '0 0 0 0 color-mix(in srgb, var(--brand) 45%, transparent)' }, { boxShadow: '0 0 0 6px transparent' }], { duration: 900, delay: 250, easing: 'ease-out' });
-      }, 340);
-    }
+    // Click (and P): Parked opens at the top, plain (Oct 20: no jump to a task and no glow; back-today and going-quiet
+    // rows carry their own markers). The weekly review is one click inside.
+    function pkOpenSmart() { deepOpen('deep'); }
     pkBtn.addEventListener('click', e => { if (e.target.closest('.pk-peek')) return; pkPeekHide(true); deepEl ? deepClose() : pkOpenSmart(); });
     pkBtn.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/plain') && !e.dataTransfer.types.includes('text/column')) { e.preventDefault(); pkBtn.classList.add('drop'); } });
     pkBtn.addEventListener('dragleave', () => pkBtn.classList.remove('drop'));
