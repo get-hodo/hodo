@@ -65,6 +65,8 @@
   - Progress button outline = status track "Progress button, take 2" (koiProgEdge)
   - Night Owl switch = lights off, then colours flicker on "Night Owl: lights off" (koiNeonDark)
   - List: status first, Done celebrates in place, right-click menu "List (Oct 20)" (koiListDone, lvCtx)
+  - Today: Launch and The Day "Today (Oct 21): Launch and The Day" (dayRender, dayRenderLaunch, dayRenderDay, dayCommit, dayHeart, dayLightPaint)
+  - Horizons: This week line, Coming up, Done = "Horizons (Oct 21)" (hzModel, hzBoard, hzList, doneOf, dnAsk)
   - Copy tasks for Docs / Excel rows / Excel columns "Copy out (Oct 20)" (koiCopyOpen, koiCopyDo, cpDocs, cpExcel)
   - Waste Yard                                 "// ===== Waste yard (Oct 9)"
   - First-run welcome (PAUSED Oct 17, see "Welcome paused") "// ===== First-run welcome (Oct 10)" (koiWelcomeShow, Getting started: GS_ITEMS)
@@ -4807,6 +4809,261 @@
     [data-theme="dark"] .lv-peel .lp-flap { background: color-mix(in srgb, var(--bg-card) 90%, #fff); box-shadow: -5px 3px 12px rgba(0,0,0,.45); }
     [data-theme="dark"] .lv-peel .lp-flap::after { background: linear-gradient(to left, rgba(0,0,0,.4) 0, rgba(255,255,255,.16) 7px, rgba(255,255,255,.04) 18px, rgba(255,255,255,0) 34px, rgba(0,0,0,0) 70%, rgba(0,0,0,.18) 100%); }
     .lv-peel .lp-stuck { box-shadow: none !important; }
+    /* Horizons (Oct 21) */
+    .hz-head { margin-top: -6px; }
+    .hz-line { height: 1px; background: var(--border); margin: 14px 4px 10px; }
+    .hz-cu { display: flex; align-items: center; gap: 9px; width: 100%; box-sizing: border-box; padding: 11px 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border); background: color-mix(in srgb, var(--bg-card) 55%, transparent); color: var(--text-secondary); font: inherit; font-size: 13px; cursor: pointer; text-align: left; }
+    .hz-cu:hover { background: var(--bg-card); }
+    .hz-cu b { color: var(--text-primary); font-weight: 600; }
+    .hz-cu .count { background: var(--bg-secondary); padding: 2px 8px; border-radius: 10px; font-size: 11.5px; color: var(--text-muted); }
+    .hz-cu .hz-pace { margin-left: auto; font-size: 12px; color: var(--text-muted); }
+    .hz-cu svg, .lv-hz.cu svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; flex: none; }
+    .hz-cu.on svg, .lv-hz.cu.on svg { transform: rotate(90deg); }
+    .hz-heavy { color: var(--brand); font-weight: 600; }
+    .hz-tip { display: flex; align-items: flex-start; gap: 8px; margin: 12px 0 0; padding: 9px 10px; border-radius: 10px; background: var(--accent-soft); font-size: 12px; line-height: 1.45; color: var(--text-secondary); }
+    .hz-tip b { color: var(--brand); }
+    .hz-tip button { margin-left: auto; border: 0; background: transparent; color: var(--text-muted); font-size: 16px; line-height: 1; cursor: pointer; padding: 0 2px; }
+    .hz-askn { font-size: 11.5px; font-weight: 600; color: var(--brand); }
+    .task-card.hz-pool, .lv-item.hz-pool { opacity: .78; }
+    .task-card.hz-pool:hover, .lv-item.hz-pool:hover { opacity: 1; }
+    .hz-hidden { display: none !important; }
+    .hz-carry { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0 0 10px; padding: 8px 10px; border-radius: 10px; background: var(--accent-soft); font-size: 12.5px; color: var(--text-secondary); }
+    .hz-carry b { color: var(--text-primary); }
+    .hz-carry span { margin-right: auto; }
+    .hz-carry.lv { margin: 4px 6px 6px 40px; }
+    .hz-carry button, .hz-ask button { height: 24px; padding: 0 9px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font: inherit; font-size: 11.5px; font-weight: 600; cursor: pointer; }
+    .hz-ask { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-light); font-size: 11.5px; color: var(--brand); font-weight: 600; }
+    .hz-ask span { margin-right: auto; }
+    .hz-ask.lv { margin: 0 10px 6px 40px; border-top: 0; padding-top: 0; }
+    .task-card.hz-left { box-shadow: inset 3px 0 0 var(--accent-soft); }
+    .lv-hz { display: flex; align-items: center; gap: 10px; padding: 8px 10px 6px 40px; font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); }
+    .lv-hz::after { content: ''; flex: 1; height: 1px; background: var(--border); order: 2; }
+    .lv-hz .count { background: var(--bg-card); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+    .lv-hz .hz-pace { order: 3; text-transform: none; letter-spacing: 0; font-weight: 500; }
+    .lv-hz.cu { cursor: pointer; }
+    .lv-hz.cu:hover { color: var(--text-secondary); }
+    /* Done = … */
+    .card-done { margin-top: 8px; font-size: 12.5px; color: var(--text-secondary); line-height: 1.4; }
+    .card-done b { font-weight: 650; color: var(--text-muted); margin-right: 2px; }
+    .tp-done { margin: 10px 0 2px; }
+    .tp-done label { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-card); font-size: 13px; }
+    .tp-done b { color: var(--text-muted); font-weight: 650; white-space: nowrap; }
+    .tp-done input { flex: 1; border: 0; outline: 0; background: transparent; font: inherit; color: var(--text-primary); }
+    .dn-pop { position: fixed; z-index: 2700; width: 320px; padding: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); animation: nsFade .14s ease-out both; }
+    .dn-l { font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin: 2px 2px 8px; }
+    .dn-pop label { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--brand); font-size: 13px; }
+    .dn-pop b { color: var(--text-muted); font-weight: 650; white-space: nowrap; }
+    .dn-pop input { flex: 1; border: 0; outline: 0; background: transparent; font: inherit; color: var(--text-primary); min-width: 0; }
+    .dn-k { margin: 7px 2px 0; font-size: 11px; color: var(--text-muted); }
+    .dn-k kbd { font: 600 10.5px inherit; font-family: inherit; border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
+    /* ===== Today (Oct 21) ===== */
+    .day-panel { display: none; }
+    .day-panel.active { display: block; }
+    .day-light { position: fixed; inset: 0; z-index: -1; pointer-events: none; transition: background 2s linear; }
+    #dayPanel .ln-in { max-width: 980px; margin: 0 auto; padding: 18px 24px 60px; }
+    #dayPanel .ln-date { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    #dayPanel h1 { margin: 6px 0 2px; font-size: 24px; font-weight: 650; letter-spacing: -.01em; color: var(--text-primary); }
+    .ln-sub { font-size: 13.5px; color: var(--text-secondary); }
+    .ln-lbl { display: flex; align-items: center; gap: 8px; margin: 26px 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .ln-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .ln-lbl .count { background: var(--bg-card); border: 1px solid var(--border); padding: 1px 7px; border-radius: 9px; font-size: 11px; font-weight: 500; letter-spacing: 0; color: var(--text-muted); }
+    .ln-since { display: flex; flex-direction: column; gap: 6px; }
+    .ln-row { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border-light); font-size: 13.5px; color: var(--text-primary); }
+    .ln-row .ic { width: 22px; height: 22px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; background: var(--bg-secondary); color: var(--text-secondary); flex: none; }
+    .ln-row svg, .ln-btn svg, .dy-btn svg, .dy-more svg, .ln-x svg, .dy-rm svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .dy-more svg circle { fill: currentColor; stroke: none; }
+    .ln-row .q { color: var(--text-muted); }
+    .ln-row .w { min-width: 0; }
+    .ln-row .acts { margin-left: auto; display: flex; gap: 6px; flex: none; }
+    .ln-btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font: inherit; font-size: 12.5px; font-weight: 550; cursor: pointer; }
+    .ln-btn:hover { border-color: var(--text-muted); }
+    .ln-btn.quiet { border-color: transparent; background: transparent; color: var(--text-muted); }
+    .ln-btn.ln-sq { width: 28px; padding: 0; justify-content: center; color: var(--brand); }
+    .ln-btn.ln-sq:hover { border-color: var(--brand); background: var(--accent-soft); }
+    .ln-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .ln-slot { position: relative; min-height: 196px; border-radius: 14px; border: 1.5px dashed color-mix(in srgb, var(--brand) 45%, var(--border)); background: color-mix(in srgb, var(--brand) 3%, transparent); padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; transition: border-color .3s, background .3s, box-shadow .3s; }
+    .ln-slot .n { position: absolute; top: -11px; left: 14px; width: 22px; height: 22px; border-radius: 7px; background: var(--brand); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    [data-theme="dark"] .ln-slot .n, [data-theme="dark"] .ln-go.done .lbl { color: #1e1612; }
+    .ln-slot.solid { border-style: solid; border-color: color-mix(in srgb, var(--brand) 55%, var(--border)); }
+    .ln-slot.lit { border-style: solid; border-color: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 14%, transparent), 0 6px 20px color-mix(in srgb, var(--brand) 18%, transparent); background: color-mix(in srgb, var(--brand) 6%, transparent); }
+    .ln-slots.picking .ln-slot { cursor: pointer; box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent); }
+    .ln-slot.over { background: color-mix(in srgb, var(--brand) 9%, transparent); border-color: var(--brand); }
+    .ln-empty { margin: auto; text-align: center; font-size: 12.5px; color: var(--text-muted); font-style: italic; padding: 20px 10px; }
+    .ln-card { position: relative; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 12px 10px; box-shadow: 0 1px 2px var(--shadow); cursor: grab; }
+    .ln-card .t { font-size: 14px; font-weight: 550; color: var(--text-primary); line-height: 1.35; padding-right: 18px; }
+    .ln-x { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border: 0; border-radius: 6px; background: transparent; color: var(--text-muted); display: flex; align-items: center; justify-content: center; opacity: 0; cursor: pointer; }
+    .ln-card:hover .ln-x { opacity: 1; }
+    .ln-x:hover { background: var(--bg-secondary); }
+    .ln-chip { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; height: 20px; padding: 0 8px; border-radius: 6px; font-size: 11.5px; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); }
+    .ln-chip.dl { background: var(--danger-soft); color: var(--danger); }
+    .ln-chip.pd { background: var(--st-pending-bg); color: color-mix(in srgb, var(--st-pending-edge) 70%, var(--text-primary)); }
+    .ln-chip.pr { background: var(--st-progress-bg); color: color-mix(in srgb, var(--st-progress-edge) 75%, var(--text-primary)); }
+    .ln-chip.hi { background: var(--accent-soft); color: var(--brand); }
+    .ln-sugg { margin-left: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--brand); transition: opacity .4s; }
+    .ln-done { margin-top: 10px; display: flex; gap: 6px; align-items: baseline; font-size: 12.5px; color: var(--text-muted); border-top: 1px solid var(--border-light); padding-top: 9px; }
+    .ln-done b { font-weight: 650; color: var(--text-secondary); white-space: nowrap; }
+    .ln-done input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; color: var(--text-primary); }
+    .ln-done input::placeholder { font-style: italic; color: var(--text-muted); }
+    .ln-done.ask { border-top-color: color-mix(in srgb, var(--brand) 35%, var(--border-light)); }
+    .ln-done.ask input::placeholder { color: color-mix(in srgb, var(--brand) 70%, var(--text-muted)); }
+    .ln-when { margin-top: auto; padding-top: 10px; display: flex; gap: 4px; flex-wrap: wrap; }
+    .ln-when button { height: 24px; padding: 0 9px; border-radius: 7px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font: inherit; font-size: 11.5px; font-weight: 550; cursor: pointer; }
+    .ln-when button.on { border-color: var(--brand); color: var(--brand); background: var(--accent-soft); }
+    .ln-cands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .ln-cand { display: flex; flex-direction: column; align-items: flex-start; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; cursor: pointer; }
+    .ln-cand:hover { border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+    .ln-cand .t { font-size: 13.5px; font-weight: 500; color: var(--text-primary); }
+    .ln-more, .dy-settle { margin-top: 10px; display: flex; align-items: center; gap: 9px; width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: color-mix(in srgb, var(--bg-card) 55%, transparent); font: inherit; font-size: 13px; color: var(--text-secondary); cursor: pointer; text-align: left; }
+    .ln-more svg, .dy-settle svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+    .ln-more.on svg, .dy-settle.on svg { transform: rotate(90deg); }
+    .ln-more .count { background: var(--bg-secondary); padding: 1px 7px; border-radius: 9px; font-size: 11px; color: var(--text-muted); }
+    .ln-weeklist { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+    .ln-wrow { padding: 8px 12px; border-radius: 9px; background: var(--bg-card); border: 1px solid var(--border-light); font-size: 13px; color: var(--text-primary); cursor: pointer; }
+    .ln-wrow:hover { border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+    .ln-foot { display: flex; align-items: center; gap: 14px; margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .ln-real { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+    .ln-real i { width: 8px; height: 8px; border-radius: 50%; background: var(--st-done-edge); display: inline-block; }
+    .ln-skip { margin-left: auto; border: 0; background: transparent; font: inherit; font-size: 12.5px; color: var(--text-muted); cursor: pointer; }
+    .ln-skip:hover { color: var(--text-secondary); }
+    .ln-go { height: 40px; padding: 0 22px; border-radius: 10px; font: inherit; font-size: 14px; font-weight: 650; cursor: pointer; }
+    .ln-go.hold { position: relative; overflow: visible; background: var(--bg-card); color: var(--brand); border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border)); transition: transform .15s; user-select: none; -webkit-user-select: none; touch-action: none; }
+    .ln-go.hold:disabled { opacity: .45; cursor: default; }
+    .ln-go.hold.holding { transform: scale(.97); }
+    .ln-go.hold .trace { position: absolute; inset: -3px; width: calc(100% + 6px); height: calc(100% + 6px); overflow: visible; pointer-events: none; }
+    .ln-go.hold .trace rect { x: 1.5px; y: 1.5px; width: calc(100% - 3px); height: calc(100% - 3px); rx: 12px; fill: none; stroke: var(--brand); stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .ln-go.hold .fill { position: absolute; inset: 0; border-radius: 10px; background: var(--brand); transform: scale(0); opacity: 0; pointer-events: none; }
+    .ln-go.hold .lbl { position: relative; }
+    .ln-go.hold.done .lbl { color: #fff; }
+    .ln-hint { margin-top: 8px; text-align: right; font-size: 12px; color: var(--brand); }
+    .day-ring { position: fixed; border: 2px solid var(--brand); pointer-events: none; z-index: 60; }
+    .day-wave { position: fixed; border-radius: 50%; pointer-events: none; z-index: 40; background: radial-gradient(circle, transparent 58%, color-mix(in srgb, var(--brand) 16%, transparent) 64%, color-mix(in srgb, var(--brand) 6%, transparent) 68%, transparent 70%); }
+    /* The Day */
+    .dy-more { margin-left: auto; width: 28px; height: 28px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+    .dy-more:hover { border-color: var(--border); background: var(--bg-card); }
+    .dy-confirm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; padding: 10px 12px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border); font-size: 13px; color: var(--text-primary); }
+    .dy-confirm span { margin-right: auto; }
+    .dy-top { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+    .dy-ring { flex: none; }
+    .dy-ring circle { fill: none; stroke-width: 4; transform: rotate(-90deg); transform-origin: 50% 50%; stroke-linecap: round; }
+    .dy-ring .bg { stroke: var(--border); }
+    .dy-ring .fg { stroke: var(--brand); }
+    .dy-ring text { font-size: 12px; font-weight: 700; fill: var(--text-primary); }
+    .dy-h { font-size: 22px; font-weight: 650; color: var(--text-primary); letter-spacing: -.01em; }
+    .dy-k { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--brand); }
+    .dy-three { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+    .dy-card { position: relative; display: flex; align-items: flex-start; gap: 14px; padding: 16px 16px 14px 18px; border-radius: 14px; background: var(--bg-card); border: 1.5px solid color-mix(in srgb, var(--brand) 55%, var(--border)); box-shadow: 0 1px 3px var(--shadow); }
+    .dy-card .n { width: 26px; height: 26px; border-radius: 8px; flex: none; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--brand); border: 1.5px solid var(--brand); background: var(--accent-soft); }
+    .dy-card .body { flex: 1; min-width: 0; }
+    .dy-card .t { font-size: 15.5px; font-weight: 600; color: var(--text-primary); }
+    .dy-card .meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .dy-card .meta .ln-chip { margin-top: 6px; }
+    .dy-card .done-l { margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
+    .dy-card .done-l b { color: var(--text-muted); font-weight: 650; margin-right: 2px; }
+    .dy-card .acts { display: flex; gap: 6px; align-self: center; }
+    .dy-ask { max-width: 460px; }
+    .dy-when { display: inline-flex; align-items: center; height: 20px; margin-top: 6px; padding: 0 8px; border-radius: 6px; font-size: 11.5px; font-weight: 600; color: var(--brand); border: 1px solid color-mix(in srgb, var(--brand) 40%, var(--border)); }
+    .dy-btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .dy-btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+    [data-theme="dark"] .dy-btn.pri, [data-theme="dark"] .dy-nextup, [data-theme="dark"] .day-n { color: #1e1612; }
+    .dy-btn.sq { width: 32px; padding: 0; justify-content: center; color: var(--text-muted); }
+    .dy-card.kept { align-items: center; border: 1px solid color-mix(in srgb, var(--st-done-edge) 45%, var(--border)); background: color-mix(in srgb, var(--st-done-edge) 5%, var(--bg-card)); box-shadow: none; padding-top: 11px; padding-bottom: 11px; }
+    .dy-card.kept .n { background: var(--st-done-edge); border-color: var(--st-done-edge); color: #fff; }
+    .dy-card.kept .t { font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: line-through; }
+    .dy-kept-l { font-size: 12px; font-weight: 600; color: var(--st-done-edge); white-space: nowrap; }
+    .dy-nextup { display: inline-flex; align-items: center; height: 19px; padding: 0 7px; margin-left: 8px; border-radius: 6px; vertical-align: 2px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; background: var(--brand); color: #fff; }
+    .dy-cols { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; }
+    .dy-also { display: flex; flex-direction: column; gap: 6px; }
+    .dy-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border-light); font-size: 13.5px; color: var(--text-primary); }
+    .dy-row .tick { width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid var(--border); background: transparent; flex: none; cursor: pointer; padding: 0; }
+    .dy-row .tick:hover { border-color: var(--st-done-edge); }
+    .dy-row.done .tick { background: var(--st-done-edge); border-color: var(--st-done-edge); }
+    .dy-row.done .tx { color: var(--text-muted); text-decoration: line-through; }
+    .dy-row .tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .dy-row .q { color: var(--text-muted); font-size: 12.5px; }
+    .dy-row .r { margin-left: auto; }
+    .dy-rm { margin-left: auto; width: 22px; height: 22px; border: 0; border-radius: 6px; background: transparent; color: var(--text-muted); display: flex; align-items: center; justify-content: center; opacity: 0; cursor: pointer; }
+    .dy-row:hover .dy-rm { opacity: 1; }
+    .dy-bonus { margin-left: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--brand); }
+    .dy-add { align-self: flex-start; border: 0; background: transparent; font: inherit; font-size: 12.5px; color: var(--text-muted); padding: 6px 12px; cursor: pointer; }
+    .dy-add:hover { color: var(--brand); }
+    .dy-pickw { display: flex; flex-direction: column; gap: 4px; padding: 6px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); }
+    .dy-pickw button { border: 0; background: transparent; text-align: left; padding: 6px 8px; border-radius: 7px; font: inherit; font-size: 13px; color: var(--text-primary); cursor: pointer; }
+    .dy-pickw button:hover { background: var(--bg-secondary); }
+    .dy-pickw span, .dy-none { font-size: 12.5px; color: var(--text-muted); padding: 6px 8px; }
+    .dy-av { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; background: #8a6f5a; flex: none; }
+    .dy-settle { margin-top: 18px; }
+    .dy-foot { display: flex; align-items: center; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-muted); }
+    .dy-rest { text-align: center; padding: 80px 0 30px; }
+    .dy-rest .ic svg { width: 44px; height: 44px; fill: none; stroke: var(--text-muted); stroke-width: 1.2; stroke-linecap: round; }
+    .dy-rest h2 { margin: 12px 0 0; font-size: 24px; font-weight: 650; color: var(--text-primary); }
+    .dy-rest p { margin: 8px 0 0; font-size: 14px; color: var(--text-secondary); }
+    .dy-rest .b { display: flex; justify-content: center; gap: 8px; margin-top: 22px; }
+    .dy-swap { width: 300px; }
+    .dy-swap button span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* the tab */
+    #mainTabToggle #dayTabBtn .dt-ic { position: relative; }
+    #mainTabToggle #dayTabBtn .pl-ic svg circle { fill: none; stroke: #fff; stroke-width: 1.7; }
+    [data-theme="dark"] #mainTabToggle #dayTabBtn .pl-ic svg circle, [data-theme="dark"] #mainTabToggle #dayTabBtn .pl-ic svg path { stroke: #22242a; }
+    #mainTabToggle #dayTabBtn.dt-dot .dt-ic::after { content: ''; position: absolute; top: -3px; right: -3px; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 2px var(--bg-secondary); }
+    #mainTabToggle #dayTabBtn.dt-active .pl-ic { background: var(--brand); }
+    #mainTabToggle #dayTabBtn .dt-ring { width: 12px; height: 12px; }
+    #mainTabToggle #dayTabBtn .dt-ring circle { transform: rotate(-90deg); transform-origin: 50% 50%; stroke-linecap: round; stroke-width: 1.5; }
+    #mainTabToggle #dayTabBtn .dt-ring .bg { stroke: rgba(255,255,255,.35); }
+    #mainTabToggle #dayTabBtn .dt-ring .late { stroke: rgba(255,255,255,.6); }
+    #mainTabToggle #dayTabBtn .dt-ring .fg { stroke: #fff; }
+    #mainTabToggle #dayTabBtn .dt-ring .core { fill: #fff; stroke: none; transform: none; }
+    [data-theme="dark"] #mainTabToggle #dayTabBtn .dt-ring .fg { stroke: #22242a; }
+    [data-theme="dark"] #mainTabToggle #dayTabBtn .dt-ring .bg { stroke: rgba(34,36,42,.35); }
+    [data-theme="dark"] #mainTabToggle #dayTabBtn .dt-ring .late { stroke: rgba(34,36,42,.6); }
+    [data-theme="dark"] #mainTabToggle #dayTabBtn .dt-ring .core { fill: #22242a; }
+    /* the Three on the board and in the List */
+    .task-card.day-three { box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--brand) 55%, transparent), 0 1px 3px var(--shadow); }
+    .day-n { position: absolute; top: -8px; left: -8px; z-index: 3; width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: var(--brand); color: #fff; font-size: 11px; font-weight: 700; box-shadow: 0 0 0 2px var(--bg-primary); }
+    .lv-title .day-n { position: static; display: inline-flex; vertical-align: 1px; margin-right: 6px; width: 18px; height: 18px; box-shadow: none; }
+    .task-card .dy-nextup, .lv-title .dy-nextup { height: 17px; font-size: 9.5px; padding: 0 6px; }
+    .sp-hours { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
+    .sp-hours input { height: 32px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font: inherit; }
+    /* Land (Oct 23) */
+    .lnd-sum { display: flex; align-items: center; gap: 22px; margin-top: 18px; }
+    .lnd-sum .dy-ring text { font-size: 13px; }
+    .lnd-tiles { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .lnd-tile { padding: 12px 14px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-light); }
+    .lnd-tile b { display: block; font-size: 22px; font-weight: 700; color: var(--text-primary); line-height: 1.1; }
+    .lnd-tile b small { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+    .lnd-tile span { display: block; margin-top: 4px; font-size: 12px; color: var(--text-muted); }
+    .dy-row .day-n, .ln-row .day-n, .lnd-tm .day-n { position: static; flex: none; width: 18px; height: 18px; box-shadow: none; font-size: 10.5px; }
+    .lnd-done .day-n { background: var(--st-done-edge); }
+    .dy-row .ic { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); flex: none; }
+    .dy-row .ic svg, .lnd-tm svg, .lnd-go svg, .lnd-close svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .lnd-tag { margin-left: auto; flex: none; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); }
+    .lnd-tag.p { color: var(--st-done-edge); }
+    .lnd-done .tick { cursor: default; }
+    .lnd-seg { margin-left: auto; display: inline-flex; flex: none; padding: 2px; gap: 2px; border-radius: 9px; background: var(--bg-secondary); }
+    .lnd-seg button { border: 0; background: transparent; height: 26px; padding: 0 11px; border-radius: 7px; font: inherit; font-size: 12.5px; font-weight: 550; color: var(--text-secondary); cursor: pointer; }
+    .lnd-seg button:hover { color: var(--text-primary); }
+    .lnd-seg button.on { background: var(--bg-card); color: var(--brand); box-shadow: 0 1px 2px var(--shadow); }
+    .lnd-note { margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+    .lnd-mind { display: flex; gap: 8px; }
+    .lnd-mind input { flex: 1; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font: inherit; font-size: 13.5px; }
+    .lnd-mind input:focus { outline: none; border-color: var(--brand); }
+    .lnd-mind .ln-btn { height: 36px; }
+    .lnd-caught { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .lnd-caught span { font-size: 12px; padding: 3px 9px; border-radius: 7px; background: var(--bg-secondary); color: var(--text-secondary); }
+    .lnd-caught span::before { content: '✓ '; color: var(--st-done-edge); }
+    .lnd-tm { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: var(--bg-card); border: 1.5px dashed color-mix(in srgb, var(--brand) 50%, var(--border)); font-size: 14px; color: var(--text-primary); }
+    .lnd-tm .w { min-width: 0; flex: 1; }
+    .lnd-tm .q { color: var(--text-muted); font-size: 12.5px; }
+    .lnd-close { display: inline-flex; align-items: center; gap: 8px; background: var(--brand); border: 1px solid var(--brand); color: #fff; }
+    .lnd-close:disabled { opacity: .7; cursor: default; }
+    .lnd-close svg { width: 16px; height: 16px; }
+    [data-theme="dark"] .lnd-close { color: #1e1612; }
+    .lnd-go { margin-left: auto; color: var(--brand); border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+    .day-dim { position: fixed; inset: 0; z-index: 30; pointer-events: none; background: radial-gradient(ellipse at 50% 120%, rgba(214,140,80,.18), rgba(20,16,14,.28) 70%); opacity: 0; }
+    [data-theme="dark"] .day-dim { background: radial-gradient(ellipse at 50% 120%, rgba(214,140,80,.10), rgba(0,0,0,.45) 70%); }
+    .lnd-closed .ic svg { width: 52px; height: 52px; stroke: var(--brand); }
+    .lnd-closed p b { color: var(--text-primary); font-weight: 600; }
+    #mainTabToggle #dayTabBtn.dt-closed .pl-ic svg path { fill: none; }
+    @media (max-width: 760px) { .lnd-tiles { grid-template-columns: repeat(2, 1fr); } .lnd-home { flex-wrap: wrap; } }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -5323,6 +5580,10 @@
           const mi = MONTHS.findIndex(m => m.toLowerCase() === mm[2].toLowerCase());
           if (mi >= 0) { const now = new Date(); let y = now.getFullYear(); if (mi - now.getMonth() > 6) y--; else if (now.getMonth() - mi > 6) y++; out.pick = { n: +mm[1], date: new Date(y, mi, +mm[3]) }; continue; }
         }
+        if (!out.week && !out.notWeek && (mm = pt.match(/^(not )?this week \((\w{3}) (\d{1,2})\)$/i))) {   // Oct 21: the week this task is promised to (or set aside from)
+          const mi = MONTHS.findIndex(m => m.toLowerCase() === mm[2].toLowerCase());
+          if (mi >= 0) { const now = new Date(); let y = now.getFullYear(); if (mi - now.getMonth() > 6) y--; else if (now.getMonth() - mi > 6) y++; const d = new Date(y, mi, +mm[3]); if (mm[1]) out.notWeek = d; else out.week = d; continue; }
+        }
         if (!out.priority && (mm = pt.match(/^(high|medium|low)\b\s*(.*)$/i))) {
           out.priority = mm[1].toLowerCase(); out.prioExtra = mm[2] || ''; continue;
         }
@@ -5362,6 +5623,8 @@
       if (info.deadline) parts.push('deadline ' + fmtDue(info.deadline));
       info.workstreams.forEach(w => parts.push(w));
       if (info.priority) parts.push(info.priority[0].toUpperCase() + info.priority.slice(1) + (info.prioExtra ? ' ' + info.prioExtra : ''));
+      if (info.week) parts.push(`this week (${MONTHS[info.week.getMonth()]} ${info.week.getDate()})`);
+      else if (info.notWeek) parts.push(`not this week (${MONTHS[info.notWeek.getMonth()]} ${info.notWeek.getDate()})`);
       (info.restParts || []).forEach(r => parts.push(r));
       if (info.pick && info.pick.date) parts.push(`today's #${info.pick.n} (${MONTHS[info.pick.date.getMonth()]} ${info.pick.date.getDate()})`);
       return parts.join(' · ');
@@ -9207,7 +9470,7 @@
         else if (e.key === 'ArrowLeft' && focusState.idx > 0) { focusState.idx--; renderFocus(); }
         return;
       }
-      if ((e.key === 'f' || e.key === 'F') && !typing && !e.ctrlKey && !e.metaKey && !e.altKey && sections.length && (activeMainTab === 'tasks' || activeMainTab === 'today')) openFocus();
+      if ((e.key === 'f' || e.key === 'F') && !typing && !e.ctrlKey && !e.metaKey && !e.altKey && sections.length && (activeMainTab === 'tasks' || activeMainTab === 'today' || activeMainTab === 'day')) openFocus();
     });
     document.getElementById('focusBtn').addEventListener('click', e => {
       e.stopPropagation();
@@ -10945,7 +11208,7 @@ How to decide:
       window.addEventListener('scroll', () => pkPeekHide(true), true);
     })();
     function deepRefresh() {
-      const show = sections.length > 0 && (activeMainTab === 'tasks' || activeMainTab === 'today');
+      const show = sections.length > 0 && (activeMainTab === 'tasks' || activeMainTab === 'today' || activeMainTab === 'day');
       pkBtn.hidden = !show;
       if (!show) { if (deepEl) deepClose(); return; }
       const n = deep.items.length, r = deepRisingCount(), due = deepTideDue();
@@ -10962,7 +11225,7 @@ How to decide:
     let deepEl = null, deepScrim = null, deepMode = 'deep', deepOpenId = null, deepShowReleased = false, deepTide = null, pkStepFor = null, pkNewStar = false, pkNewUntil = '';
     function deepOpen(mode) {
       if (!sections.length) return;
-      if (activeMainTab !== 'tasks' && activeMainTab !== 'today') switchMainTab('tasks');
+      if (activeMainTab !== 'tasks' && activeMainTab !== 'today' && activeMainTab !== 'day') switchMainTab('tasks');
       deepMode = mode || 'deep';
       if (deepMode === 'tide') deepTideStart();
       if (!deepEl) {
@@ -13201,6 +13464,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       }
       return {
         play, get on() { return on; }, get vol() { return vol; },
+        ctx() { return (on && vol > 0) ? ac() : null; }, out() { ac(); return master; },   // Oct 21: the Today page's own sounds
         setOn(v) { on = v; try { localStorage.setItem('koi-sound', v ? '1' : '0'); } catch (e) {} },
         setVol(v) { vol = v; try { localStorage.setItem('koi-sound-vol', String(v)); } catch (e) {} if (master) master.gain.value = vol * 0.9; },
         themeName() { return set().name; },
@@ -14331,7 +14595,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       root.classList.add('prog-closed');   // the old progress strip is gone (Oct 3); the button opens Performance (beta)
       pb.addEventListener('click', () => pfToggle());
       const sync = () => {
-        const onTasks = activeMainTab === 'tasks' && sections.length > 0;
+        const onTasks = (activeMainTab === 'tasks' || activeMainTab === 'day') && sections.length > 0;
         pb.hidden = !onTasks;
         const pctTxt = (document.getElementById('overallPct') || {}).textContent || '0%', pct = parseInt(pctTxt) || 0;
         const shown = pb.dataset.cur != null ? +pb.dataset.cur : pct;
@@ -17058,6 +17322,980 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       if (pick) { e.preventDefault(); e.stopImmediatePropagation(); const b = cpPop.querySelector(`[data-cp="${pick}"]`); if (b) b.click(); return; }
       if (e.key === 'h' || e.key === 'H') { e.preventDefault(); e.stopImmediatePropagation(); const i = cpPop.querySelector('.cp-sw input'); if (i) i.click(); }
     }, true);
+    // ===== Horizons (Oct 21): a "This week" line inside Pending =====
+    // Pending is a pool with a promise line. Above it: what you've promised to this week (a "this week (Oct 19)" tag in
+    // the task line, a deadline this week or already past, or a day planned this week). Below it, folded: "Coming up",
+    // real work for the coming weeks, sized in weeks at your pace. Drag across the line to promise or set aside.
+    // A task promised to an earlier week shows as "from last week" until you keep it or send it to Coming up.
+    // A task left in Coming up for 3 weeks asks: this week, or park? "Done = …" is the finish line: the first line of
+    // the description, shown on its own, and asked for when a task moves to In Progress.
+    const HZ_ASK_DAYS = 21;
+    const hzDay = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+    const hzWeek0 = () => hzDay(startOfWeek(new Date()));
+    const hzWeekEnd = () => { const w = hzWeek0(); return new Date(w.getFullYear(), w.getMonth(), w.getDate() + 6, 23, 59, 59); };
+    const hzSame = (a, b) => a && b && hzDay(a).getTime() === hzDay(b).getTime();
+    function hzPendingId() { const s = koiPendingSection(); return s && !isDoneSection(s.id) && !isWaitSection(s.id) ? s.id : null; }
+    // where a pending task sits: 'week' (promised), 'left' (promised to an earlier week), 'cu' (coming up)
+    function hzZone(t) {
+      const info = splitNoteCapsules(t.note || ''), w0 = hzWeek0(), end = hzWeekEnd();
+      if (info.deadline && info.deadline <= end) return 'week';
+      if (info.week) return hzDay(info.week) >= w0 ? 'week' : 'left';
+      if (info.notWeek && hzSame(info.notWeek, w0)) return 'cu';
+      if (info.date && info.date.kind === 'due' && info.date.date && info.date.date <= end) return 'week';
+      return 'cu';
+    }
+    const hzForced = t => { const info = splitNoteCapsules(t.note || ''); return !!(info.deadline && info.deadline <= hzWeekEnd()); };
+    function hzSet(t, zone) {
+      const info = splitNoteCapsules(t.note || ''), w0 = hzWeek0();
+      info.week = null; info.notWeek = null;
+      if (zone === 'week') { if (!(info.deadline && info.deadline <= hzWeekEnd())) info.week = w0; }   // a deadline this week already keeps it above the line
+      else if (info.date && info.date.kind === 'due' && info.date.date && info.date.date <= hzWeekEnd()) info.notWeek = w0;   // planned this week, but set aside
+      t.note = composeNote(info, t.checked);
+    }
+    // your pace: tasks finished per week, over up to the last 4 weeks
+    function hzPace() {
+      const now = hzDay(new Date()), from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 28); let n = 0, first = null;
+      sections.forEach(s => (tasks[s.id] || []).forEach(t => { const i = splitNoteCapsules(t.note || ''); if (i.date && i.date.kind === 'done' && i.date.date && i.date.date >= from && i.date.date <= new Date()) { n++; if (!first || i.date.date < first) first = i.date.date; } }));
+      if (!n) return 0;
+      const weeks = Math.max(1, Math.min(4, Math.ceil((now - hzDay(first)) / 864e5 / 7) || 1));
+      return Math.max(1, Math.round(n / weeks));
+    }
+    function hzModel() {
+      const pid = hzPendingId(); if (!pid) return null;
+      const m = { pid, week: [], left: [], cu: [] };
+      (tasks[pid] || []).forEach(t => m[hzZone(t)].push(t));
+      m.progress = sections.filter(s => statusKey(s.id) === 'progress').reduce((a, s) => a + (tasks[s.id] || []).length, 0);
+      m.pace = hzPace();
+      m.load = m.week.length + m.left.length + m.progress;
+      return m;
+    }
+    const hzKey = t => String(t.uid || t.title || t.id);
+    function hzSince() { try { return JSON.parse(localStorage.getItem('koi-cu-since') || '{}') || {}; } catch (e) { return {}; } }
+    function hzAsking(m) {   // Coming up tasks untouched for 3 weeks (counted in this browser)
+      const since = hzSince(), today = hzDay(new Date()), keep = {}; const out = new Set();
+      m.cu.forEach(t => { const k = hzKey(t); keep[k] = since[k] || today.toISOString().slice(0, 10); if ((today - new Date(keep[k] + 'T00:00:00')) / 864e5 >= HZ_ASK_DAYS) out.add(t); });
+      try { localStorage.setItem('koi-cu-since', JSON.stringify(keep)); } catch (e) {}
+      return out;
+    }
+    let hzOpen = false; try { hzOpen = localStorage.getItem('koi-cu-open') === '1'; } catch (e) {}
+    const hzWeeksText = (n, pace) => !pace || !n ? '' : (() => { const w = n / pace; return w < 1 ? 'less than a week at your pace' : `about ${Math.round(w)} week${Math.round(w) === 1 ? '' : 's'} at your pace`; })();
+    const HZ_CHEV = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg>';
+    function hzMove(t, zone, quiet) {
+      if (zone === 'cu' && hzForced(t)) { toast('It has a deadline this week, so it stays above the line.'); return false; }
+      hzSet(t, zone);
+      if (zone === 'week') { const s = hzSince(); delete s[hzKey(t)]; try { localStorage.setItem('koi-cu-since', JSON.stringify(s)); } catch (e) {} }
+      if (!quiet) { markChanged(); renderTasks(); }
+      return true;
+    }
+    // ---- the board ----
+    { const _rb = renderBoard; renderBoard = function () { const r = _rb.apply(this, arguments); try { hzBoard(); } catch (e) { console.warn(e); } return r; }; }
+    function hzBoard() {
+      const m = hzModel(); if (!m) return;
+      const box = board.querySelector(`.cards[data-column="${CSS.escape(m.pid)}"]`); if (!box) return;
+      const col = box.closest('.column'), byId = id => box.querySelector(`:scope > .task-card[data-id="${CSS.escape(String(id))}"]`);
+      let head = col.querySelector('.wr-head.hz-head');
+      if (!head) { head = document.createElement('div'); head.className = 'wr-head hz-head'; col.querySelector('.column-header').after(head); }
+      const heavy = m.pace && m.load > m.pace * 1.5;
+      head.innerHTML = `<b>${m.load}</b> this week${m.pace ? ` · your usual ${m.pace}` : ''}${heavy ? ' · <span class="hz-heavy">more than usual</span>' : ''}`;
+      head.title = 'Promised to this week: tasks above the line in Pending, plus In Progress';
+      const first = box.firstChild, add = box.querySelector(':scope > .new-task-input');
+      const put = el => { if (add) box.insertBefore(el, add); else box.appendChild(el); };
+      if (m.left.length) {
+        const carry = document.createElement('div'); carry.className = 'hz-carry';
+        carry.innerHTML = `<span><b>${m.left.length}</b> from last week</span><button type="button" data-hz="keep">Keep this week</button><button type="button" data-hz="drop">To Coming up</button>`;
+        carry.querySelector('[data-hz="keep"]').addEventListener('click', () => { m.left.forEach(t => hzMove(t, 'week', true)); markChanged(); renderTasks(); });
+        carry.querySelector('[data-hz="drop"]').addEventListener('click', () => { m.left.forEach(t => hzMove(t, 'cu', true)); markChanged(); renderTasks(); });
+        put(carry);
+      }
+      m.left.concat(m.week).forEach(t => { const c = byId(t.id); if (c) { put(c); if (m.left.includes(t)) c.classList.add('hz-left'); } });
+      const line = document.createElement('div'); line.className = 'hz-line'; put(line);
+      const ask = hzAsking(m);
+      const strip = document.createElement('button'); strip.type = 'button'; strip.className = 'hz-cu' + (hzOpen ? ' on' : '');
+      strip.innerHTML = `${HZ_CHEV}<b>Coming up</b><span class="count">${m.cu.length}</span>${ask.size ? `<span class="hz-askn">${ask.size} to decide</span>` : ''}<span class="hz-pace">${m.cu.length ? hzWeeksText(m.cu.length, m.pace) : 'nothing waiting'}</span>`;
+      strip.addEventListener('click', () => { hzOpen = !hzOpen; try { localStorage.setItem('koi-cu-open', hzOpen ? '1' : '0'); } catch (e) {} renderTasks(); });
+      put(strip);
+      let tipSeen = false; try { tipSeen = localStorage.getItem('koi-hz-tip') === '1'; } catch (e) {}
+      if (!tipSeen) {   // once: how the line works
+        const tip = document.createElement('div'); tip.className = 'hz-tip';
+        tip.innerHTML = '<span><b>New:</b> drag a task above the line to promise it to this week, or below to let it wait in Coming up.</span><button type="button" aria-label="Got it" title="Got it">&times;</button>';
+        tip.querySelector('button').addEventListener('click', () => { try { localStorage.setItem('koi-hz-tip', '1'); } catch (e) {} tip.remove(); });
+        line.before(tip);
+      }
+      m.cu.forEach(t => { const c = byId(t.id); if (!c) return; c.classList.add('hz-pool'); if (!hzOpen) c.classList.add('hz-hidden'); put(c);
+        if (ask.has(t)) { const a = document.createElement('div'); a.className = 'hz-ask';
+          a.innerHTML = `<span>3 weeks in Coming up</span><button type="button" data-hz="week">This week</button><button type="button" data-hz="park">Park</button>`;
+          a.querySelector('[data-hz="week"]').addEventListener('click', e => { e.stopPropagation(); hzMove(t, 'week'); });
+          a.querySelector('[data-hz="park"]').addEventListener('click', e => { e.stopPropagation(); sinkTask(t, c); });
+          c.appendChild(a); } });
+      if (add) box.appendChild(add);
+      // dropping a card: above the line promises it to this week, on or below the line sets it aside
+      col.addEventListener('drop', e => {
+        if (!e.dataTransfer || e.dataTransfer.types.includes('text/column')) return;
+        const id = parseFloat(e.dataTransfer.getData('text/plain')); const f = id && findTaskById(id); if (!f) return;
+        e.preventDefault(); e.stopImmediatePropagation();
+        box.classList.remove('drag-over'); col.querySelectorAll('.drop-indicator').forEach(x => x.remove());
+        const lr = line.getBoundingClientRect(); let zone = e.clientY >= lr.top - 4 ? 'cu' : 'week';
+        if (zone === 'cu' && hzForced(f.task)) { toast('It has a deadline this week, so it stays above the line.'); zone = 'week'; }
+        const zoneCards = [...box.querySelectorAll(':scope > .task-card')].filter(c => !c.classList.contains('dragging') && !c.classList.contains('hz-hidden') && (zone === 'cu') === c.classList.contains('hz-pool'));
+        const before = zoneCards.find(c => e.clientY < c.getBoundingClientRect().top + c.getBoundingClientRect().height / 2);
+        const list = tasks[m.pid] || []; let idx;
+        if (before) idx = list.findIndex(x => String(x.id) === before.dataset.id);
+        else if (zoneCards.length) idx = list.findIndex(x => String(x.id) === zoneCards.at(-1).dataset.id) + 1;
+        else idx = zone === 'week' ? 0 : list.length;
+        const cur = list.findIndex(x => x.id === f.task.id); if (cur >= 0 && cur < idx) idx--;
+        hzSet(f.task, zone);
+        if (zone === 'week') { const s = hzSince(); delete s[hzKey(f.task)]; try { localStorage.setItem('koi-cu-since', JSON.stringify(s)); } catch (x) {} }
+        moveTask(f.task.id, m.pid, Math.max(0, idx));
+      }, true);
+    }
+    // ---- the List ----
+    { const _rl = renderList; renderList = function () { const r = _rl.apply(this, arguments); try { hzList(); } catch (e) { console.warn(e); } return r; }; }
+    function hzList() {
+      const m = hzModel(); if (!m) return;
+      const grp = listView.querySelector(`.lv-group[data-section-id="${CSS.escape(m.pid)}"]`); if (!grp || grp.classList.contains('collapsed')) return;
+      const body = grp.querySelector('.lv-body'), byId = id => body.querySelector(`:scope > .lv-item[data-task-id="${CSS.escape(String(id))}"]`);
+      const order = (tasks[m.pid] || []).slice(); const pos = new Map([...body.querySelectorAll(':scope > .lv-item')].map((el, i) => [el.dataset.taskId, i]));
+      const sorted = arr => arr.slice().sort((a, b) => (pos.get(String(a.id)) || 0) - (pos.get(String(b.id)) || 0));
+      const wk = document.createElement('div'); wk.className = 'lv-hz';
+      wk.innerHTML = `This week <span class="count">${m.week.length + m.left.length}</span><span class="hz-pace">${[m.progress ? `plus ${m.progress} in progress` : '', m.pace ? `your usual ${m.pace}` : ''].filter(Boolean).join(' · ')}${m.pace && m.load > m.pace * 1.5 ? ' · <span class="hz-heavy">more than usual</span>' : ''}</span>`;
+      body.prepend(wk);
+      let ref = wk;
+      if (m.left.length) {
+        const carry = document.createElement('div'); carry.className = 'hz-carry lv';
+        carry.innerHTML = `<span><b>${m.left.length}</b> from last week</span><button type="button" data-hz="keep">Keep this week</button><button type="button" data-hz="drop">To Coming up</button>`;
+        carry.querySelector('[data-hz="keep"]').addEventListener('click', () => { m.left.forEach(t => hzMove(t, 'week', true)); markChanged(); renderTasks(); });
+        carry.querySelector('[data-hz="drop"]').addEventListener('click', () => { m.left.forEach(t => hzMove(t, 'cu', true)); markChanged(); renderTasks(); });
+        ref.after(carry); ref = carry;
+      }
+      sorted(m.left).concat(sorted(m.week)).forEach(t => { const el = byId(t.id); if (el) { ref.after(el); ref = el; if (m.left.includes(t)) el.classList.add('hz-left'); } });
+      const cu = document.createElement('div'); cu.className = 'lv-hz cu' + (hzOpen ? ' on' : '');
+      cu.innerHTML = `${HZ_CHEV}Coming up <span class="count">${m.cu.length}</span><span class="hz-pace">${hzWeeksText(m.cu.length, m.pace)}</span>`;
+      cu.addEventListener('click', () => { hzOpen = !hzOpen; try { localStorage.setItem('koi-cu-open', hzOpen ? '1' : '0'); } catch (e) {} renderTasks(); });
+      ref.after(cu); ref = cu;
+      const ask = hzAsking(m);
+      sorted(m.cu).forEach(t => { const el = byId(t.id); if (!el) return; el.classList.add('hz-pool'); if (!hzOpen) el.classList.add('hz-hidden'); ref.after(el); ref = el;
+        if (ask.has(t)) { const a = document.createElement('div'); a.className = 'hz-ask lv'; a.innerHTML = `<span>3 weeks in Coming up</span><button type="button" data-hz="week">This week</button><button type="button" data-hz="park">Park</button>`;
+          a.querySelector('[data-hz="week"]').addEventListener('click', e => { e.stopPropagation(); hzMove(t, 'week'); });
+          a.querySelector('[data-hz="park"]').addEventListener('click', e => { e.stopPropagation(); sinkTask(t, el); });
+          el.querySelector('.lv-row') && el.querySelector('.lv-row').after(a); } });
+      grp.addEventListener('drop', e => {
+        const id = parseFloat(e.dataTransfer.getData('text/plain')); const f = id && findTaskById(id); if (!f || lvSort.key) return;
+        e.preventDefault(); e.stopImmediatePropagation(); grp.classList.remove('drag-over');
+        let zone = e.clientY >= cu.getBoundingClientRect().top ? 'cu' : 'week';
+        if (zone === 'cu' && hzForced(f.task)) { toast('It has a deadline this week, so it stays above the line.'); zone = 'week'; }
+        const rows = [...body.querySelectorAll(':scope > .lv-item')].filter(r => !r.classList.contains('dragging') && !r.classList.contains('hz-hidden') && (zone === 'cu') === r.classList.contains('hz-pool'));
+        const before = rows.find(r => e.clientY < r.getBoundingClientRect().top + r.getBoundingClientRect().height / 2);
+        const list = tasks[m.pid] || []; let idx;
+        if (before) idx = list.findIndex(x => String(x.id) === before.dataset.taskId);
+        else if (rows.length) idx = list.findIndex(x => String(x.id) === rows.at(-1).dataset.taskId) + 1;
+        else idx = zone === 'week' ? 0 : list.length;
+        const cur = list.findIndex(x => x.id === f.task.id); if (cur >= 0 && cur < idx) idx--;
+        hzSet(f.task, zone);
+        moveTask(f.task.id, m.pid, Math.max(0, idx));
+      }, true);
+    }
+    // the List's right-click menu: "Promise to this week" / "Move to Coming up"
+    document.addEventListener('contextmenu', () => setTimeout(() => {
+      const menu = document.querySelector('.lv-ctx'); if (!menu || menu.dataset.hz) return; menu.dataset.hz = '1';
+      const row = document.querySelector('#listView .lv-row:hover') || null; const item = row && row.closest('.lv-item'); const f = item && findTaskById(parseFloat(item.dataset.taskId));
+      if (!f || f.sectionId !== hzPendingId()) return;
+      const z = hzZone(f.task), b = document.createElement('button'); b.type = 'button'; b.dataset.hzmenu = z === 'cu' ? 'week' : 'cu';
+      b.innerHTML = (z === 'cu' ? '<svg viewBox="0 0 16 16"><path d="M8 12.5V3.5M4 7.5l4-4 4 4"/></svg><span>Promise to this week</span>' : '<svg viewBox="0 0 16 16"><path d="M8 3.5v9M4 8.5l4 4 4-4"/></svg><span>Move to Coming up</span>');
+      const hr = menu.querySelector('hr'); if (hr) hr.after(b); else menu.appendChild(b);
+      b.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); document.querySelector('.lv-ctx') && document.querySelector('.lv-ctx').remove(); hzMove(f.task, b.dataset.hzmenu); }, true);
+    }, 0));
+
+    // ===== Done = … (Oct 21): the finish line =====
+    const DONE_LINE_RE = /^\s*Done\s*=\s*(.*)$/i;
+    function doneOf(desc) { const first = descMain(desc).split('\n')[0] || ''; const m = first.match(DONE_LINE_RE); return m ? m[1].trim() : ''; }
+    function descBody(desc) { const lines = descMain(desc).split('\n'); if (DONE_LINE_RE.test(lines[0] || '')) lines.shift(); return lines.join('\n').replace(/^\s+/, ''); }
+    function setDone(t, text) {
+      const body = descBody(t.description), v = String(text || '').trim();
+      t.description = descJoin([v ? 'Done = ' + v : '', body].filter(Boolean).join('\n'), descOrig(t.description));
+    }
+    // on the card: its own line, and the description without it
+    { const _cc2 = createCard; createCard = function (task) {
+        const card = _cc2.apply(this, arguments);
+        try {
+          const dn = doneOf(task.description); if (!dn) return card;
+          const desc = card.querySelector('.card-desc'), body = descBody(task.description);
+          if (desc) { if (body) desc.textContent = body.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1'); else desc.remove(); }
+          const line = document.createElement('div'); line.className = 'card-done'; line.innerHTML = `<b>Done =</b> ${escapeHtml(dn)}`;
+          const at = card.querySelector('.card-desc') || card.querySelector('.card-links') || card.querySelector('.card-note');
+          if (at) at.before(line); else card.appendChild(line);
+        } catch (e) {}
+        return card;
+      }; }
+    // in the details panel: its own field above the description
+    { const _tr = tpRender; tpRender = function () {
+        const r = _tr.apply(this, arguments);
+        try {
+          if (!tpEl || !tpTask) return r; const f = tpFind(); if (!f) return r; const t = f.task;
+          const caps = tpEl.querySelector('.tp-caps'); if (!caps || tpEl.querySelector('.tp-done')) return r;
+          const box = document.createElement('div'); box.className = 'tp-done';
+          box.innerHTML = '<label><b>Done =</b><input data-tp="done" placeholder="What does finished look like?" autocomplete="off"></label>';
+          const inp = box.querySelector('input'); inp.value = doneOf(t.description);
+          caps.after(box);
+          inp.addEventListener('input', () => { setDone(t, inp.value); tpSave(false); });
+          inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } });
+          const d = tpEl.querySelector('[data-tp="desc"]'), dv = tpEl.querySelector('[data-tp="descview"]');
+          if (d) { d.value = descBody(t.description); d.addEventListener('input', () => { t.description = descJoin([doneOf(t.description) ? 'Done = ' + doneOf(t.description) : '', d.value].filter(Boolean).join('\n'), descOrig(t.description)); tpSave(false); }); }
+          if (dv) { const b = descBody(t.description); if (b) dv.innerHTML = descRichHtml(b); else { dv.style.display = 'none'; if (d) d.style.display = ''; } }
+        } catch (e) { console.warn(e); }
+        return r;
+      }; }
+    // moving a task to In Progress asks for its finish line when it has none
+    let dnPopEl = null;
+    function dnClose() { if (dnPopEl) { dnPopEl.remove(); dnPopEl = null; } }
+    function dnAsk(task) {
+      dnClose();
+      const el = document.querySelector(`#board .task-card[data-id="${CSS.escape(String(task.id))}"], #listView .lv-item[data-task-id="${CSS.escape(String(task.id))}"] > .lv-row`);
+      if (!el || !isVisibleEl(el)) return;
+      dnPopEl = document.createElement('div'); dnPopEl.className = 'dn-pop';
+      dnPopEl.innerHTML = `<div class="dn-l">Started. What does done look like?</div><label><b>Done =</b><input placeholder="e.g. the report is in finance's inbox" autocomplete="off"></label><div class="dn-k"><kbd>Enter</kbd> save <span>·</span> <kbd>Esc</kbd> skip</div>`;
+      document.body.appendChild(dnPopEl);
+      const r = el.getBoundingClientRect(), w = dnPopEl.offsetWidth, h = dnPopEl.offsetHeight;
+      dnPopEl.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+      dnPopEl.style.top = (r.bottom + 8 + h > innerHeight - 8 ? Math.max(8, r.top - h - 8) : r.bottom + 8) + 'px';
+      const inp = dnPopEl.querySelector('input'); inp.focus();
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); const v = inp.value.trim(); dnClose(); if (v) { const f = findTaskById(task.id); if (f) { setDone(f.task, v); markChanged(); renderTasks(); } } }
+        else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); dnClose(); }
+      });
+    }
+    document.addEventListener('mousedown', e => { if (dnPopEl && !dnPopEl.contains(e.target)) dnClose(); }, true);
+    setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .dn-pop'; }); } catch (e) {} }, 0);
+    { const _asc = applyStatusChange; applyStatusChange = function (task, fromId, toId) {
+        const r = _asc.apply(this, arguments);
+        try { if (statusKey(toId) === 'progress' && statusKey(fromId) !== 'progress' && !doneOf(task.description) && activeMainTab === 'tasks') setTimeout(() => dnAsk(task), 1150); } catch (e) {}
+        return r;
+      }; }
+    // ===== Today (Oct 21): Launch and The Day =====
+    // One page lives the day with you. Morning (Launch): settle what changed since yesterday, choose today's Three
+    // (pre-filled with Hodo's suggestion, each with its reason), give each a finish line and a part of the day, then hold
+    // "Start the day" for 2 seconds: the three heartbeat tones seal the slots one by one and a wave crosses the page.
+    // During the day (The Day): the promise ring, the Three with Focus / Done / Swap, "Next up", Also today, Waiting on.
+    // The tab rests (a dot on a workday before planning), shows a three-part ring while a day is running, and Hodo opens
+    // on Today each workday until the day is started or put off. The Three are marked on the board and in the List.
+    // Saved: the Three as "today's #n (Oct 21)" in their task lines (on commit); the rest of the day lives in this browser.
+    // ---- sounds: low, muffled "heartbeat" tones (nothing sharp) ----
+    const dayHeart = (() => {
+      const NOTES = [146.83, 185.0, 220.0];
+      let bus = null;
+      function chain(c) {
+        if (bus && bus.c === c) return bus;
+        const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520; lp.Q.value = 0.5;
+        const dl = c.createDelay(1); dl.delayTime.value = 0.19; const fb = c.createGain(); fb.gain.value = 0.38;
+        const dlp = c.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 700;
+        lp.connect(koiSound.out()); lp.connect(dl); dl.connect(dlp); dlp.connect(fb); fb.connect(koiSound.out());
+        bus = { c, lp }; return bus;
+      }
+      function thump(c, t, f0, g) {
+        const o = c.createOscillator(), a = c.createGain(); o.type = 'sine';
+        o.frequency.setValueAtTime(f0 + 62, t); o.frequency.exponentialRampToValueAtTime(f0, t + 0.12);
+        a.gain.setValueAtTime(0.0001, t); a.gain.exponentialRampToValueAtTime(g, t + 0.005); a.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+        o.connect(a); a.connect(chain(c).lp); o.start(t); o.stop(t + 0.4);
+      }
+      function keys(c, t, f, g, dur) {
+        const car = c.createOscillator(), mod = c.createOscillator(), mg = c.createGain(), a = c.createGain();
+        car.frequency.value = f; mod.frequency.value = f; mod.connect(mg); mg.connect(car.frequency);
+        mg.gain.setValueAtTime(f * 0.9, t); mg.gain.exponentialRampToValueAtTime(f * 0.12, t + 0.25);
+        a.gain.setValueAtTime(0.0001, t); a.gain.exponentialRampToValueAtTime(g, t + 0.03); a.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        car.connect(a); a.connect(chain(c).lp); car.start(t); mod.start(t); car.stop(t + dur + 0.05); mod.stop(t + dur + 0.05);
+      }
+      const now = () => { const c = koiSound.ctx(); return c ? [c, c.currentTime + 0.02] : [null, 0]; };
+      return {
+        note(i, g = 1) { const [c, t] = now(); if (!c) return; thump(c, t, 48, 0.5 * g); keys(c, t, NOTES[i % 3], 0.32 * g, 1.6); },
+        chord(g = 1) { const [c, t] = now(); if (!c) return; thump(c, t, 42, 0.6 * g); [73.42].concat(NOTES).forEach(f => keys(c, t, f, 0.16 * g, 2.2)); },
+        hum(sec) {   // the low hum while holding; returns a stop function
+          const c = koiSound.ctx(); if (!c) return () => {}; const t = c.currentTime + 0.01;
+          const a = c.createGain(), o1 = c.createOscillator(), o2 = c.createOscillator();
+          o1.frequency.value = 73.42; o2.frequency.value = 110; o1.connect(a); o2.connect(a); a.connect(chain(c).lp);
+          a.gain.setValueAtTime(0.0001, t); a.gain.exponentialRampToValueAtTime(0.09, t + sec);
+          o1.start(t); o2.start(t);
+          return () => { const e = c.currentTime; a.gain.cancelScheduledValues(e); a.gain.setValueAtTime(Math.max(0.0001, a.gain.value), e); a.gain.exponentialRampToValueAtTime(0.0001, e + 0.12); o1.stop(e + 0.15); o2.stop(e + 0.15); };
+        },
+        swell() {
+          const c = koiSound.ctx(); if (!c) return; const t = c.currentTime + 0.02;
+          [73.42, 110, 146.83].forEach(f => { const o = c.createOscillator(), a = c.createGain(); o.frequency.value = f; o.connect(a); a.connect(chain(c).lp);
+            a.gain.setValueAtTime(0.0001, t); a.gain.exponentialRampToValueAtTime(0.07, t + 0.45); a.gain.exponentialRampToValueAtTime(0.0001, t + 3.2); o.start(t); o.stop(t + 3.3); });
+        },
+        low() { const [c, t] = now(); if (!c) return; thump(c, t, 40, 0.35); keys(c, t, 110, 0.12, 1.2); }
+      };
+    })();
+    // ---- working hours ("the hours I want to work") ----
+    function dayHours() { try { const h = JSON.parse(localStorage.getItem('koi-hours') || 'null'); if (h && /^\d\d:\d\d$/.test(h.s) && /^\d\d:\d\d$/.test(h.e)) return h; } catch (e) {} return { s: '09:00', e: '17:00' }; }
+    const dayMin = hhmm => { const [a, b] = hhmm.split(':').map(Number); return a * 60 + b; };
+    const dayNow = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60; };
+    const dayFmt = hhmm => { const [a, b] = hhmm.split(':').map(Number); return `${(a % 12) || 12}${b ? ':' + String(b).padStart(2, '0') : ''} ${a < 12 ? 'AM' : 'PM'}`; };
+    const dayIsWork = (d = new Date()) => !isWeekend(d);
+    function dayPhase() {   // 'before' | 'work' | 'last' | 'after' | 'off'
+      if (!dayIsWork()) return 'off';
+      const h = dayHours(), n = dayNow(), s = dayMin(h.s), e = dayMin(h.e);
+      if (n < s) return 'before'; if (n >= e) return 'after'; if (n >= e - 60) return 'last'; return 'work';
+    }
+    // ---- the day's state ----
+    const dayKey = () => ymd(new Date());
+    function dayLoad() {
+      let st = null; try { st = JSON.parse(localStorage.getItem('koi-day') || 'null'); } catch (e) {}
+      if (!st || st.date !== dayKey()) { const pv = st || null; st = { date: dayKey(), state: 'plan', slots: [null, null, null], when: {}, also: [], kept: {}, settled: [], prev: pv };
+        if (pv && pv.state === 'closed' && pv.tomorrow != null && pv.tomorrow !== '') st.slots[0] = { id: pv.tomorrow, mine: true }; }   // Land: tomorrow starts with the task you chose
+      return st;
+    }
+    let dayS = dayLoad();
+    function daySave() { try { localStorage.setItem('koi-day', JSON.stringify(Object.assign({}, dayS, { prev: dayS.prev ? Object.assign({}, dayS.prev, { prev: null }) : null }))); } catch (e) {} }   // keeps yesterday (one level) for Settle yesterday
+    const dayFind = id => id != null ? findTaskById(id) : null;
+    const dayOpen = f => f && !isDoneSection(f.sectionId) && !f.task.checked;
+    const dayDoneTask = f => f && (isDoneSection(f.sectionId) || f.task.checked);
+    const dayActive = () => dayS.state === 'active';
+    const dayPromise = () => dayActive() ? dayS.slots.filter(Boolean).map(x => x.id) : [];
+    const dayIsPromised = id => dayPromise().some(x => String(x) === String(id));
+    const daySlotOf = id => dayS.slots.findIndex(x => x && String(x.id) === String(id));
+    // ---- Hodo's suggestion: candidates with their reasons ----
+    function dayRank() {
+      const out = [], y = dayPrevWork(), pv = dayS.prev;
+      const prevThree = (pv && pv.date === ymd(y) && (pv.state === 'active' || pv.state === 'closed')) ? pv.slots.filter(Boolean).map(x => String(x.id)) : [];
+      const chosen = pv && pv.state === 'closed' && pv.tomorrow != null ? String(pv.tomorrow) : '';
+      sections.forEach(sec => {
+        if (isDoneSection(sec.id) || isWaitSection(sec.id)) return;
+        (tasks[sec.id] || []).forEach(t => {
+          if (t.checked) return;
+          const info = splitNoteCapsules(t.note || ''); const rs = [];
+          const add = (pts, txt, cls) => rs.push({ pts, txt, cls });
+          if (statusKey(sec.id) === 'progress') { const pr = taskProgress(t); add(42, pr ? `Started · ${pr.done} of ${pr.total} steps` : 'Started', 'pr'); }
+          if (info.deadline) { const d = kDiff(info.deadline); if (d < 0) add(100, `Deadline was ${kShort(info.deadline)}`, 'dl'); else if (d === 0) add(92, 'Deadline today', 'dl'); else if (d === 1) add(72, 'Deadline tomorrow', 'dl'); else if (d <= 6) add(40, `Deadline ${info.deadline.toLocaleDateString('en-US', { weekday: 'short' })}`, 'dl'); }
+          if (chosen && chosen === String(t.id)) add(120, 'You chose it last night', 'pd');
+          else if (prevThree.includes(String(t.id))) add(80, 'Carried from yesterday', 'pd');
+          if (info.date && info.date.kind === 'due' && info.date.date) { const d = kDiff(info.date.date); if (d < 0) add(Math.min(70, 45 + (-d) * 3), `Carried ${-d} day${-d === 1 ? '' : 's'}`, 'pd'); else if (d === 0) add(60, 'Planned for today', 'pd'); }
+          if (sec.id === hzPendingId() && hzZone(t) !== 'cu') add(18, 'In This week', '');
+          if (info.priority === 'high') add(26, 'High impact', 'hi'); else if (info.priority === 'medium') add(6, 'Medium', '');
+          if (!rs.length) return;
+          rs.sort((a, b) => b.pts - a.pts);
+          out.push({ id: t.id, task: t, score: rs.reduce((a, r) => a + r.pts, 0), reason: rs[0] });
+        });
+      });
+      return out.sort((a, b) => b.score - a.score);
+    }
+    function dayFill() {   // keep the user's picks; refill suggested or empty slots with Hodo's best
+      dayS.slots = dayS.slots.map(x => { const f = x && dayFind(x.id); return x && dayOpen(f) ? x : null; });
+      const taken = new Set(dayS.slots.filter(x => x && x.mine).map(x => String(x.id)));
+      const yp = dayYPending(), pool = dayRank().filter(c => !taken.has(String(c.id)) && !yp.has(String(c.id)));   // yesterday's unsettled Three wait in Settle yesterday
+      let k = 0;
+      dayS.slots = dayS.slots.map(x => (x && x.mine) ? x : (pool[k] ? { id: pool[k++].id, mine: false } : null));
+    }
+    function dayReason(id) { const c = dayRank().find(x => String(x.id) === String(id)); return c ? c.reason : null; }
+    // ---- "since yesterday": what changed and needs an answer ----
+    function daySince() {
+      const items = [], done = new Set(dayS.settled || []), inSlots = new Set(dayS.slots.filter(Boolean).map(x => String(x.id))), today = hzDay(new Date());
+      try { (deep.items || []).forEach(t => { const m = deepMeta(t); if (m.resurface && hzDay(m.resurface) <= today) items.push({ k: 'pk:' + hzKey(t), t, kind: 'parked' }); }); } catch (e) {}
+      sections.forEach(sec => { if (isDoneSection(sec.id)) return; (tasks[sec.id] || []).forEach(t => {
+        if (t.checked || inSlots.has(String(t.id))) return; const info = splitNoteCapsules(t.note || '');
+        if (info.deadline && kDiff(info.deadline) <= 0) items.push({ k: 'dl:' + hzKey(t) + ':' + ymd(info.deadline), t, kind: 'deadline', d: kDiff(info.deadline), dl: info.deadline }); }); });
+      return items.filter(x => !done.has(x.k)).slice(0, 4);
+    }
+    const daySettle = k => { if (!dayS.settled.includes(k)) dayS.settled.push(k); daySave(); };
+    // ---- the page ----
+    const DAY_SUN = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.8v1.4M8 12.8v1.4M1.8 8h1.4M12.8 8h1.4M3.6 3.6l1 1M11.4 11.4l1 1M3.6 12.4l1-1M11.4 4.6l1-1"/></svg>';
+    const DAY_IC = { wait: '<svg viewBox="0 0 16 16"><path d="M4.8 2.6h6.4M4.8 13.4h6.4M5.5 2.6c0 3.1 5 3.1 5 5.4s-5 2.3-5 5.4M10.5 2.6c0 3.1-5 3.1-5 5.4s5 2.3 5 5.4"/></svg>',
+      park: '<svg viewBox="0 0 16 16"><rect x="2.2" y="2.2" width="11.6" height="11.6" rx="3"/><path d="M6.4 11.2V4.9h2.3a1.9 1.9 0 0 1 0 3.8H6.4"/></svg>',
+      flag: '<svg viewBox="0 0 16 16"><path d="M4 14V2.5M4 3h7.5l-1.8 2.7L11.5 8.5H4"/></svg>', focus: '<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.6"/><circle cx="8" cy="8" r="2.2"/></svg>',
+      check: '<svg viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.6"/></svg>', swap: '<svg viewBox="0 0 16 16"><path d="M3 5.5h9l-2.5-2.5M13 10.5H4l2.5 2.5"/></svg>',
+      more: '<svg viewBox="0 0 16 16"><circle cx="3.6" cy="8" r="1.1"/><circle cx="8" cy="8" r="1.1"/><circle cx="12.4" cy="8" r="1.1"/></svg>', x: '<svg viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>' };
+    const WHEN = [['am', 'Morning'], ['lunch', 'After lunch'], ['pm', 'Afternoon']];
+    let dayPanel = null, dayPick = null, dayAlsoOpen = false, dayWeekOpen = false, daySettleOpen = false, dayConfirm = null;
+    const dayDate = () => new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+    const dayEsc = s => escapeHtml(cleanTitle(String(s || '')));
+    function dayChip(r) { return r ? `<span class="ln-chip ${r.cls || ''}">${escapeHtml(r.txt)}</span>` : ''; }
+    function dayRender() {
+      if (!dayPanel) return;
+      if (dayS.state === 'active') dayRenderDay(); else if (dayS.state === 'released') dayRenderReleased(); else dayRenderLaunch();
+      dayTabPaint();
+    }
+    function dayGreeting() { const h = new Date().getHours(); return h < 12 ? 'Good morning.' : h < 17 ? 'Good afternoon.' : 'Good evening.'; }
+    function dayRenderLaunch() {
+      dayFill(); daySave();
+      const since = daySince(), yp = dayYPending(), cands = dayRank().filter(c => daySlotOf(c.id) < 0 && !yp.has(String(c.id)));
+      const top = cands.slice(0, 3), topIds = new Set(top.map(c => String(c.id)));
+      const pid = hzPendingId(), weekRest = pid ? (tasks[pid] || []).filter(t => !t.checked && hzZone(t) !== 'cu' && daySlotOf(t.id) < 0 && !topIds.has(String(t.id))) : [];
+      const slot = (x, i) => {
+        if (!x) return `<div class="ln-slot" data-slot="${i}"><span class="n">${i + 1}</span><div class="ln-empty">Pick a task, or keep Hodo's suggestion</div></div>`;
+        const f = dayFind(x.id); if (!f) return '';
+        const dn = doneOf(f.task.description), w = dayS.when[String(x.id)];
+        return `<div class="ln-slot${x.mine ? ' solid' : ''}" data-slot="${i}"><span class="n">${i + 1}</span>
+          <div class="ln-card" draggable="true" data-id="${x.id}"><button type="button" class="ln-x" data-out="${i}" title="Send it back">${DAY_IC.x}</button><div class="t">${dayEsc(f.task.title)}</div>${dayChip(dayReason(x.id))}${x.mine ? '' : '<span class="ln-sugg">Suggested</span>'}
+            <label class="ln-done${dn ? '' : ' ask'}"><b>Done =</b><input data-done="${x.id}" value="${escapeHtml(dn)}" placeholder="what does finished look like?" autocomplete="off"></label></div>
+          <div class="ln-when">${WHEN.map(([k, l]) => `<button type="button" data-when="${k}" data-id="${x.id}" class="${w === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>`;
+      };
+      const sinceRow = it => {
+        const t = it.t, title = `<b>${dayEsc(t.title)}</b>`;
+        const what = it.kind === 'parked' ? `${title} <span class="q">is back from Parked</span>` : `${title} <span class="q">${it.d === 0 ? 'deadline today' : `deadline was ${kShort(it.dl)} · ${-it.d} day${it.d === -1 ? '' : 's'} late`}</span>`;
+        const acts = it.kind === 'parked' ? `<button class="ln-btn" data-sa="week">This week</button><button class="ln-btn quiet" data-sa="again">Park again</button>` : `<button class="ln-btn" data-sa="date">New date</button><button class="ln-btn quiet" data-sa="park">Park it</button>`;
+        return `<div class="ln-row" data-k="${escapeHtml(it.k)}"><span class="ic">${it.kind === 'parked' ? DAY_IC.park : DAY_IC.flag}</span><span class="w">${what}</span><span class="acts"><button class="ln-btn ln-sq" data-sa="today" title="Add to today's Three">${DAY_SUN}</button>${acts}</span></div>`;
+      };
+      const filled = dayS.slots.filter(Boolean).length;
+      dayPanel.innerHTML = `<div class="ln-in">
+        <div class="ln-date">${escapeHtml(dayDate())}</div>
+        <h1>${dayGreeting()} Choose today's Three.</h1>
+        <div class="ln-sub">Three things that would make today a good day. Hodo has a suggestion ready; swap anything you like.</div>
+        ${since.length ? `<div class="ln-lbl">Since yesterday <span class="count">${since.length}</span></div><div class="ln-since">${since.map(sinceRow).join('')}</div>` : ''}
+        <div class="ln-lbl" id="dayThreeLbl">Today's Three</div>
+        <div class="ln-slots${dayPick ? ' picking' : ''}">${dayS.slots.map(slot).join('')}</div>
+        ${top.length ? `<div class="ln-lbl">Other candidates <span class="count">${top.length}</span></div>
+        <div class="ln-cands">${top.map(c => `<div class="ln-cand" draggable="true" data-id="${c.id}" title="Add to today's Three"><div class="t">${dayEsc(c.task.title)}</div>${dayChip(c.reason)}</div>`).join('')}</div>` : ''}
+        ${weekRest.length ? `<button type="button" class="ln-more${dayWeekOpen ? ' on' : ''}" data-more="week">${HZ_CHEV}Everything in This week <span class="count">${weekRest.length}</span></button>
+          ${dayWeekOpen ? `<div class="ln-weeklist">${weekRest.map(t => `<div class="ln-wrow" draggable="true" data-id="${t.id}">${dayEsc(t.title)}</div>`).join('')}</div>` : ''}` : ''}
+        <div class="ln-foot">
+          <span class="ln-real"><i></i>${filled === 3 ? 'Three promises. Room for a bonus if they go well.' : filled ? `${filled} of 3 chosen.` : 'Nothing to suggest yet. Pick from This week.'}</span>
+          <button type="button" class="ln-skip" data-act="notnow">Not now</button>
+          <button type="button" class="ln-go hold" data-act="hold"${filled ? '' : ' disabled'}><svg class="trace" preserveAspectRatio="none"><rect pathLength="1"/></svg><span class="fill"></span><span class="lbl">${dayHoldLabel()}</span></button>
+        </div>
+        <div class="ln-hint" hidden>Keep holding to commit</div>
+      </div>`;
+      dayWireLaunch(since);
+    }
+    function dayHoldLabel() { let n = 0; try { n = +localStorage.getItem('koi-day-starts') || 0; } catch (e) {} return n >= 7 ? 'Start the day' : 'Hold to start the day'; }
+    function dayPlace(id, slotIdx, srcEl) {
+      if (daySlotOf(id) >= 0) return;
+      let i = slotIdx;
+      if (i == null) { i = dayS.slots.findIndex(x => !x || !x.mine); if (i < 0) { dayPick = id; dayRender(); return; } }
+      dayPick = null;
+      dayS.slots[i] = { id, mine: true }; daySave();
+      dayRender();
+      const slot = dayPanel.querySelector(`.ln-slot[data-slot="${i}"]`), card = slot && slot.querySelector('.ln-card');
+      if (card && !reduceMotion) card.animate([{ transform: 'translateY(-6px) scale(1.02)' }, { transform: 'translateY(1px) scale(.995)', offset: .6 }, { transform: 'none' }], { duration: 380, easing: 'ease-out' });
+      if (slot) dayRing(slot, 1.1, 750);
+      dayHeart.note(i);
+    }
+    function dayRing(el, scale, dur, rad) {
+      if (reduceMotion) return; const r = el.getBoundingClientRect(); const d = document.createElement('div'); d.className = 'day-ring';
+      Object.assign(d.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: (rad || 14) + 'px' }); document.body.appendChild(d);
+      d.animate([{ transform: 'scale(1)', opacity: .55 }, { transform: `scale(${scale})`, opacity: 0 }], { duration: dur, easing: 'cubic-bezier(.2,.6,.3,1)', fill: 'forwards' }).onfinish = () => d.remove();
+    }
+    function dayWireLaunch(since) {
+      const P = dayPanel, q = s => P.querySelector(s);
+      P.querySelectorAll('.ln-cand, .ln-wrow').forEach(c => {
+        c.addEventListener('click', () => dayPlace(+c.dataset.id || c.dataset.id));
+        c.addEventListener('dragstart', e => { e.dataTransfer.setData('text/day', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; });
+      });
+      P.querySelectorAll('.ln-slot').forEach(s => {
+        const i = +s.dataset.slot;
+        s.addEventListener('click', e => { if (dayPick == null || e.target.closest('input, button')) return; const id = dayPick; dayS.slots[i] = null; dayPlace(id, i); });
+        s.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/day')) { e.preventDefault(); s.classList.add('over'); } });
+        s.addEventListener('dragleave', () => s.classList.remove('over'));
+        s.addEventListener('drop', e => { const id = e.dataTransfer.getData('text/day'); if (!id) return; e.preventDefault(); s.classList.remove('over');
+          const f = dayFind(id); if (!f) return; const from = daySlotOf(f.task.id); if (from === i) return;
+          if (from >= 0) { const tmp = dayS.slots[i]; dayS.slots[i] = Object.assign({}, dayS.slots[from], { mine: true }); dayS.slots[from] = tmp; daySave(); dayRender(); dayHeart.note(i); return; }
+          dayS.slots[i] = null; dayPlace(f.task.id, i); });
+      });
+      P.querySelectorAll('.ln-slot .ln-card').forEach(c => c.addEventListener('dragstart', e => { e.dataTransfer.setData('text/day', c.dataset.id); }));
+      P.querySelectorAll('[data-out]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const i = +b.dataset.out; const x = dayS.slots[i]; dayS.slots[i] = null; if (x) { dayS.skip = (dayS.skip || []).concat(String(x.id)); } daySave(); dayRender(); }));
+      P.querySelectorAll('[data-done]').forEach(inp => {
+        inp.addEventListener('input', () => { const f = dayFind(inp.dataset.done); if (!f) return; setDone(f.task, inp.value); inp.closest('.ln-done').classList.toggle('ask', !inp.value.trim()); clearTimeout(inp._t); inp._t = setTimeout(markChanged, 400); });
+        inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } });
+      });
+      P.querySelectorAll('[data-when]').forEach(b => b.addEventListener('click', () => { const id = b.dataset.id, on = dayS.when[id] === b.dataset.when; if (on) delete dayS.when[id]; else dayS.when[id] = b.dataset.when; daySave();
+        b.parentNode.querySelectorAll('button').forEach(x => x.classList.toggle('on', !on && x === b)); }));
+      P.querySelectorAll('.ln-row').forEach(row => {
+        const it = since.find(x => x.k === row.dataset.k); if (!it) return;
+        row.querySelectorAll('[data-sa]').forEach(b => b.addEventListener('click', e => {
+          e.stopPropagation(); const a = b.dataset.sa, t = it.t;
+          if (it.kind === 'parked' && (a === 'today' || a === 'week')) {
+            const id = t.id; try { deepBringUp(t, '', null, true); } catch (x) {}
+            const f = dayFind(id); if (f && f.sectionId === hzPendingId()) { hzSet(f.task, 'week'); markChanged(); }
+            daySettle(it.k); if (a === 'today' && f) dayPlace(f.task.id); else dayRender(); return;
+          }
+          if (a === 'again') { const m = deepMeta(t); m.resurface = pkUntilDate('week'); m.kept = new Date(); deepSetMeta(t, m); deepChanged(false); daySettle(it.k); dayRender(); return; }
+          if (a === 'today') { daySettle(it.k); dayPlace(t.id); return; }
+          if (a === 'date') { openFieldPop(t, 'deadline', b); daySettle(it.k); return; }
+          if (a === 'park') { daySettle(it.k); sinkTask(t, null); setTimeout(dayRender, 50); return; }
+        }));
+      });
+      const more = q('[data-more="week"]'); if (more) more.addEventListener('click', () => { dayWeekOpen = !dayWeekOpen; dayRender(); });
+      q('[data-act="notnow"]').addEventListener('click', () => { dayS.state = 'skip'; daySave(); dayTabPaint(); switchMainTab('tasks'); });
+      dayWireHold(q('[data-act="hold"]'));
+    }
+    // ---- the 2-second hold ----
+    const DAY_HOLD = 2000;
+    function dayWireHold(btn) {
+      if (!btn || btn.disabled) return;
+      const trace = btn.querySelector('rect'), hint = dayPanel.querySelector('.ln-hint');
+      let anim = null, timers = [], stopHum = null, done = false, holding = false;
+      const lit = () => [...dayPanel.querySelectorAll('.ln-slot')];
+      const start = () => {
+        if (holding || done) return; holding = true; hint.hidden = true;
+        btn.classList.add('holding');
+        anim = trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: DAY_HOLD, easing: 'linear', fill: 'forwards' });
+        stopHum = dayHeart.hum(DAY_HOLD / 1000);
+        [0, 1, 2].forEach(i => timers.push(setTimeout(() => {
+          const s = lit()[i]; if (s && dayS.slots[i]) { s.classList.add('lit'); s.querySelector('.n').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.35)' }, { transform: 'scale(1)' }], { duration: 380 }); dayRing(s, 1.06, 600); dayHeart.note(i); }
+        }, DAY_HOLD * (i + 1) / 3 - (i === 2 ? 20 : 0))));
+        timers.push(setTimeout(() => { done = true; holding = false; if (stopHum) stopHum(); dayCommit(btn); }, DAY_HOLD));
+      };
+      const cancel = () => {
+        if (!holding || done) return; holding = false; timers.forEach(clearTimeout); timers = []; if (stopHum) stopHum();
+        btn.classList.remove('holding');
+        if (anim) { const cur = +getComputedStyle(trace).strokeDashoffset || 0; anim.cancel(); trace.animate([{ strokeDashoffset: cur }, { strokeDashoffset: 1 }], { duration: 300, easing: 'ease-out' }); }
+        lit().forEach(s => s.classList.remove('lit')); hint.hidden = false;
+      };
+      btn.addEventListener('pointerdown', e => { e.preventDefault(); btn.setPointerCapture && btn.setPointerCapture(e.pointerId); start(); });
+      btn.addEventListener('pointerup', cancel); btn.addEventListener('pointercancel', cancel); btn.addEventListener('lostpointercapture', cancel);
+      btn.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) { e.preventDefault(); start(); } });
+      btn.addEventListener('keyup', e => { if (e.key === 'Enter' || e.key === ' ') cancel(); });
+      btn.addEventListener('click', e => e.preventDefault());
+    }
+    function dayWritePicks(on) {
+      const today = hzDay(new Date());
+      sections.forEach(sec => (tasks[sec.id] || []).forEach(t => {
+        const info = splitNoteCapsules(t.note || ''), i = daySlotOf(t.id), want = on && i >= 0;
+        const has = info.pick && info.pick.date && hzSame(info.pick.date, today);
+        if (want) { info.pick = { n: i + 1, date: today }; t.note = composeNote(info, t.checked); }
+        else if (has) { info.pick = null; t.note = composeNote(info, t.checked); }
+      }));
+    }
+    function dayCommit(btn) {
+      dayS.state = 'active'; dayS.slots = dayS.slots.map(x => x ? { id: x.id, mine: true } : null); dayS.committedAt = Date.now(); daySave();
+      try { localStorage.setItem('koi-day-starts', String((+localStorage.getItem('koi-day-starts') || 0) + 1)); } catch (e) {}
+      dayWritePicks(true); markChanged();
+      const fill = btn.querySelector('.fill');
+      btn.classList.remove('holding'); btn.classList.add('done'); btn.querySelector('.lbl').innerHTML = 'Today’s promise ✓';
+      if (!reduceMotion) {
+        fill.animate([{ transform: 'scale(.2)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 280, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+        btn.animate([{ transform: 'scale(.97)' }, { transform: 'scale(1.05)', offset: .45 }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' });
+        dayRing(btn, 1.6, 900, 12);
+      } else { fill.style.transform = 'scale(1)'; fill.style.opacity = 1; }
+      dayHeart.chord();
+      setTimeout(() => {
+        dayHeart.swell();
+        const three = dayPanel.querySelector('.ln-slots');
+        if (three && !reduceMotion) {
+          const r = three.getBoundingClientRect(), wx = r.left + r.width / 2, wy = r.top + r.height / 2, R0 = 1400;
+          const w = document.createElement('div'); w.className = 'day-wave'; Object.assign(w.style, { left: (wx - R0) + 'px', top: (wy - R0) + 'px', width: 2 * R0 + 'px', height: 2 * R0 + 'px' }); document.body.appendChild(w);
+          w.animate([{ transform: 'scale(.12)', opacity: 1 }, { transform: 'scale(1)', opacity: 0 }], { duration: 1500, easing: 'cubic-bezier(.25,.6,.35,1)', fill: 'forwards' }).onfinish = () => w.remove();
+          dayPanel.querySelectorAll('.ln-since, .ln-cands, .ln-more, .ln-weeklist, .ln-lbl:not(#dayThreeLbl), .ln-sub, .ln-real, .ln-skip').forEach(el => {
+            const b = el.getBoundingClientRect(), d = Math.hypot(b.left + b.width / 2 - wx, b.top + b.height / 2 - wy); el.style.transition = 'opacity .6s'; setTimeout(() => { el.style.opacity = '.35'; }, d * 0.9); });
+          dayPanel.querySelectorAll('.ln-sugg').forEach(x => x.style.opacity = '0');
+        }
+        setTimeout(() => { dayRender(); renderTasks(); }, reduceMotion ? 200 : 1500);
+      }, 230);
+    }
+    // ---- The Day ----
+    function dayOrder() {   // the Three in the order they'll be done: by their part of the day, then their number
+      const rank = { am: 0, lunch: 1, pm: 2 };
+      return dayS.slots.map((x, i) => x && { x, i }).filter(Boolean).sort((a, b) => ((rank[dayS.when[String(a.x.id)]] ?? 1.5) - (rank[dayS.when[String(b.x.id)]] ?? 1.5)) || a.i - b.i);
+    }
+    function dayNextUp() { const o = dayOrder().find(o => dayOpen(dayFind(o.x.id))); return o ? o.x.id : null; }
+    function dayKeptCount() { return dayS.slots.filter(x => x && dayDoneTask(dayFind(x.id))).length; }
+    function dayRingSvg(k, n, size) {
+      const r = size / 2 - 3, c = 2 * Math.PI * r, seg = n ? c / n : c, gap = n > 1 ? 4 : 0;
+      let arcs = ''; for (let i = 0; i < n; i++) arcs += `<circle class="${i < k ? 'fg' : 'bg'}" cx="${size / 2}" cy="${size / 2}" r="${r}" stroke-dasharray="${Math.max(0, seg - gap)} ${c}" stroke-dashoffset="${-i * seg}"/>`;
+      return `<svg class="dy-ring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${arcs}<text x="${size / 2}" y="${size / 2 + 4}" text-anchor="middle">${k}/${n}</text></svg>`;
+    }
+    function dayRenderDay() {
+      const n = dayS.slots.filter(Boolean).length, k = dayKeptCount(), next = dayNextUp(), ph = dayPhase();
+      const head = k >= n && n ? (n === 3 ? 'All three kept. Anything else is a bonus.' : 'Every promise kept. Anything else is a bonus.') : (ph === 'last' || ph === 'after') ? 'Good work today. Ready to land it?' : !k ? 'Your day is set. Let’s make it count.' : `${['', 'One', 'Two'][k] || k} kept. ${['', 'One', 'Two'][n - k] || n - k} to go.`;
+      const order = dayOrder();
+      const card = ({ x, i }) => {
+        const f = dayFind(x.id); if (!f) return '';
+        if (dayDoneTask(f)) { const at = dayS.kept[String(x.id)]; return `<div class="dy-card kept" data-id="${x.id}"><span class="n">${i + 1}</span><div class="body"><div class="t">${dayEsc(f.task.title)}</div></div><span class="dy-kept-l">Kept${at ? ' · ' + new Date(at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : ''}</span></div>`; }
+        const dn = doneOf(f.task.description), w = WHEN.find(([kk]) => kk === dayS.when[String(x.id)]);
+        return `<div class="dy-card" data-id="${x.id}"><span class="n">${i + 1}</span><div class="body"><div class="t">${dayEsc(f.task.title)}${String(next) === String(x.id) ? ' <span class="dy-nextup">Next up</span>' : ''}</div>
+          <div class="meta">${w ? `<span class="dy-when">${w[1]}</span>` : ''}${dayChip(dayReason(x.id))}</div>
+          ${dn ? `<div class="done-l"><b>Done =</b> ${escapeHtml(dn)}</div>` : `<label class="ln-done ask dy-ask"><b>Done =</b><input data-done="${x.id}" placeholder="what does finished look like?" autocomplete="off"></label>`}</div>
+          <div class="acts"><button class="dy-btn" data-dy="focus">${DAY_IC.focus}Focus</button><button class="dy-btn pri" data-dy="done">${DAY_IC.check}Done</button><button class="dy-btn sq" data-dy="swap" title="Swap for another task">${DAY_IC.swap}</button></div></div>`;
+      };
+      dayS.also = (dayS.also || []).filter(id => dayFind(id));
+      const allKept = n && k >= n, firstOpenAlso = dayS.also.find(id => dayOpen(dayFind(id)));
+      const also = dayS.also.map(id => { const f = dayFind(id); const dn = dayDoneTask(f);
+        return `<div class="dy-row${dn ? ' done' : ''}" data-id="${id}"><button type="button" class="tick" data-also="done" title="${dn ? 'Done' : 'Mark done'}"></button><span class="tx">${dayEsc(f.task.title)}</span>${allKept && String(id) === String(firstOpenAlso) ? '<span class="dy-bonus">Bonus?</span>' : ''}<button type="button" class="dy-rm" data-also="rm" title="Take off today">${DAY_IC.x}</button></div>`; }).join('');
+      let waits = [];
+      try { const db = waitSync(); sections.filter(s => isWaitSection(s.id)).forEach(s => (tasks[s.id] || []).forEach(t => { const st = waitState(t, db[wKey(t)] || { since: wDay(Date.now()), nudges: [] }); if (st.nIn <= 0 && !st.nudgedToday) waits.push({ t, st }); })); } catch (e) {}
+      const since = daySince();
+      const pid = hzPendingId(), weekPool = pid ? (tasks[pid] || []).filter(t => !t.checked && hzZone(t) !== 'cu' && daySlotOf(t.id) < 0 && !dayS.also.some(a => String(a) === String(t.id))) : [];
+      const h = dayHours(), foot = ph === 'off' ? 'Not a workday' : ph === 'before' ? `Your workday starts at ${dayFmt(h.s)}` : ph === 'after' ? 'Your workday has ended' : (() => { const left = Math.max(0, Math.round((dayMin(h.e) - dayNow()) / 60)); return left >= 1 ? `About ${left} hour${left === 1 ? '' : 's'} left in your workday` : `Less than an hour left in your workday`; })();
+      dayPanel.innerHTML = `<div class="ln-in">
+        <div class="ln-date">${escapeHtml(dayDate())}<button type="button" class="dy-more" data-dy="more" title="More">${DAY_IC.more}</button></div>
+        ${dayConfirm ? dayConfirmHtml() : ''}
+        <div class="dy-top">${dayRingSvg(k, n, 46)}<div><div class="dy-k">Today’s promise · ${k} of ${n} kept</div><div class="dy-h">${head}</div></div></div>
+        <div class="dy-three">${order.map(card).join('')}</div>
+        <div class="dy-cols">
+          <div><div class="ln-lbl">Also today${dayS.also.length ? ` <span class="count">${dayS.also.filter(id => dayDoneTask(dayFind(id))).length} of ${dayS.also.length}</span>` : ''}</div>
+            <div class="dy-also">${also}${dayS.also.length < 5 ? `<button type="button" class="dy-add" data-also="add">+ Add from This week</button>` : ''}
+            ${dayAlsoOpen ? `<div class="dy-pickw">${weekPool.length ? weekPool.slice(0, 10).map(t => `<button type="button" data-addalso="${t.id}">${dayEsc(t.title)}</button>`).join('') : '<span>Nothing else in This week.</span>'}</div>` : ''}</div></div>
+          <div><div class="ln-lbl">Waiting on <span class="count">${waits.length}</span></div>
+            <div class="dy-also">${waits.length ? waits.map(({ t, st }) => `<div class="dy-row" data-id="${t.id}"><span class="dy-av">${escapeHtml((whoShort(waitWho(st.info)) || '?').charAt(0).toUpperCase())}</span><span class="tx">${escapeHtml(whoShort(waitWho(st.info)) || 'Someone')} <span class="q">· ${dayEsc(t.title)}</span></span><button type="button" class="ln-btn r" data-nudge="${t.id}">Nudge</button></div>`).join('') : '<div class="dy-none">Nobody to nudge today.</div>'}</div></div>
+        </div>
+        ${since.length ? `<button type="button" class="dy-settle${daySettleOpen ? ' on' : ''}" data-dy="settle">${HZ_CHEV}${since.length} still to settle from this morning</button>${daySettleOpen ? `<div class="ln-since">${since.map(it => `<div class="ln-row"><span class="ic">${it.kind === 'parked' ? DAY_IC.park : DAY_IC.flag}</span><span class="w"><b>${dayEsc(it.t.title)}</b> <span class="q">${it.kind === 'parked' ? 'is back from Parked' : it.d === 0 ? 'deadline today' : `deadline was ${kShort(it.dl)}`}</span></span><span class="acts"><button class="ln-btn quiet" data-ok="${escapeHtml(it.k)}">Seen</button></span></div>`).join('')}</div>` : ''}` : ''}
+        <div class="dy-foot"><span>${foot}</span></div>
+      </div>`;
+      dayWireDay();
+    }
+    function dayConfirmHtml() {
+      if (dayConfirm === 'keep') { const open = dayS.slots.map((x, i) => x && dayOpen(dayFind(x.id)) ? { x, i } : null).filter(Boolean);
+        return `<div class="dy-confirm"><span>Keep which one?</span>${open.map(({ x, i }) => `<button type="button" class="ln-btn" data-keepone="${i}">${i + 1} · ${dayEsc(dayFind(x.id).task.title).slice(0, 34)}</button>`).join('')}<button type="button" class="ln-btn quiet" data-cf="cancel">Cancel</button></div>`; }
+      return `<div class="dy-confirm"><span>Release today’s promise? Your tasks stay exactly where they are.</span><button type="button" class="ln-btn" data-cf="keep">Keep just one</button><button type="button" class="ln-btn" data-cf="release">Release</button><button type="button" class="ln-btn quiet" data-cf="cancel">Cancel</button></div>`;
+    }
+    function dayWireDay() {
+      const P = dayPanel;
+      P.querySelectorAll('.dy-card:not(.kept)').forEach(c => {
+        const id = c.dataset.id, f = () => dayFind(id);
+        c.querySelector('[data-dy="focus"]').addEventListener('click', () => { const x = f(); if (x) openFocus({ taskId: x.task.id }); });
+        c.querySelector('[data-dy="done"]').addEventListener('click', e => { const x = f(); if (x) dayFinish(x, e.currentTarget); });
+        c.querySelector('[data-dy="swap"]').addEventListener('click', e => daySwapPop(+id || id, e.currentTarget));
+      });
+      P.querySelectorAll('[data-done]').forEach(inp => {
+        inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const f = dayFind(inp.dataset.done); if (f && inp.value.trim()) { setDone(f.task, inp.value); markChanged(); dayRender(); } } });
+        inp.addEventListener('blur', () => { const f = dayFind(inp.dataset.done); if (f && inp.value.trim()) { setDone(f.task, inp.value); markChanged(); setTimeout(dayRender, 0); } });
+      });
+      P.querySelectorAll('.dy-row[data-id] [data-also]').forEach(b => b.addEventListener('click', () => {
+        const id = b.closest('.dy-row').dataset.id, f = dayFind(id);
+        if (b.dataset.also === 'rm') { dayS.also = dayS.also.filter(a => String(a) !== String(id)); daySave(); dayRender(); return; }
+        if (f && dayOpen(f)) dayFinish(f, b);
+      }));
+      const add = P.querySelector('[data-also="add"]'); if (add) add.addEventListener('click', () => { dayAlsoOpen = !dayAlsoOpen; dayRender(); });
+      P.querySelectorAll('[data-addalso]').forEach(b => b.addEventListener('click', () => { const f = dayFind(b.dataset.addalso); if (f) dayS.also.push(f.task.id); dayAlsoOpen = false; daySave(); dayRender(); }));
+      P.querySelectorAll('[data-nudge]').forEach(b => b.addEventListener('click', () => { const f = dayFind(b.dataset.nudge); if (f) { try { waitNudge(f.task); } catch (e) {} setTimeout(dayRender, 60); } }));
+      const st = P.querySelector('[data-dy="settle"]'); if (st) st.addEventListener('click', () => { daySettleOpen = !daySettleOpen; dayRender(); });
+      P.querySelectorAll('[data-ok]').forEach(b => b.addEventListener('click', () => { daySettle(b.dataset.ok); dayRender(); }));
+      P.querySelector('[data-dy="more"]').addEventListener('click', () => { dayConfirm = dayConfirm ? null : 'ask'; dayRender(); });
+      P.querySelectorAll('[data-cf]').forEach(b => b.addEventListener('click', () => {
+        const a = b.dataset.cf; if (a === 'cancel') { dayConfirm = null; dayRender(); } else if (a === 'keep') { dayConfirm = 'keep'; dayRender(); } else if (a === 'release') dayRelease(); }));
+      P.querySelectorAll('[data-keepone]').forEach(b => b.addEventListener('click', () => {
+        const i = +b.dataset.keepone; dayS.slots = dayS.slots.map((x, j) => (j === i || (x && dayDoneTask(dayFind(x.id)))) ? x : null); dayConfirm = null; daySave(); dayWritePicks(true); markChanged(); dayHeart.low(); dayRender(); renderTasks(); }));
+    }
+    function dayFinish(f, el) {
+      const id = f.task.id;
+      try { tdFinish(f, null); } catch (e) { const d = koiDoneTarget(); if (d) moveTaskToSection(f.task, d.id); }
+      setTimeout(() => { if (activeMainTab === 'day') dayRender(); }, 900);
+    }
+    // a promised task finished anywhere: its tone, the time it was kept, and a green drop into the promise ring
+    { const _asc2 = applyStatusChange; applyStatusChange = function (task, fromId, toId) {
+        const r = _asc2.apply(this, arguments);
+        try {
+          if (isDoneSection(toId) && !isDoneSection(fromId)) {
+            const i = daySlotOf(task.id);
+            if (dayActive() && i >= 0) {
+              dayS.kept[String(task.id)] = Date.now(); daySave();
+              setTimeout(() => dayHeart.note(i, 0.9), 200);
+              const src = document.querySelector(`#dayPanel .dy-card[data-id="${CSS.escape(String(task.id))}"]`) || findTaskEls(task.id)[0];
+              setTimeout(() => dayDrop(src), 60);
+              setTimeout(dayTabPaint, 900);
+            }
+          }
+        } catch (e) {}
+        return r;
+      }; }
+    function dayDrop(from) {
+      const to = (activeMainTab === 'day' && dayPanel && dayPanel.querySelector('.dy-ring')) || document.querySelector('#dayTabBtn .dt-ic');
+      if (!from || !to || reduceMotion || !isVisibleEl(from)) return;
+      const a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+      const x0 = a.left + Math.min(a.width - 16, 40), y0 = a.top + 18, x1 = b.left + b.width / 2, y1 = b.top + b.height / 2, mx = (x0 + x1) / 2, my = Math.min(y0, y1) - 60;
+      const dot = document.createElement('div'); dot.className = 'fx-fly'; fxLayer().appendChild(dot);
+      const pts = []; for (let i = 0; i <= 12; i++) { const t = i / 12, p = (1 - t) * (1 - t), q = 2 * (1 - t) * t, w = t * t; pts.push({ transform: `translate(${p * x0 + q * mx + w * x1}px, ${p * y0 + q * my + w * y1}px) scale(${1 - t * 0.35})` }); }
+      dot.animate(pts, { duration: 720, easing: 'cubic-bezier(.45,.05,.55,.95)', fill: 'forwards' }).onfinish = () => { dot.remove(); to.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 420 }); };
+    }
+    function daySwapPop(id, anchor) {
+      document.querySelectorAll('.dy-swap').forEach(x => x.remove());
+      const i = daySlotOf(id); if (i < 0) return;
+      const list = dayRank().filter(c => daySlotOf(c.id) < 0).slice(0, 6);
+      const p = document.createElement('div'); p.className = 'dy-swap cp-pop';
+      p.innerHTML = `<div class="cp-l">Swap for</div>${list.map(c => `<button type="button" data-sw="${c.id}"><span>${dayEsc(c.task.title)}</span></button>`).join('') || '<div class="dy-none">Nothing else to suggest.</div>'}`;
+      document.body.appendChild(p);
+      const r = anchor.getBoundingClientRect(); p.style.left = Math.max(8, Math.min(r.right - p.offsetWidth, innerWidth - p.offsetWidth - 8)) + 'px'; p.style.top = Math.min(r.bottom + 6, innerHeight - p.offsetHeight - 8) + 'px';
+      p.addEventListener('click', e => { const b = e.target.closest('[data-sw]'); if (!b) return; p.remove();
+        dayS.slots[i] = { id: +b.dataset.sw || b.dataset.sw, mine: true }; daySave(); dayWritePicks(true); markChanged(); dayRender(); renderTasks();
+        const c = dayPanel.querySelector(`.dy-card[data-id="${b.dataset.sw}"]`); if (c) dayRing(c, 1.05, 650); dayHeart.note(i); });
+      setTimeout(() => document.addEventListener('mousedown', function off(e) { if (!p.contains(e.target)) { p.remove(); document.removeEventListener('mousedown', off, true); } }, true), 0);
+    }
+    function dayRelease() {
+      dayConfirm = null; dayWritePicks(false); markChanged();
+      dayS.state = 'released'; daySave(); dayHeart.low();
+      const cards = dayPanel.querySelectorAll('.dy-card');
+      if (!reduceMotion && cards.length) { cards.forEach(c => c.animate([{ opacity: 1 }, { opacity: .3, transform: 'scale(.99)' }], { duration: 450, fill: 'forwards' })); setTimeout(() => { dayRender(); renderTasks(); }, 480); }
+      else { dayRender(); renderTasks(); }
+    }
+    function dayRenderReleased() {
+      const ph = dayPhase(), canPlan = ph !== 'after' && ph !== 'off';
+      dayPanel.innerHTML = `<div class="ln-in"><div class="dy-rest"><div class="ic">${DAY_SUN}</div><h2>Today’s promise released.</h2><p>Your tasks are where you left them.</p>
+        <div class="b">${canPlan ? '<button type="button" class="ln-btn" data-r="plan">Plan again</button>' : ''}<button type="button" class="ln-btn" data-r="tasks">Go to Tasks</button></div></div></div>`;
+      const pl = dayPanel.querySelector('[data-r="plan"]'); if (pl) pl.addEventListener('click', () => { dayS.state = 'plan'; dayS.slots = dayS.slots.map(x => x ? { id: x.id, mine: false } : null); daySave(); dayRender(); });
+      dayPanel.querySelector('[data-r="tasks"]').addEventListener('click', () => switchMainTab('tasks'));
+    }
+    // ---- the tab ----
+    const dayTabBtn = document.createElement('button');
+    dayTabBtn.id = 'dayTabBtn'; dayTabBtn.className = 'place-tab'; dayTabBtn.type = 'button';
+    dayTabBtn.innerHTML = '<span class="pk-ic pl-ic dt-ic"></span><span>Today</span>';
+    tasksTabBtn.before(dayTabBtn);
+    function dayTabPaint() {
+      const ic = dayTabBtn.querySelector('.dt-ic'), ph = dayPhase();
+      let cls = 'rest', html = DAY_SUN, tip = 'Today';
+      if (dayActive()) {
+        const n = dayS.slots.filter(Boolean).length, k = dayKeptCount(), r = 4.6, c = 2 * Math.PI * r, seg = n ? c / n : c;
+        let arcs = ''; for (let i = 0; i < n; i++) arcs += `<circle class="${i < k ? 'fg' : (ph === 'last' || ph === 'after') ? 'late' : 'bg'}" cx="6" cy="6" r="${r}" stroke-dasharray="${Math.max(0, seg - 1.6)} ${c}" stroke-dashoffset="${-i * seg}"/>`;
+        html = `<svg class="dt-ring" viewBox="0 0 12 12">${arcs}<circle class="core" cx="6" cy="6" r="1.7"/></svg>`; cls = 'active' + (k >= n && n ? ' full' : ''); tip = `Today’s promise · ${k} of ${n} kept`;
+      } else if ((dayS.state === 'plan' || dayS.state === 'skip') && (ph === 'before' || ph === 'work' || ph === 'last')) { cls = 'rest dot'; tip = 'Today · not planned yet'; }
+      ic.innerHTML = html; dayTabBtn.dataset.state = cls; dayTabBtn.classList.toggle('dt-active', cls.startsWith('active')); dayTabBtn.classList.toggle('dt-dot', cls.includes('dot')); dayTabBtn.title = tip;
+    }
+    // ---- the page and switching to it ----
+    dayPanel = document.createElement('section'); dayPanel.id = 'dayPanel'; dayPanel.className = 'day-panel';
+    tasksPanel.after(dayPanel);
+    { const _sw2 = switchMainTab; switchMainTab = function (tab) {
+        if (tab === 'day') {
+          activeMainTab = 'day';
+          tasksTabBtn.classList.remove('active'); memoryTabBtn.classList.remove('active'); dayTabBtn.classList.add('active');
+          tasksPanel.classList.remove('active'); memoryPanel.classList.remove('active'); dayPanel.classList.add('active');
+          taskViewToggle.style.display = 'none';
+          document.documentElement.classList.add('on-day');
+          try { closeTaskPanel(); } catch (e) {} try { selClear(true); } catch (e) {}
+          dayS = dayLoad(); dayRender(); window.scrollTo(0, 0); return;
+        }
+        dayTabBtn.classList.remove('active'); dayPanel.classList.remove('active'); document.documentElement.classList.remove('on-day');
+        return _sw2.apply(this, arguments);
+      }; }
+    dayTabBtn.addEventListener('click', () => switchMainTab('day'));
+    // other places (Parked, Waste Yard) still open over Tasks
+    // ---- the Three on the board and in the List ----
+    { const _cc3 = createCard; createCard = function (task) {
+        const card = _cc3.apply(this, arguments);
+        try { const i = daySlotOf(task.id); if (dayActive() && i >= 0 && !task.checked) { card.classList.add('day-three'); const n = document.createElement('span'); n.className = 'day-n'; n.textContent = i + 1; n.title = 'One of today’s Three'; card.prepend(n);
+            if (String(dayNextUp()) === String(task.id)) { const t = card.querySelector('.card-title'); if (t) t.insertAdjacentHTML('beforeend', ' <span class="dy-nextup">Next up</span>'); } } } catch (e) {}
+        return card;
+      }; }
+    { const _lvi2 = lvItem; lvItem = function (t) {
+        const item = _lvi2.apply(this, arguments);
+        try { const i = daySlotOf(t.id); if (dayActive() && i >= 0 && !t.checked) { item.classList.add('day-three'); const ti = item.querySelector('.lv-title'); if (ti) ti.insertAdjacentHTML('afterbegin', `<span class="day-n">${i + 1}</span>`);
+            if (String(dayNextUp()) === String(t.id) && ti) ti.insertAdjacentHTML('beforeend', ' <span class="dy-nextup">Next up</span>'); } } catch (e) {}
+        return item;
+      }; }
+    // ---- time passing: the light drifts across your working hours ----
+    const dayLight = document.createElement('div'); dayLight.className = 'day-light'; dayLight.setAttribute('aria-hidden', 'true'); document.body.prepend(dayLight);
+    function dayLightPaint() {
+      let off = false; try { off = localStorage.getItem('koi-time-light') === '0'; } catch (e) {}
+      if (off) { dayLight.style.background = 'none'; return; }
+      const h = dayHours(), s = dayMin(h.s), e = dayMin(h.e), n = dayNow(), dark = themeNow() === 'dark';
+      let p = !dayIsWork() ? 1 : n < s ? 0 : n >= e ? 1 : (n - s) / Math.max(1, e - s);
+      let q = Math.pow(p, 1.6); if (n >= e - 60 && n < e) q = Math.min(1, q + 0.08 * (1 - (e - n) / 60) + 0.04);
+      const cool = dark ? 0.20 * Math.pow(1 - p, 2) : 0.9 * Math.pow(1 - p, 1.6), warm = dark ? 0.22 * q : 0.68 * q;
+      const cc = dark ? '96,128,170' : '190,214,232', wc = dark ? '214,140,80' : '232,158,96', reach = dark ? 40 + 35 * p : 45 + 40 * p;
+      dayLight.style.background = `linear-gradient(180deg, rgba(${cc},${cool.toFixed(3)}) 0%, rgba(${cc},0) 45%), linear-gradient(0deg, rgba(${wc},${warm.toFixed(3)}) 0%, rgba(${wc},${(warm * 0.43).toFixed(3)}) ${(reach * 0.5).toFixed(0)}%, rgba(${wc},0) ${reach.toFixed(0)}%)`;
+    }
+    dayLightPaint();
+    setInterval(() => { dayLightPaint(); dayTabPaint(); if (dayS.date !== dayKey()) { dayS = dayLoad(); if (activeMainTab === 'day') dayRender(); } }, 60000);
+    new MutationObserver(dayLightPaint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    // ---- Hodo opens on Today each workday until the day is started or put off ----
+    (function dayAutoOpen() {
+      let tries = 0; const go = () => {
+        if (!sections.length) { if (++tries < 40) setTimeout(go, 250); return; }
+        let auto = true; try { auto = localStorage.getItem('koi-day-auto') !== '0'; } catch (e) {}
+        const ph = dayPhase();
+        dayTabPaint();
+        if (auto && dayS.state === 'plan' && (ph === 'before' || ph === 'work' || ph === 'last') && activeMainTab === 'tasks') switchMainTab('day');
+      }; setTimeout(go, 300);
+    })();
+    // keep the page fresh when tasks change elsewhere
+    { const _rt = renderTasks; renderTasks = function () { const r = _rt.apply(this, arguments); try { if (activeMainTab === 'day' && dayPanel && !dayPanel.querySelector('.holding, input:focus')) dayRender(); else dayTabPaint(); } catch (e) {} return r; }; }
+    // ---- the working-hours setting ----
+    (function dayHoursSetting() {
+      const wk = document.querySelector('#settingsPanel [data-pf-k="week"]'); const row = wk && wk.closest('.sp-row'); if (!row) return;
+      const h = dayHours(), r = document.createElement('div'); r.className = 'sp-row sp-row-stack';
+      r.innerHTML = `<div class="sp-rl"><span class="sp-rt">Working hours</span><span class="sp-hint">The hours you want your work to fit in, not every hour you might work. If you sometimes work late, Hodo still helps you aim to finish by the end of this range.</span></div>
+        <div class="sp-hours"><input type="time" data-hrs="s" value="${h.s}"><span>to</span><input type="time" data-hrs="e" value="${h.e}"></div>`;
+      row.after(r);
+      r.querySelectorAll('[data-hrs]').forEach(i => i.addEventListener('change', () => {
+        const s = r.querySelector('[data-hrs="s"]').value, e = r.querySelector('[data-hrs="e"]').value;
+        if (!s || !e || dayMin(e) <= dayMin(s)) { toast('The end has to be after the start.'); return; }
+        try { localStorage.setItem('koi-hours', JSON.stringify({ s, e })); } catch (x) {}
+        dayLightPaint(); dayTabPaint(); if (activeMainTab === 'day') dayRender();
+      }));
+    })();
+    // ===== Land (Oct 23): the evening =====
+    // From the last working hour The Day offers "Land the day". Land counts the day (moved forward, promises kept, bonus
+    // tasks, decisions), lists what got done (decisions included), gives each unfinished promise a home (Tomorrow · This
+    // week · Park), offers the nudges still due, catches what's on your mind into Captured and sets tomorrow's first move.
+    // "Close the day" (a click): the kept tones play, the chord resolves, the light dims, music fades, "Day closed."
+    // Skipped Land: tomorrow's Launch starts with "Settle yesterday". Unfinished bonuses return to This week on their own.
+    // Saved: homes as plain task changes (a due date, the This week tag, Parked); the rest lives in this browser.
+    const DAY_SET = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.6 11a3.4 3.4 0 0 1 6.8 0"/><path d="M1.8 11h12.4M3.4 13.4h9.2M8 3.6v1.6M3.3 5.9l1.1 1.1M12.7 5.9l-1.1 1.1"/></svg>';
+    const DAY_MOON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.8 9.9A5.4 5.4 0 0 1 6.1 3.2a5.4 5.4 0 1 0 6.7 6.7z"/></svg>';
+    const dayNight = () => themeNow() === 'dark';
+    const dayIsToday = d => d && hzSame(hzDay(d), hzDay(new Date()));
+    function dayPrevWork() { const d = hzDay(new Date()); do { d.setDate(d.getDate() - 1); } while (isWeekend(d)); return d; }
+    function dayNextWork() { const d = hzDay(new Date()); do { d.setDate(d.getDate() + 1); } while (isWeekend(d)); return d; }
+    let dayLandOpen = false, dayTmOpen = false;
+    // what happened today
+    function dayLedger() {
+      const prom = new Set(dayS.slots.filter(Boolean).map(x => String(x.id))), done = [], dec = [];
+      sections.forEach(sec => (tasks[sec.id] || []).forEach(t => {
+        const info = splitNoteCapsules(t.note || ''), f = { task: t, sectionId: sec.id };
+        const today = info.date && info.date.kind === 'done' && dayIsToday(info.date.date);
+        if ((today || (prom.has(String(t.id)) && dayDoneTask(f))) && dayDoneTask(f)) done.push({ t, i: daySlotOf(t.id), promise: prom.has(String(t.id)) });
+      }));
+      try { (deep.items || []).forEach(t => { const m = deepMeta(t); if (dayIsToday(m.added)) dec.push({ t, kind: 'parked' }); }); } catch (e) {}
+      try { (koiBin || []).forEach(t => { if (binInfo(t).day === ymd(new Date())) dec.push({ t, kind: 'let go' }); }); } catch (e) {}
+      done.sort((a, b) => (b.promise - a.promise) || (a.i - b.i));
+      const kept = done.filter(d => d.promise).length;
+      return { done, dec, kept, bonus: done.length - kept, moved: done.length + dec.length };
+    }
+    const dayOpenPromises = () => dayS.slots.map((x, i) => x && dayOpen(dayFind(x.id)) ? { x, i } : null).filter(Boolean);
+    function dayTmCands() {   // tomorrow's first move: promises going to tomorrow, then the other unfinished ones, then Hodo's best
+      const homes = dayS.homes || {}, seen = new Set(), out = [];
+      const push = (id, why) => { const k = String(id), f = dayFind(id); if (seen.has(k) || !dayOpen(f) || homes[k] === 'park') return; seen.add(k); out.push({ id: f.task.id, t: f.task, why }); };
+      dayOpenPromises().filter(o => (homes[String(o.x.id)] || 'tomorrow') === 'tomorrow').forEach(o => push(o.x.id, 'One of today’s Three'));
+      dayOpenPromises().forEach(o => push(o.x.id, 'One of today’s Three'));
+      (dayS.also || []).forEach(id => push(id, 'Also today'));
+      dayRank().forEach(c => push(c.id, c.reason ? c.reason.txt : ''));
+      return out;
+    }
+    function dayTomorrow() {
+      const c = dayTmCands();
+      if (dayS.tomorrow === '') return null;
+      if (dayS.tomorrow != null) { const f = c.find(x => String(x.id) === String(dayS.tomorrow)); if (f) return f; }
+      return c[0] || null;
+    }
+    const dayWaitsDue = () => { const w = []; try { const db = waitSync(); sections.filter(s => isWaitSection(s.id)).forEach(s => (tasks[s.id] || []).forEach(t => { const st = waitState(t, db[wKey(t)] || { since: wDay(Date.now()), nudges: [] }); if (st.nIn <= 0 && !st.nudgedToday) w.push({ t, st }); })); } catch (e) {} return w; };
+    function dayRenderLand() {
+      const L = dayLedger(), n = dayS.slots.filter(Boolean).length, open = dayOpenPromises(), homes = dayS.homes || (dayS.homes = {});
+      const waits = dayWaitsDue(), tm = dayTomorrow(), caught = dayS.caught || [];
+      const head = !L.moved ? 'A quiet day. Tomorrow is a fresh start.' : n && L.kept >= n ? 'Every promise kept. Well landed.' : L.kept ? `${L.moved} thing${L.moved === 1 ? '' : 's'} moved forward today.` : `${L.moved} thing${L.moved === 1 ? '' : 's'} moved forward today.`;
+      const tile = (v, l) => `<div class="lnd-tile"><b>${v}</b><span>${l}</span></div>`;
+      const doneRow = d => `<div class="dy-row done lnd-done"><span class="tick"></span>${d.promise ? `<span class="day-n">${d.i + 1}</span>` : ''}<span class="tx">${dayEsc(d.t.title)}</span><span class="lnd-tag${d.promise ? ' p' : ''}">${d.promise ? 'Promise' : 'Bonus'}</span></div>`;
+      const decRow = d => `<div class="dy-row lnd-dec"><span class="ic">${d.kind === 'parked' ? DAY_IC.park : DAY_IC.x}</span><span class="tx">${dayEsc(d.t.title)}</span><span class="lnd-tag">${d.kind === 'parked' ? 'Parked' : 'Let go'}</span></div>`;
+      const homeRow = ({ x, i }) => { const f = dayFind(x.id), h = homes[String(x.id)];
+        return `<div class="ln-row lnd-home" data-id="${x.id}"><span class="day-n">${i + 1}</span><span class="w"><b>${dayEsc(f.task.title)}</b></span><span class="lnd-seg">${[['tomorrow', 'Tomorrow'], ['week', 'This week'], ['park', 'Park']].map(([k, l]) => `<button type="button" data-home="${k}" class="${h === k ? 'on' : ''}">${l}</button>`).join('')}</span></div>`; };
+      dayPanel.innerHTML = `<div class="ln-in lnd">
+        <div class="ln-date">${escapeHtml(dayDate())}</div>
+        <h1>Here’s your day.</h1>
+        <div class="ln-sub">${head}</div>
+        <div class="lnd-sum">${dayRingSvg(L.kept, n, 64)}<div class="lnd-tiles">${tile(L.moved, 'Moved forward')}${tile(`${L.kept}<small> of ${n}</small>`, 'Promises kept')}${tile(L.bonus, 'Bonus tasks')}${tile(L.dec.length, 'Decisions made')}</div></div>
+        <div class="ln-lbl">Done today <span class="count">${L.done.length + L.dec.length}</span></div>
+        <div class="dy-also">${L.done.map(doneRow).join('')}${L.dec.map(decRow).join('')}${L.done.length + L.dec.length ? '' : '<div class="dy-none">Nothing finished today, and that’s fine. Some days are for the slow parts.</div>'}</div>
+        ${open.length ? `<div class="ln-lbl">Give it a home <span class="count">${open.length}</span></div><div class="ln-since">${open.map(homeRow).join('')}</div><div class="lnd-note">Anything you leave goes to tomorrow.</div>` : ''}
+        ${waits.length ? `<div class="ln-lbl">Before you go <span class="count">${waits.length}</span></div><div class="dy-also">${waits.map(({ t, st }) => `<div class="dy-row" data-id="${t.id}"><span class="dy-av">${escapeHtml((whoShort(waitWho(st.info)) || '?').charAt(0).toUpperCase())}</span><span class="tx">Nudge ${escapeHtml(whoShort(waitWho(st.info)) || 'someone')}? <span class="q">· ${dayEsc(t.title)}</span></span><button type="button" class="ln-btn r" data-nudge="${t.id}">Nudge</button></div>`).join('')}</div>` : ''}
+        <div class="ln-lbl">On your mind?</div>
+        <div class="lnd-mind"><input data-mind placeholder="Anything still in your head? It waits in Captured." autocomplete="off" maxlength="300"><button type="button" class="ln-btn" data-mindgo>Catch it</button></div>
+        ${caught.length ? `<div class="lnd-caught">${caught.map(c => `<span>${escapeHtml(c)}</span>`).join('')}</div>` : ''}
+        <div class="ln-lbl">Tomorrow starts with</div>
+        <div class="lnd-tm">${tm ? `<span class="day-n">1</span><span class="w"><b>${dayEsc(tm.t.title)}</b>${tm.why ? ` <span class="q">· ${escapeHtml(tm.why)}</span>` : ''}</span>` : '<span class="w q">Nothing set. Tomorrow’s Launch will suggest.</span>'}<button type="button" class="ln-btn quiet" data-tm>Change</button></div>
+        <div class="ln-foot lnd-foot"><button type="button" class="ln-skip" data-land="back">Back to the day</button><button type="button" class="ln-go lnd-close" data-land="close">${dayNight() ? DAY_MOON : DAY_SET}<span>Close the day</span></button></div>
+      </div>`;
+      dayWireLand();
+    }
+    function dayWireLand() {
+      const P = dayPanel;
+      P.querySelectorAll('.lnd-home').forEach(row => row.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click', () => {
+        const id = String(row.dataset.id), on = dayS.homes[id] === b.dataset.home;
+        if (on) delete dayS.homes[id]; else dayS.homes[id] = b.dataset.home;
+        row.querySelectorAll('[data-home]').forEach(x => x.classList.toggle('on', !on && x === b)); daySave();
+        if (!on) dayHeart.note(daySlotOf(row.dataset.id), 0.55);
+        if (dayS.tomorrow == null || b.dataset.home === 'park') { dayRender(); }
+      })));
+      P.querySelectorAll('[data-nudge]').forEach(b => b.addEventListener('click', () => { const f = dayFind(b.dataset.nudge); if (f) { try { waitNudge(f.task); } catch (e) {} setTimeout(dayRender, 60); } }));
+      const inp = P.querySelector('[data-mind]'), go = () => { const v = inp.value.trim(); if (!v) return;
+        const n = capCatch(v, 'typed'); if (!n) return; dayS.caught = (dayS.caught || []).concat(v.length > 60 ? v.slice(0, 58) + '…' : v); daySave(); dayRender();
+        const ni = dayPanel.querySelector('[data-mind]'); if (ni) ni.focus(); };
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+      P.querySelector('[data-mindgo]').addEventListener('click', go);
+      P.querySelector('[data-tm]').addEventListener('click', e => dayTmPop(e.currentTarget));
+      P.querySelector('[data-land="back"]').addEventListener('click', () => { dayS.landing = false; daySave(); dayRender(); });
+      P.querySelector('[data-land="close"]').addEventListener('click', e => dayClose(e.currentTarget));
+    }
+    function dayTmPop(anchor) {
+      document.querySelectorAll('.dy-swap').forEach(x => x.remove());
+      const list = dayTmCands().slice(0, 7), p = document.createElement('div'); p.className = 'dy-swap cp-pop';
+      p.innerHTML = `<div class="cp-l">Tomorrow starts with</div>${list.map(c => `<button type="button" data-tmv="${c.id}"><span>${dayEsc(c.t.title)}</span></button>`).join('')}<hr><button type="button" data-tmv=""><span>Nothing yet, let Launch suggest</span></button>`;
+      document.body.appendChild(p);
+      const r = anchor.getBoundingClientRect(); p.style.left = Math.max(8, Math.min(r.right - p.offsetWidth, innerWidth - p.offsetWidth - 8)) + 'px'; p.style.top = Math.max(8, Math.min(r.bottom + 6, innerHeight - p.offsetHeight - 8)) + 'px';
+      p.addEventListener('click', e => { const b = e.target.closest('[data-tmv]'); if (!b) return; p.remove(); dayS.tomorrow = b.dataset.tmv === '' ? '' : (+b.dataset.tmv || b.dataset.tmv); daySave(); dayRender(); });
+      setTimeout(() => document.addEventListener('mousedown', function off(e) { if (!p.contains(e.target)) { p.remove(); document.removeEventListener('mousedown', off, true); } }, true), 0);
+    }
+    // a home for a task: tomorrow (its day becomes the next workday), this week, or Parked
+    function dayHome(t, where) {
+      const f = dayFind(t.id); if (!f || !dayOpen(f)) return;
+      if (where === 'park') { sinkTask(f.task, null); return; }
+      const info = splitNoteCapsules(f.task.note || '');
+      if (where === 'tomorrow') { info.date = { kind: 'due', date: dayNextWork() }; f.task.note = composeNote(info, false); if (f.sectionId === hzPendingId()) hzSet(f.task, 'week'); return; }
+      if (info.date && info.date.kind === 'due' && info.date.date && kDiff(info.date.date) <= 0) info.date = null;
+      f.task.note = composeNote(info, false); if (f.sectionId === hzPendingId()) hzSet(f.task, 'week');
+    }
+    function dayBonusesHome(ids) { (ids || []).forEach(id => { const f = dayFind(id); if (dayOpen(f) && f.sectionId === hzPendingId()) dayHome(f.task, 'week'); }); }
+    function dayClose(btn) {
+      const tm = dayTomorrow(), homes = dayS.homes || {}, kept = dayS.slots.map((x, i) => x && dayDoneTask(dayFind(x.id)) ? i : -1).filter(i => i >= 0);
+      dayOpenPromises().forEach(({ x }) => dayHome(dayFind(x.id).task, homes[String(x.id)] || 'tomorrow'));
+      dayBonusesHome(dayS.also);
+      dayS.tomorrow = tm ? tm.id : ''; dayS.state = 'closed'; dayS.landing = false; dayS.closedAt = Date.now(); daySave(); markChanged();
+      try { if (typeof mu !== 'undefined' && mu.playing) muPause(); } catch (e) {}
+      btn.disabled = true;
+      kept.forEach((i, k) => setTimeout(() => dayHeart.note(i, 0.8), k * 420));
+      setTimeout(() => dayHeart.chord(0.85), kept.length * 420 + 80);
+      const T = reduceMotion ? 150 : kept.length * 420 + 1300;
+      if (!reduceMotion) {
+        const dim = document.createElement('div'); dim.className = 'day-dim'; document.body.appendChild(dim);
+        dim.animate([{ opacity: 0 }, { opacity: 1, offset: .55 }, { opacity: 0 }], { duration: T + 900, easing: 'ease-in-out', fill: 'forwards' }).onfinish = () => dim.remove();
+        dayPanel.querySelector('.ln-in').animate([{ opacity: 1 }, { opacity: .25, transform: 'translateY(6px)' }], { duration: T, easing: 'ease-in', fill: 'forwards' });
+      }
+      setTimeout(() => { dayLightPaint(); renderTasks(); dayRender(); const ic = dayPanel.querySelector('.dy-rest .ic'); if (ic && !reduceMotion) ic.animate([{ transform: 'translateY(8px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 900, easing: 'ease-out' }); }, T);
+    }
+    function dayRenderClosed() {
+      const L = dayLedger(), tm = dayS.tomorrow !== '' && dayS.tomorrow != null ? dayFind(dayS.tomorrow) : null;
+      dayPanel.innerHTML = `<div class="ln-in"><div class="dy-rest lnd-closed"><div class="ic">${dayNight() ? DAY_MOON : DAY_SET}</div><h2>Day closed.</h2>
+        <p>${L.moved ? `${L.moved} thing${L.moved === 1 ? '' : 's'} moved forward today.` : 'Rest well.'}${tm && dayOpen(tm) ? ` Tomorrow starts with <b>${dayEsc(tm.task.title)}</b>.` : ''}</p>
+        <div class="b"><button type="button" class="ln-btn" data-r="tasks">Go to Tasks</button><button type="button" class="ln-btn quiet" data-r="reopen">Open the day again</button></div></div></div>`;
+      dayPanel.querySelector('[data-r="tasks"]').addEventListener('click', () => switchMainTab('tasks'));
+      dayPanel.querySelector('[data-r="reopen"]').addEventListener('click', () => { dayS.state = 'active'; dayS.landing = true; daySave(); dayLightPaint(); renderTasks(); dayRender(); });
+    }
+    // ---- Settle yesterday (Land was skipped) ----
+    function dayYPending() { const p = dayS.prev; if (!p || p.state !== 'active' || !p.date || p.date >= dayKey()) return new Set(); const done = new Set(dayS.settled || []); return new Set((p.slots || []).filter(Boolean).map(x => String(x.id)).filter(id => !done.has('y:' + id))); }
+    function dayYesterday() {
+      const p = dayS.prev; if (!p || p.state !== 'active' || !p.date || p.date >= dayKey()) return [];
+      const done = new Set(dayS.settled || []);
+      if (!dayS.ySwept) { dayS.ySwept = true; setTimeout(() => { dayBonusesHome(p.also); markChanged(); }, 0); }
+      return (p.slots || []).filter(Boolean).map(x => dayFind(x.id)).filter(f => dayOpen(f) && !done.has('y:' + f.task.id) && daySlotOf(f.task.id) < 0).map(f => f.task);
+    }
+    { const _rl = dayRenderLaunch; dayRenderLaunch = function () {
+        _rl.apply(this, arguments);
+        const ys = dayYesterday(); if (!ys.length) return;
+        const wrap = document.createElement('div');
+        wrap.innerHTML = `<div class="ln-lbl">Settle yesterday <span class="count">${ys.length}</span></div><div class="ln-since lnd-ysettle">${ys.map(t => `<div class="ln-row" data-y="${t.id}"><span class="ic">${DAY_SET}</span><span class="w"><b>${dayEsc(t.title)}</b> <span class="q">was one of yesterday’s Three</span></span><span class="acts"><button class="ln-btn ln-sq" data-ya="today" title="Add to today's Three">${DAY_SUN}</button><button class="ln-btn" data-ya="week">This week</button><button class="ln-btn quiet" data-ya="park">Park it</button></span></div>`).join('')}</div>`;
+        const sub = dayPanel.querySelector('.ln-sub'); sub.after(...wrap.childNodes);
+        dayPanel.querySelectorAll('[data-y]').forEach(row => row.querySelectorAll('[data-ya]').forEach(b => b.addEventListener('click', e => {
+          e.stopPropagation(); const f = dayFind(row.dataset.y); if (!f) return; const a = b.dataset.ya; daySettle('y:' + f.task.id);
+          if (a === 'today') { dayPlace(f.task.id); return; }
+          if (a === 'week') { dayHome(f.task, 'week'); markChanged(); dayRender(); return; }
+          sinkTask(f.task, null); setTimeout(dayRender, 50);
+        })));
+      }; }
+    // ---- wiring into the page ----
+    { const _r = dayRender; dayRender = function () {
+        if (!dayPanel) return;
+        if (dayS.state === 'active' && dayS.landing) { dayRenderLand(); dayTabPaint(); return; }
+        if (dayS.state === 'closed') { dayRenderClosed(); dayTabPaint(); return; }
+        return _r.apply(this, arguments);
+      }; }
+    { const _rd = dayRenderDay; dayRenderDay = function () {
+        _rd.apply(this, arguments);
+        const ph = dayPhase(), foot = dayPanel.querySelector('.dy-foot');
+        if (foot && (ph === 'last' || ph === 'after')) {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'ln-btn lnd-go'; b.dataset.land = 'open'; b.innerHTML = `${dayNight() ? DAY_MOON : DAY_SET}Land the day`;
+          foot.appendChild(b); b.addEventListener('click', dayLandStart);
+        }
+        const cf = dayPanel.querySelector('.dy-confirm [data-cf="release"]');
+        if (cf && dayConfirm === 'ask') { const b = document.createElement('button'); b.type = 'button'; b.className = 'ln-btn'; b.textContent = 'Land the day'; cf.before(b); b.addEventListener('click', () => { dayConfirm = null; dayLandStart(); }); }
+      }; }
+    function dayLandStart() { dayS.landing = true; dayS.homes = dayS.homes || {}; daySave(); dayHeart.low(); dayRender(); window.scrollTo(0, 0); }
+    // the tab after the day is closed: a setting sun (Early Bird) or a moon (Night Owl)
+    { const _tp = dayTabPaint; dayTabPaint = function () {
+        _tp.apply(this, arguments);
+        if (dayS.state !== 'closed') return;
+        const ic = dayTabBtn.querySelector('.dt-ic'); ic.innerHTML = dayNight() ? DAY_MOON : DAY_SET;
+        dayTabBtn.dataset.state = 'closed'; dayTabBtn.classList.remove('dt-active', 'dt-dot'); dayTabBtn.classList.add('dt-closed'); dayTabBtn.title = 'Today · day closed';
+      }; }
+    { const _tp2 = dayTabPaint; dayTabPaint = function () { dayTabBtn.classList.remove('dt-closed'); return _tp2.apply(this, arguments); }; }
+    // the light rests low once the day is closed
+    { const _lp = dayLightPaint; dayLightPaint = function () {
+        _lp.apply(this, arguments);
+        if (dayS.state === 'closed' && dayLight.style.background !== 'none') { const dark = dayNight(), wc = dark ? '214,140,80' : '232,158,96', a = dark ? 0.10 : 0.26;
+          dayLight.style.background = `linear-gradient(0deg, rgba(${wc},${a}) 0%, rgba(${wc},${(a * 0.4).toFixed(3)}) 30%, rgba(${wc},0) 60%)`; }
+      }; }
+    new MutationObserver(() => { dayLightPaint(); dayTabPaint(); if (activeMainTab === 'day' && dayS.state === 'closed') dayRender(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     applyWaitRail();
   </script>
 </body>
