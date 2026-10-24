@@ -69,6 +69,9 @@
   - Land: the evening                         "Land (Oct 23): the evening" (dayRenderLand, dayClose, dayRenderClosed, dayYesterday)
   - Peek on the Today page                    "Peek (Oct 23)" (dayPeek; titles carry data-peek)
   - First-run welcome and guided tour         "Welcome (Oct 24): first run" (hwShow, hwTrialStart, hwKeep, hwTourStart, HW_STEPS; CSS "/* Welcome (Oct 24)")
+  - Hodo Link (Claude works on the folder)    "Hodo Link (Oct 24)" (lkRead, lkWrite, lkPaint, lkTidyNow; the extension itself is tools/link)
+  - Focus switched off (KOI_FOCUS_PAUSED)      "Focus paused (Oct 24)"
+  - Promise a Coming up task to this week      "Promise to this week (Oct 24)" (hzWeekBtn)
   - Weekly reset                              "Weekly reset (Oct 23)" (wkRender, wkSeal, wkLedger, wkAuto; CSS "/* Weekly reset")
   - Horizons: This week line, Coming up, Done = "Horizons (Oct 21)" (hzModel, hzBoard, hzList, doneOf, dnAsk)
   - Copy tasks for Docs / Excel rows / Excel columns "Copy out (Oct 20)" (koiCopyOpen, koiCopyDo, cpDocs, cpExcel)
@@ -5251,6 +5254,59 @@
     .hw-end p { margin: 0 0 20px; font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
     .hw-install { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-light); font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
     @media (max-width: 760px) { .hw-split, .hw-themes { grid-template-columns: 1fr; } .hw-weeks { grid-template-columns: 1fr; } .hw-h { font-size: 28px; } }
+    /* Hodo Link (Oct 24) */
+    .lk-intro { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0 0 12px; }
+    .lk-steps { display: flex; flex-direction: column; gap: 10px; margin: 6px 0 14px; }
+    .lk-step { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text-primary); line-height: 1.45; }
+    .lk-step i { flex: none; width: 20px; height: 20px; border-radius: 6px; background: var(--accent-soft); color: var(--brand); font-style: normal; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .lk-step span { display: block; color: var(--text-muted); font-size: 12px; }
+    .lk-btn { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--brand); background: var(--brand); color: #fff; font: inherit; font-size: 13px; font-weight: 650; text-decoration: none; cursor: pointer; }
+    [data-theme="dark"] .lk-btn { color: #1e1612; }
+    .lk-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .lk-note { margin: 10px 0 12px; font-size: 11.5px; color: var(--text-muted); line-height: 1.45; }
+    .lk-ok { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--st-done-edge) 8%, var(--bg-card)); border: 1px solid color-mix(in srgb, var(--st-done-edge) 30%, var(--border)); font-size: 13px; color: var(--text-primary); margin-bottom: 6px; }
+    .lk-ok b { font-weight: 650; } .lk-ok span { display: block; font-size: 12px; color: var(--text-muted); }
+    .lk-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--st-done-edge); flex: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--st-done-edge) 20%, transparent); }
+    .lk-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border-light); font-size: 13px; color: var(--text-primary); }
+    .lk-row.last { padding-bottom: 12px; }
+    .lk-row small { display: block; color: var(--text-muted); font-size: 11.5px; }
+    .lk-seg { display: inline-flex; padding: 2px; gap: 2px; border-radius: 8px; background: var(--bg-secondary); flex: none; }
+    .lk-seg button { border: 0; background: transparent; padding: 4px 9px; border-radius: 6px; font: inherit; font-size: 12px; color: var(--text-secondary); white-space: nowrap; cursor: pointer; }
+    .lk-seg button.on { background: var(--bg-card); color: var(--brand); box-shadow: 0 1px 2px var(--shadow); }
+    .lk-ask { margin: 0 0 8px; padding: 8px 10px; border-radius: 8px; background: var(--bg-secondary); font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .lk-sw { width: 30px; height: 18px; border: 0; padding: 0; border-radius: 10px; background: var(--brand); position: relative; flex: none; cursor: pointer; transition: background .15s; }
+    .lk-sw::after { content: ''; position: absolute; top: 3px; left: 15px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: left .15s; }
+    .lk-sw.off { background: var(--border); } .lk-sw.off::after { left: 3px; }
+    .lk-chip { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border-radius: 6px; font-size: 11px; font-weight: 650; color: var(--brand); background: var(--accent-soft); white-space: nowrap; vertical-align: middle; }
+    .lk-chip svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .lk-chip.wait { color: var(--text-muted); background: var(--bg-secondary); }
+    .lk-bar { display: flex; align-items: center; gap: 10px; margin: 0 14px 10px; padding: 9px 12px; border-radius: 10px; background: var(--accent-soft); font-size: 12.5px; color: var(--text-primary); }
+    .lk-bar .g { flex: 1; }
+    .lk-bar button { height: 28px; padding: 0 11px; border-radius: 8px; border: 1px solid var(--brand); background: var(--bg-card); color: var(--brand); font: inherit; font-size: 12px; font-weight: 650; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+    .lk-bar svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .task-card.lk-new, .lv-item.lk-new { box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 60%, transparent), 0 0 0 7px color-mix(in srgb, var(--brand) 14%, transparent), 0 6px 18px var(--shadow-hover) !important; transition: box-shadow .6s; }
+    .lk-askcard { position: fixed; right: 20px; bottom: 20px; z-index: 2300; width: 300px; padding: 14px 16px 12px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 14px 40px var(--shadow-hover); animation: nsFade .25s ease-out both; }
+    .lk-askcard .h { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 650; color: var(--text-primary); }
+    .lk-askcard .h svg { width: 14px; height: 14px; fill: none; stroke: var(--brand); stroke-width: 1.6; stroke-linejoin: round; }
+    .lk-askcard p { margin: 6px 0 10px; font-size: 12.5px; line-height: 1.5; color: var(--text-secondary); }
+    .lk-askcard .a { display: flex; justify-content: flex-end; gap: 6px; }
+    /* Focus paused (Oct 24) */
+    html.focus-off #focusBtn, html.focus-off [data-qa="focus"], html.focus-off .focus-this, html.focus-off .focus-btn, html.focus-off [data-lv="focus"], html.focus-off [data-dy="focus"], html.focus-off [data-td="focus"],
+    html.focus-off #settingsPanel .sp-group[data-g="focus"], html.focus-off #spNav [data-go="focus"] { display: none !important; }
+    /* Promise to this week (Oct 24) */
+    .qa-a.qa-week { color: var(--brand); }
+    .qa-a.qa-week:hover { background: var(--accent-soft); }
+    /* Hodo Link, found from day one (Oct 24) */
+    .hw-link-offer { text-align: center; }
+    .hw-link-offer b { color: var(--text-primary); font-weight: 650; }
+    .lk-hint { display: flex; align-items: center; gap: 8px; margin: 0 14px 10px; padding: 8px 8px 8px 12px; border-radius: 10px; border: 1px dashed color-mix(in srgb, var(--brand) 45%, var(--border)); font-size: 12.5px; color: var(--text-secondary); }
+    .lk-hint > svg { width: 13px; height: 13px; flex: none; fill: none; stroke: var(--brand); stroke-width: 1.6; stroke-linejoin: round; }
+    .lk-hint span { flex: 1; }
+    .lk-hint button { border: 0; background: transparent; font: inherit; font-size: 12.5px; font-weight: 650; color: var(--brand); cursor: pointer; padding: 3px 6px; border-radius: 6px; white-space: nowrap; }
+    .lk-hint button:hover { background: var(--accent-soft); }
+    .lk-hint button.x { color: var(--text-muted); font-weight: 400; font-size: 15px; }
+    .sp-pill.lk-newpill { background: var(--brand); color: #fff; }
+    [data-theme="dark"] .sp-pill.lk-newpill { color: #1e1612; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -10414,7 +10470,7 @@
         const id = String(t.id), ci = capInfo(t), reading = capReading.has(id), err = capErr.get(id), ex = capExtra.get(id) || {};
         const np = noteParts({ ...t, note: capStrip(t) });
         const when = ci.caught ? (capDay(ci.caught) < today ? (today - capDay(ci.caught) < 1.5 * 864e5 ? 'yesterday' : MONTHS[ci.caught.getMonth()] + ' ' + ci.caught.getDate()) : 'today') : '';
-        const src = ci.via ? `<span class="cq-src">${ci.via === 'voice' ? 'Voice' : ci.via === 'WhatsApp' ? 'WhatsApp' : ci.via === 'paste' ? 'Pasted' : 'Typed'} · ${when}</span>` : '';
+        const src = ci.via ? `<span class="cq-src">${ci.via === 'voice' ? 'Voice' : ci.via === 'WhatsApp' ? 'WhatsApp' : ci.via === 'paste' ? 'Pasted' : ci.via === 'Claude' ? 'From Claude' : 'Typed'} · ${when}</span>` : '';
         const steps = (t.subtasks || []).length ? `<span class="cq-steps">${t.subtasks.length} step${t.subtasks.length > 1 ? 's' : ''}</span>` : '';
         const rel = ex.relatedId && findTaskById(ex.relatedId);
         return `<div class="cq-row${i === capSel ? ' sel' : ''}${reading ? ' reading' : ''}" role="listitem" data-i="${i}" data-id="${id}">
@@ -18987,6 +19043,219 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       try { if (!hwLS('pd-theme') && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark'); } catch (e) {}
       hwShow(1);
     })();
+    // ===== Hodo Link (Oct 24): Hodo with the person's own Claude =====
+    // The Hodo extension for the Claude desktop app (Hodo.mcpb, next to this page) gives Claude safe Hodo actions on the
+    // folder's TASKS.md. Here: Settings → Hodo Link (three steps, then "Connected" with Claude's last change, how captures are
+    // tidied, and switches for adding/changing and deleting, kept in memory/hodo-link.json, which the extension reads);
+    // "by Claude" chips on cards and "Tidied by Claude" / "Waiting for Claude" in Captured, with a Tidy now bar; a card Claude
+    // just added or changed glows, with a note; after a week of use, one quiet "Use Claude?" card. Optional, never in the welcome.
+    const LK_SP = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8l1.4 4.1 4.3.1-3.4 2.6 1.2 4.2L8 10.3l-3.5 2.5 1.2-4.2L2.3 6l4.3-.1z"/></svg>';
+    const LK_RE = /^(tidied )?by Claude\b/i;
+    let lk = {};   // what memory/hodo-link.json says
+    const lkOn = () => !!lk.seen;
+    const lkAgo = ms => { const m = Math.round((Date.now() - ms) / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
+    async function lkRead() {
+      try { if (typeof memoryDirHandle === 'undefined' || !memoryDirHandle) return; const mem = await memoryDirHandle.getDirectoryHandle('memory'); const f = await (await mem.getFileHandle('hodo-link.json')).getFile(); lk = JSON.parse(await f.text()) || {}; } catch (e) {}
+    }
+    async function lkWrite(patch) {
+      await lkRead(); lk = Object.assign({}, lk, patch);
+      try { const mem = await memoryDirHandle.getDirectoryHandle('memory', { create: true }); const w = await (await mem.getFileHandle('hodo-link.json', { create: true })).createWritable(); await w.write(JSON.stringify(lk, null, 2)); await w.close(); } catch (e) { showStatus('Couldn’t save the Hodo Link setting: ' + e.message); }
+    }
+    // ---- the marks: "by Claude" on cards, "Tidied by Claude" in Captured ----
+    { const _np = noteParts; noteParts = function (task) {
+        const r = _np.apply(this, arguments);
+        try { const parts = String(r.rest || '').split(/\s+·\s+/), mine = parts.find(p => LK_RE.test(p));
+          if (mine) { r.rest = parts.filter(p => !LK_RE.test(p)).join(' · '); r.caps = `<span class="lk-chip" title="${escapeHtml(mine)}">${LK_SP}${/^tidied/i.test(mine) ? 'Tidied by Claude' : 'by Claude'}</span>` + (r.caps || ''); } } catch (e) {}
+        return r;
+      }; }
+    // ---- Captured: the Claude bar and "Waiting for Claude" ----
+    { const _cr = capRender; capRender = function () {
+        const r = _cr.apply(this, arguments);
+        try {
+          if (!koiTrayEl || !lkOn()) return r;
+          koiTrayEl.querySelectorAll('.lk-bar').forEach(x => x.remove());
+          const rows = [...koiTrayEl.querySelectorAll('.cq-row')]; if (!rows.length) return r;
+          let tid = 0, wait = 0;
+          rows.forEach(row => { const t = koiTray[+row.dataset.i]; if (!t) return; if (/(^|·\s*)tidied by Claude/i.test(t.note || '')) tid++; else { wait++; const c = row.querySelector('.cq-chips'); if (c && !c.querySelector('.lk-chip')) c.insertAdjacentHTML('afterbegin', '<span class="lk-chip wait">Waiting for Claude</span>'); } });
+          const bar = document.createElement('div'); bar.className = 'lk-bar';
+          bar.innerHTML = `<span class="g">${tid ? `<b>${tid} tidied by Claude</b>` : ''}${tid && wait ? ' · ' : ''}${wait ? `${wait} waiting` : ''}${lk.tidiedAt ? ` · last tidy ${lkAgo(lk.tidiedAt)}` : ''}</span>${wait ? `<button type="button" data-lk="tidy">${LK_SP}Tidy now</button>` : ''}`;
+          koiTrayEl.querySelector('.cq-sub').after(bar);
+          const b = bar.querySelector('[data-lk="tidy"]'); if (b) b.addEventListener('click', lkTidyNow);
+        } catch (e) {}
+        return r;
+      }; }
+    async function lkTidyNow() {
+      const ask = 'Tidy my Hodo captures.';
+      try { await navigator.clipboard.writeText(ask); } catch (e) {}
+      try { const f = document.createElement('iframe'); f.style.display = 'none'; f.src = 'claude://'; document.body.appendChild(f); setTimeout(() => f.remove(), 1500); } catch (e) {}
+      toast(`Copied “${ask}” Paste it in Claude, and the tidied tasks will show up here for you to review.`, 6000);
+    }
+    // ---- a change made by Claude shows: the card glows and a note says what happened ----
+    const lkGlow = new Map();   // uid → until when it glows (survives re-renders)
+    { const _cc4 = createCard; createCard = function (task) { const el = _cc4.apply(this, arguments); try { if ((lkGlow.get(task.uid) || 0) > Date.now()) el.classList.add('lk-new'); } catch (e) {} return el; }; }
+    { const _lv4 = lvItem; lvItem = function (t) { const el = _lv4.apply(this, arguments); try { if ((lkGlow.get(t.uid) || 0) > Date.now()) el.classList.add('lk-new'); } catch (e) {} return el; }; }
+    const lkSig = () => { const m = new Map(); sections.forEach(s => (tasks[s.id] || []).forEach(t => { if (t.uid) m.set(t.uid, t.title + '|' + (t.note || '') + '|' + s.id); })); return m; };
+    { const _cx = checkForExternalChanges; checkForExternalChanges = async function () {
+        const before = lkSig(), r = await _cx.apply(this, arguments);
+        try {
+          const after = lkSig(); if (after.size === before.size && [...after].every(([k, v]) => before.get(k) === v)) return r;
+          const changed = []; sections.forEach(s => (tasks[s.id] || []).forEach(t => { if (t.uid && after.get(t.uid) !== before.get(t.uid) && /(^|·\s*)by Claude\b/i.test(t.note || '')) changed.push({ t, added: !before.has(t.uid) }); }));
+          if (!changed.length) return r;
+          changed.forEach(({ t }) => lkGlow.set(t.uid, Date.now() + 6000)); renderTasks(); setTimeout(() => { if ([...lkGlow.values()].every(v => v < Date.now())) { lkGlow.clear(); renderTasks(); } }, 6100);
+          const one = changed[0];
+          toast(changed.length === 1 ? `Claude ${one.added ? 'added' : 'changed'} “${cleanTitle(one.t.title)}”` : `Claude made ${changed.length} changes`, 4000);
+          lkRead().then(() => lkPaint());
+        } catch (e) {}
+        return r;
+      }; }
+    // ---- Settings → Hodo Link ----
+    let lkSec = null;
+    function lkPaint() {
+      if (!lkSec) return;
+      const pill = lkSec.querySelector('.sp-pill'); pill.textContent = lkOn() ? 'On' : 'Off'; pill.className = 'sp-pill' + (lkOn() ? ' ok' : '');
+      const box = lkSec.querySelector('.lk-body');
+      if (!lkOn()) {
+        box.innerHTML = `<p class="lk-intro">Use Claude? Let it work on your tasks: add them from any chat, tidy your captures, keep things moving. No API key needed.</p>
+          <div class="lk-steps"><div class="lk-step"><i>1</i><div>Download the Hodo extension<span>One small file, Hodo.mcpb.</span></div></div>
+          <div class="lk-step"><i>2</i><div>Add it to the Claude desktop app<span>Drag the file onto the Claude window, or in Claude: Settings → Extensions → Advanced settings → Install Extension.</span></div></div>
+          <div class="lk-step"><i>3</i><div>Choose your Hodo folder<span>The same folder Hodo uses${typeof memoryDirHandle !== 'undefined' && memoryDirHandle ? ` (“${escapeHtml(memoryDirHandle.name)}”)` : ''}. That’s it.</span></div></div></div>
+          <a class="lk-btn" href="Hodo.mcpb" download="Hodo.mcpb"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7l3.2 3.2L11.2 7M3 12.8h10"/></svg>Download the Hodo extension</a>
+          <div class="lk-note">Needs the Claude desktop app on this computer. Tidying on a schedule needs a paid Claude plan. Hodo works fully without any of this.</div>`;
+        return;
+      }
+      const tidy = lk.tidy === 'hourly' ? 'hourly' : 'ask';
+      box.innerHTML = `<div class="lk-ok"><span class="lk-dot"></span><div><b>Connected to Claude</b><span>${lk.last ? `Last change by Claude ${lkAgo(lk.last.at)} · ${escapeHtml(lk.last.what || '')}` : `Seen ${lkAgo(lk.seen)}`}</span></div></div>
+        <div class="lk-row"><div>Tidy my captures<small>Claude turns captures into proper tasks for you to review</small></div><span class="lk-seg"><button type="button" data-lt="ask" class="${tidy === 'ask' ? 'on' : ''}">When I ask</button><button type="button" data-lt="hourly" class="${tidy === 'hourly' ? 'on' : ''}">Hourly on workdays</button></span></div>
+        ${tidy === 'hourly' ? `<div class="lk-ask">Ask Claude once: <b>“Tidy my Hodo captures every hour on workdays.”</b> <button type="button" class="sp-btn" data-lk="copy">Copy</button></div>` : ''}
+        <div class="lk-row"><div>Claude can add and change tasks<small>Every change shows here, marked “by Claude”</small></div><button type="button" class="lk-sw${lk.canChange === false ? ' off' : ''}" data-ls="canChange" aria-label="Claude can add and change tasks"></button></div>
+        <div class="lk-row"><div>Claude can delete tasks<small>Only into the Waste Yard, where you can restore them for 30 days</small></div><button type="button" class="lk-sw${lk.canDelete === false ? ' off' : ''}" data-ls="canDelete" aria-label="Claude can delete tasks"></button></div>
+        <div class="lk-row last"><div>Disconnect<small>In Claude: Settings → Extensions → Hodo Link → Remove</small></div></div>`;
+      box.querySelectorAll('[data-lt]').forEach(b => b.addEventListener('click', async () => { await lkWrite({ tidy: b.dataset.lt }); lkPaint(); }));
+      box.querySelectorAll('[data-ls]').forEach(b => b.addEventListener('click', async () => { const k = b.dataset.ls; await lkWrite({ [k]: lk[k] === false }); lkPaint(); }));
+      const cp = box.querySelector('[data-lk="copy"]'); if (cp) cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText('Tidy my Hodo captures every hour on workdays.'); cp.textContent = 'Copied'; } catch (e) {} });
+    }
+    (function lkSettings() {
+      const ai = document.querySelector('#settingsPanel .sp-group[data-g="ai"]'); if (!ai) return;
+      lkSec = document.createElement('section'); lkSec.className = 'sp-group sp-col'; lkSec.dataset.g = 'link';
+      lkSec.innerHTML = `<h3 class="sp-gh"><button class="sp-toggle" type="button" aria-expanded="false"><svg class="sp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="sp-gt">Hodo Link</span><span class="sp-pill">Off</span></button></h3><div class="sp-gb"><div class="sp-gbi"><div class="lk-body"></div></div></div>`;
+      ai.after(lkSec);
+      const setOpen = on => { lkSec.classList.toggle('open', on); lkSec.querySelector('.sp-toggle').setAttribute('aria-expanded', on ? 'true' : 'false'); };
+      lkSec.querySelector('.sp-toggle').addEventListener('click', async () => { const on = !lkSec.classList.contains('open'); setOpen(on); if (on) { await lkRead(); lkPaint(); } });
+      const nav = document.getElementById('spNav'), aiNav = nav && nav.querySelector('[data-go="ai"]');
+      if (aiNav) { const b = document.createElement('button'); b.dataset.go = 'link'; b.textContent = 'Hodo Link'; aiNav.after(b);
+        b.addEventListener('click', async () => { const body = document.getElementById('spBody'); setOpen(true); await lkRead(); lkPaint(); body.scrollTo({ top: lkSec.offsetTop - body.offsetTop - 10, behavior: 'smooth' }); nav.querySelectorAll('[data-go]').forEach(x => x.classList.toggle('on', x === b)); }); }
+      document.getElementById('settingsBtn').addEventListener('click', () => { if (lkSec.classList.contains('open')) setOpen(false); lkRead().then(lkPaint); });
+      lkPaint();
+    })();
+    window.lkOpenSettings = () => { const sp = document.getElementById('settingsPanel'); if (sp.hidden) document.getElementById('settingsBtn').click(); setTimeout(() => { const b = document.querySelector('#spNav [data-go="link"]'); if (b) b.click(); }, 120); };
+    // keep the link state fresh
+    setInterval(() => { if (!document.hidden) lkRead().then(() => { if (lkSec && lkSec.classList.contains('open')) lkPaint(); }); }, 30000);
+    { const _lmL = loadMemoryHandle; loadMemoryHandle = async function () { const r = await _lmL.apply(this, arguments); await lkRead(); lkPaint(); try { capRender(); } catch (e) {} return r; }; }
+    // (the "Use Claude?" card's timing lives in "Hodo Link, found from day one (Oct 24)")
+    // ===== Focus paused (Oct 24) =====
+    // Focus is switched off completely across Hodo; it needs rework before it comes back.
+    // Nothing opens Focus (F, the header button, card and List tools, the right-click menu, Today's cards), its Settings group,
+    // its keys and its Guide entries are gone. Music stays. To bring Focus back, set KOI_FOCUS_PAUSED to false.
+    const KOI_FOCUS_PAUSED = true;
+    if (KOI_FOCUS_PAUSED) {
+      openFocus = function () {};
+      document.documentElement.classList.add('focus-off');
+      try { if (typeof focusState !== 'undefined' && focusState) closeFocus(); } catch (e) {}
+      for (let i = GUIDE_ITEMS.length - 1; i >= 0; i--) if (['focus', 'k-f', 'k-arrows'].includes(GUIDE_ITEMS[i].id)) GUIDE_ITEMS.splice(i, 1);
+      try { GUIDE_CLIPS.delete('focus'); } catch (e) {}
+      // the Focus tools are taken out of cards and List rows (not just hidden), so menus built from them don't list Focus
+      { const _ccF = createCard; createCard = function () { const el = _ccF.apply(this, arguments); try { el.querySelectorAll('[data-qa="focus"], .focus-btn').forEach(x => x.remove()); } catch (e) {} return el; }; }
+      { const _lvF = lvItem; lvItem = function () { const el = _lvF.apply(this, arguments); try { el.querySelectorAll('[data-qa="focus"], [data-lv="focus"], .focus-this').forEach(x => x.remove()); } catch (e) {} return el; }; }
+      document.querySelectorAll('#settingsPanel kbd').forEach(k => { const s = k.parentElement; if (s && s.tagName === 'SPAN' && /^(F|← →)$/.test(k.textContent.trim()) && /Focus/.test(s.textContent)) s.remove(); });
+    }
+    // ===== Promise to this week (Oct 24): a quick action on Coming up tasks =====
+    // A Pending task below the This week line (Coming up, or carried from last week) gets one more button in its quick
+    // actions, on the board and in the List: "Promise to this week". One click moves it above the line (the tag in its line).
+    const HZ_WEEK_IC = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.8 3.2h10.4M8 13.2V6.6M5.2 9.3 8 6.5l2.8 2.8"/></svg>';
+    function hzWeekBtn(t) {
+      try { const f = findTaskById(t.id); if (!f || f.sectionId !== hzPendingId() || t.checked || hzZone(t) === 'week') return null; } catch (e) { return null; }
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'qa-a qa-week'; b.dataset.qa = 'week'; b.title = b.ariaLabel = 'Promise to this week'; b.innerHTML = HZ_WEEK_IC;
+      b.dataset.tid = String(t.id);
+      return b;
+    }
+    // one listener for all of them (cards can be redrawn or copied, which drops listeners on the button itself)
+    document.addEventListener('click', e => {
+      const b = e.target.closest && e.target.closest('.qa-week[data-tid]'); if (!b) return;
+      e.stopPropagation(); e.preventDefault(); const f = findTaskById(parseFloat(b.dataset.tid)) || findTaskById(b.dataset.tid); if (!f) return;
+      hzSet(f.task, 'week'); markChanged(); try { lkGlow.set(f.task.uid, Date.now() + 1600); } catch (x) {} renderTasks();
+      try { dayHeart.note(2, 0.5); } catch (x) {} toast(`Promised to this week · ${cleanTitle(f.task.title)}`, 2200);
+    }, true);
+    { const _ccW = createCard; createCard = function (task) { const card = _ccW.apply(this, arguments);
+        try { const box = card.querySelector('.qa-act'), b = box && hzWeekBtn(task); if (b) box.prepend(b); } catch (e) {} return card; }; }
+    { const _lvW = lvItem; lvItem = function (t) { const item = _lvW.apply(this, arguments);
+        try { const box = item.querySelector('.lv-tools'), b = box && hzWeekBtn(t); if (b) box.prepend(b); } catch (e) {} return item; }; }
+    // ===== Hodo Link, found from day one (Oct 24) =====
+    // People who'd benefit must know it's there: the end of the welcome offers it ("Use Claude? … Set up Hodo Link"); a
+    // new person who doesn't take it gets the "Use Claude?" card once on their next visit, someone already using Hodo gets
+    // it once after looking at New stuff! (whose Hodo Link line has its own Set it up button); Captured shows a quiet hint
+    // while captures wait; Settings keeps the section open with a "for Claude" pill until Claude is connected. One click ignores
+    // each, and nothing shows once Claude is connected.
+    const lkSetUp = () => { document.querySelectorAll('.lk-askcard').forEach(x => x.remove()); window.lkOpenSettings(); };
+    // the welcome's last card
+    { const _te = hwTourEnd; hwTourEnd = function () {
+        const r = _te.apply(this, arguments);
+        try {
+          hwLS('koi-link-due', 'next'); sessionStorage.setItem('koi-wl-session', '1');
+          const end = document.querySelector('.hw-end'); if (end && !lkOn()) {
+            const box = document.createElement('div'); box.className = 'hw-install hw-link-offer';
+            box.innerHTML = `<span><b>Use Claude?</b> Hodo can work with it: add tasks from any chat, tidy your captures.</span><button type="button" class="hw-link" data-hw="setlink">Set up Hodo Link</button>`;
+            const ins = end.querySelector('.hw-install'); if (ins) ins.before(box); else end.appendChild(box);
+            box.querySelector('[data-hw="setlink"]').addEventListener('click', () => { hwLS('koi-link-ask', 'shown'); end.closest('.hw-endov').remove(); if (activeMainTab !== 'tasks') switchMainTab('tasks'); setTimeout(lkSetUp, 200); });
+          }
+        } catch (e) {}
+        return r;
+      }; }
+    // New stuff!: a "Set up Hodo Link" button inside the Hodo Link line
+    document.addEventListener('click', e => {
+      const b = e.target.closest && e.target.closest('[data-ns-link]'); if (!b) return;
+      e.preventDefault(); e.stopPropagation(); hwLS('koi-link-ask', 'shown');
+      const ok = document.querySelector('.ns-scrim .ns-ok'); if (ok) ok.click();
+      setTimeout(lkSetUp, 150);
+    }, true);
+    // the "Use Claude?" card: once, at the right moment (replaces the one-week wait)
+    function lkAskCard() {
+      if (hwLS('koi-link-ask') || lkOn() || !sections.length || hwEl || hwTouring || document.querySelector('.hw-endov, .ns-scrim, .lk-askcard')) return false;
+      const due = hwLS('koi-link-due');
+      if (due === 'next') { try { if (sessionStorage.getItem('koi-wl-session')) return false; } catch (e) {} }
+      else { let pend = null, seen = null; try { pend = localStorage.getItem('koi-notes-pending'); seen = localStorage.getItem('koi-notes-seen-day'); } catch (e) {} if (pend === KOI_VERSION && !seen) return false; }
+      hwLS('koi-link-ask', 'shown');
+      const c = document.createElement('div'); c.className = 'lk-askcard';
+      c.innerHTML = `<div class="h">${LK_SP}Use Claude?</div><p>Hodo can work with it: add tasks from any chat, tidy your captures into proper tasks. Optional, and no API key.</p><div class="a"><button type="button" class="ln-btn quiet" data-a="no">Not now</button><button type="button" class="ln-btn" data-a="yes">See how</button></div>`;
+      document.body.appendChild(c);
+      c.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b) return; e.stopPropagation(); c.remove(); if (b.dataset.a === 'yes') setTimeout(lkSetUp, 60); });   // after this click is over, or it would close Settings again
+      return true;
+    }
+    { let n = 0; const tick = async () => { try { await lkRead(); if (lkAskCard() || hwLS('koi-link-ask') || lkOn()) return; } catch (e) {} if (++n < 60) setTimeout(tick, 15000); }; setTimeout(tick, 5000); }
+    // Captured: a quiet hint while captures wait and Claude isn't connected
+    { const _crH = capRender; capRender = function () {
+        const r = _crH.apply(this, arguments);
+        try {
+          if (!koiTrayEl) return r; koiTrayEl.querySelectorAll('.lk-hint').forEach(x => x.remove());
+          if (lkOn() || !koiTray.length || hwLS('koi-link-caphint') === 'off') return r;
+          const h = document.createElement('div'); h.className = 'lk-hint';
+          h.innerHTML = `${LK_SP}<span>Use Claude? It can tidy these into proper tasks for you.</span><button type="button" data-lk="hint">Set up Hodo Link</button><button type="button" class="x" data-lk="hintx" title="Don’t show this again" aria-label="Don’t show this again">×</button>`;
+          koiTrayEl.querySelector('.cq-sub').after(h);
+          h.querySelector('[data-lk="hint"]').addEventListener('click', () => { closeTray(); setTimeout(lkSetUp, 150); });
+          h.querySelector('[data-lk="hintx"]').addEventListener('click', () => { hwLS('koi-link-caphint', 'off'); h.remove(); });
+        } catch (e) {}
+        return r;
+      }; }
+    // Settings: open with a "for Claude" pill until Claude is connected
+    { const _lp = lkPaint; lkPaint = function () {
+        const r = _lp.apply(this, arguments);
+        try { if (lkSec && !lkOn()) { const pill = lkSec.querySelector('.sp-pill'); pill.textContent = 'for Claude'; pill.className = 'sp-pill lk-newpill'; } } catch (e) {}
+        return r;
+      }; }
+    if (lkSec) {
+      const open = on => { lkSec.classList.toggle('open', on); const t = lkSec.querySelector('.sp-toggle'); if (t) t.setAttribute('aria-expanded', on ? 'true' : 'false'); };
+      document.getElementById('settingsBtn').addEventListener('click', () => setTimeout(() => { if (!lkOn()) { lkSec.classList.add('sp-instant'); open(true); requestAnimationFrame(() => lkSec.classList.remove('sp-instant')); } }, 0));
+      lkPaint(); if (!lkOn()) open(true);
+    }
     applyWaitRail();
   </script>
 </body>
