@@ -1,6 +1,44 @@
 # Hodo: what changed
 
-## Hodo 1.4.1 · Oct 19, 2026
+## Hodo 2.1 · Oct 24, 2026
+- NEW: Nudge drafts
+- REWORKED: Asking Claude takes one click
+- SHELVED: Hodo AI
+
+## Hodo 2.0 · Oct 24, 2026
+- NEW: Hodo Link
+- NEW: Promise to this week, from the card
+- SHELVED: Focus
+
+## Hodo 1.9 · Oct 24, 2026
+- NEW: The welcome tour
+
+## Hodo 1.8 · Oct 24, 2026
+- NEW: Weekly reset
+- NEW: A quick look at any task on Today
+- SOLVED: The Today page doesn’t scroll, so the buttons at the bottom are out of reach.
+
+## Hodo 1.7 · Oct 23, 2026
+- NEW: Today
+- NEW: Land the day
+- NEW: The This week line
+- NEW: Done = …
+- NEW: Working hours
+- SOLVED: Parked jumps to a task and glows when you open it.
+
+## Hodo 1.6 · Oct 22, 2026
+- NEW: Copy out
+- NEW: Copy out and Select all from the keyboard
+
+## Hodo 1.5 · Oct 20, 2026
+- NEW: Right-click a task in the List
+- REWORKED: Status comes first in the List
+- REWORKED: Finishing a task in the List
+- REWORKED: Delete in the List is back
+- SOLVED: Box select can’t start from the page margins.
+- SOLVED: The selection box spills over the header when you scroll.
+
+## Hodo 1.4.1 · Oct 20, 2026
 - REWORKED: A new look for the progress button
 - SOLVED: Capture and the Captured count look like two separate buttons.
 - SOLVED: “See what’s new” is hard to read when you hover it.

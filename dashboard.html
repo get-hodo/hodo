@@ -73,6 +73,8 @@
   - Focus switched off (KOI_FOCUS_PAUSED)      "Focus paused (Oct 24)"
   - Promise a Coming up task to this week      "Promise to this week (Oct 24)" (hzWeekBtn)
   - Guide entries for Today, Land, Weekly reset, This week, Hodo Link   "Guide: Today, Land, Weekly reset, This week, Hodo Link (Oct 24)"
+  - Hodo AI switched off (API key path)        "Hodo AI retired (Oct 24)"
+  - Nudge drafts from Claude (Waiting On)       "Nudge drafts (Oct 24)" (ndOf, ndSet, ndOpen, ndAsk)
   - Weekly reset                              "Weekly reset (Oct 23)" (wkRender, wkSeal, wkLedger, wkAuto; CSS "/* Weekly reset")
   - Horizons: This week line, Coming up, Done = "Horizons (Oct 21)" (hzModel, hzBoard, hzList, doneOf, dnAsk)
   - Copy tasks for Docs / Excel rows / Excel columns "Copy out (Oct 20)" (koiCopyOpen, koiCopyDo, cpDocs, cpExcel)
@@ -5311,6 +5313,23 @@
     .ns-cta { margin-top: 14px; }
     .ns-cta button { height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--brand); background: var(--brand); color: #fff; font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; }
     [data-theme="dark"] .ns-cta button { color: #1e1612; }
+    /* Hodo AI retired (Oct 24) */
+    html.ai-off .tp-ai, html.ai-off #settingsPanel .sp-group[data-g="ai"], html.ai-off #spNav [data-go="ai"] { display: none !important; }
+    /* Nudge drafts (Oct 24) */
+    .nd-chip { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 7px; margin-right: 4px; border-radius: 7px; border: 1px dashed color-mix(in srgb, var(--brand) 45%, var(--border)); background: transparent; font: inherit; font-size: 11px; font-weight: 650; color: var(--brand); cursor: pointer; white-space: nowrap; }
+    .nd-chip.on { border-style: solid; background: var(--accent-soft); }
+    .nd-chip:hover { background: var(--accent-soft); }
+    .nd-chip svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .nd-pop { position: fixed; z-index: 2700; width: 380px; max-width: calc(100vw - 16px); padding: 12px 14px; border-radius: 12px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); animation: nsFade .12s ease-out both; font-size: 13px; }
+    .nd-h { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; min-width: 0; }
+    .nd-h svg { width: 14px; height: 14px; flex: none; fill: none; stroke: var(--brand); stroke-width: 1.6; stroke-linejoin: round; }
+    .nd-h span { color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nd-t { width: 100%; box-sizing: border-box; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-primary); font: inherit; font-size: 13px; line-height: 1.5; resize: vertical; }
+    .nd-t:focus { outline: none; border-color: var(--brand); }
+    .nd-note { margin: 6px 0 10px; font-size: 11.5px; color: var(--text-muted); }
+    .nd-a { display: flex; align-items: center; gap: 6px; } .nd-a .g { flex: 1; }
+    .nd-a .ln-btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+    [data-theme="dark"] .nd-a .ln-btn.pri { color: #1e1612; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7675,7 +7694,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.0';
+    const KOI_VERSION = '2.1';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -16774,6 +16793,11 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.1': [
+        { k: 'new', t: 'Nudge drafts', d: 'Use Hodo Link? When it’s time to nudge someone you’re waiting on, a Waiting On card shows <b>Draft</b>. Claude writes the follow-up, and the card shows <b>Draft ready</b>.<ul><li>Open it to edit, Copy, or Discard.</li><li><b>Mark as sent</b> counts as the nudge, and the message stays in the task as “Nudge sent”, so Claude won’t repeat itself next time.</li></ul>Want the drafts every workday morning? Turn that on in <b>Settings → Hodo Link</b>. Hodo never sends anything for you.<br><br>To get nudge drafts, reinstall the Hodo Link extension from <b>Settings → Hodo Link</b>.' },
+        { k: 'reworked', t: 'Asking Claude takes one click', d: 'Draft and Tidy now open a new Claude conversation with the request already typed in. Just press Enter.' },
+        { k: 'shelved', t: 'Hodo AI', d: 'Hodo Link now does what Hodo AI did, with your own Claude and no API key. If you saved a key in Hodo, it’s been removed from this browser. Hodo still reads dates and names from what you catch.' }
+      ],
       '2.0': [
         { k: 'new', t: 'Hodo Link', d: 'Use Claude? Let it work on your tasks.<ul><li><b>From any Claude chat:</b> add tasks, change them, move them, finish them or park them.</li><li><b>Captures:</b> Claude turns your captures into proper tasks, and you review each one in Captured before it reaches your board.</li></ul>Every change shows in Hodo at once, marked “by Claude”. It needs no API key, and you choose whether Claude can add or delete.<div class="ns-cta"><button type="button" data-ns-link>Set up Hodo Link</button></div>' },
         { k: 'new', t: 'Promise to this week, from the card', d: 'A task in Coming up now has a quick action to promise it this week. One click moves it above the line.' },
@@ -19093,11 +19117,16 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         } catch (e) {}
         return r;
       }; }
-    async function lkTidyNow() {
-      const ask = 'Tidy my Hodo captures.';
+    function lkTidyNow() { lkAskClaude('Tidy my Hodo captures.', 'the tidied tasks will show up here for you to review'); }
+    // Opening Claude (Oct 24): a new conversation with the request already typed in (press Enter); the request is also
+    // copied, in case another conversation suits better. Claude's links can't open an existing conversation since chat and
+    // Cowork merged, so there's no "Hodo chat" setting. claude:// links per Claude's "Open Claude Desktop with a link".
+    try { localStorage.removeItem('koi-claude-chat'); } catch (e) {}
+    function lkGo(url) { const a = document.createElement('a'); a.href = url; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); }
+    async function lkAskClaude(ask, after) {
       try { await navigator.clipboard.writeText(ask); } catch (e) {}
-      try { const f = document.createElement('iframe'); f.style.display = 'none'; f.src = 'claude://'; document.body.appendChild(f); setTimeout(() => f.remove(), 1500); } catch (e) {}
-      toast(`Copied “${ask}” Paste it in Claude, and the tidied tasks will show up here for you to review.`, 6000);
+      lkGo('claude://claude.ai/new?q=' + encodeURIComponent(ask));
+      toast(`Opening Claude with the request typed in. Press Enter, and ${after}.`, 6500);
     }
     // ---- a change made by Claude shows: the card glows and a note says what happened ----
     const lkGlow = new Map();   // uid → until when it glows (survives re-renders)
@@ -19289,6 +19318,101 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         { id: 'tour', g: 'capture', t: 'The welcome tour', d: 'Five small steps through the essentials, with practice tasks. Settings → The welcome tour.', kw: 'tour help start learn onboard' }
       ]);
     })();
+    // ===== Hodo AI retired (Oct 24) =====
+    // Hodo Link does what Hodo AI did, with the person's own Claude and no API key, so the API-key path is switched off:
+    // no Hodo AI section in Settings, no Tidy up / Suggest sub-tasks in the details panel, no background reading of
+    // captures (Hodo still reads dates and names on this device), and any saved key is removed from this browser.
+    koiAiSettings = function () { return { key: '', model: (typeof KOI_MODELS !== 'undefined' && KOI_MODELS[0] ? KOI_MODELS[0].id : ''), ws: '' }; };
+    try { localStorage.removeItem('koi-ai-key'); localStorage.removeItem('koi-ai-workspace'); } catch (e) {}
+    document.documentElement.classList.add('ai-off');
+    for (let i = GUIDE_ITEMS.length - 1; i >= 0; i--) if (['tidy', 'aikey'].includes(GUIDE_ITEMS[i].id)) GUIDE_ITEMS.splice(i, 1);
+    { const rd = GUIDE_ITEMS.find(x => x.id === 'reads'); if (rd) { rd.d = 'Hodo reads dates and names from what you catch, on this device. With Hodo Link, Claude can tidy catches into proper tasks for you to review.'; delete rd.ai; } }
+    // ===== Nudge drafts (Oct 24): Hodo Link, step 2 =====
+    // When it's time to nudge someone you're waiting on, Claude drafts the message (on request from the card, or every
+    // workday morning) and saves it in the task ("Nudge draft (Oct 25): …", more lines start with "| "). The card shows
+    // "Draft ready": open it to edit, Copy, Mark as sent (counts as the nudge) or Discard. Hodo never sends anything.
+    const ND_RE = /^Nudge draft \(([^)]*)\):\s*(.*)$/;
+    function ndOf(t) {
+      const ls = String((t && t.description) || '').split('\n'), i = ls.findIndex(l => ND_RE.test(l)); if (i < 0) return null;
+      const m = ls[i].match(ND_RE), out = [m[2]]; let j = i + 1;
+      while (j < ls.length && /^\| ?/.test(ls[j])) { out.push(ls[j].replace(/^\| ?/, '')); j++; }
+      return { date: m[1], text: out.join('\n').trim(), start: i, end: j };
+    }
+    function ndSet(t, text) {
+      const ls = String(t.description || '').split('\n'), d = ndOf(t); if (d) ls.splice(d.start, d.end - d.start);
+      while (ls.length && !ls[ls.length - 1].trim()) ls.pop();
+      if (text && text.trim()) { const v = text.replace(/\r/g, '').trim().split('\n'), dt = new Date(); if (ls.length) ls.push(''); ls.push(`Nudge draft (${MONTHS[dt.getMonth()]} ${dt.getDate()}): ${v[0]}`, ...v.slice(1).map(l => '| ' + l)); }
+      t.description = ls.join('\n');
+    }
+    function ndSent(t, text) {   // the draft becomes a "Nudge sent (Oct 25): …" record in the task, kept with the earlier ones
+      ndSet(t, null); if (!text) return;
+      const ls = String(t.description || '').split('\n'); while (ls.length && !ls[ls.length - 1].trim()) ls.pop();
+      const v = text.replace(/\r/g, '').split('\n'), dt = new Date(); if (ls.length) ls.push('');
+      ls.push(`Nudge sent (${MONTHS[dt.getMonth()]} ${dt.getDate()}): ${v[0]}`, ...v.slice(1).map(l => '| ' + l)); t.description = ls.join('\n');
+    }
+    const ND_IC = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5h11v7h-11z"/><path d="M2.8 4.8 8 8.6l5.2-3.8"/></svg>';
+    function ndChip(t, s) {
+      if (ndOf(t)) return `<button type="button" class="nd-chip on" data-nd="open" title="A nudge draft is ready">${ND_IC}Draft ready</button>`;
+      if (lkOn() && s && s.nIn <= 0 && !s.nudgedToday) return `<button type="button" class="nd-chip" data-nd="ask" title="Ask Claude to draft this nudge">${LK_SP}Draft</button>`;
+      return '';
+    }
+    const ndState = t => { try { const db = waitSync(); return waitState(t, db[wKey(t)] || { since: wDay(Date.now()), nudges: [] }); } catch (e) { return null; } };
+    // the board's Waiting On rail
+    { const _awr = applyWaitRail; applyWaitRail = function () {
+        const r = _awr.apply(this, arguments);
+        try { board.querySelectorAll('.wait-rail .task-card').forEach(card => { const f = findTaskById(card.dataset.id), row = card.querySelector('.wr-row2'); if (!f || !row) return; row.querySelectorAll('.nd-chip').forEach(x => x.remove()); const h = ndChip(f.task, ndState(f.task)); if (h) { const n = row.querySelector('.wr-nudge'); n ? n.insertAdjacentHTML('beforebegin', h) : row.insertAdjacentHTML('beforeend', h); } }); } catch (e) {}
+        return r;
+      }; }
+    // The Day's "Waiting on" and Land's "Before you go"
+    function ndRows() { try { dayPanel.querySelectorAll('.dy-row[data-id]').forEach(row => { const b = row.querySelector('[data-nudge]'); if (!b || row.querySelector('.nd-chip')) return; const f = dayFind(row.dataset.id); if (!f) return; const h = ndChip(f.task, ndState(f.task)); if (h) b.insertAdjacentHTML('beforebegin', h); }); } catch (e) {} }
+    { const _rd3 = dayRenderDay; dayRenderDay = function () { const r = _rd3.apply(this, arguments); ndRows(); return r; }; }
+    { const _rl3 = dayRenderLand; dayRenderLand = function () { const r = _rl3.apply(this, arguments); ndRows(); return r; }; }
+    // asking Claude, and the draft card
+    function ndAsk(t) { lkAskClaude(`Draft a nudge for my Hodo task “${cleanTitle(t.title)}” (id ${koiTaskKey(t).replace(/^id:/, '')}).`, 'the draft will show up here as “Draft ready”'); }
+    let ndEl = null;
+    const ndClose = () => { if (ndEl) { ndEl.remove(); ndEl = null; } };
+    function ndOpen(t, anchor) {
+      ndClose(); const d = ndOf(t); if (!d) return;
+      const s = ndState(t), who = s ? whoShort(waitWho(s.info)) : '';
+      ndEl = document.createElement('div'); ndEl.className = 'nd-pop';
+      ndEl.innerHTML = `<div class="nd-h">${ND_IC}<b>Nudge${who ? ' ' + escapeHtml(who) : ''}</b><span>· ${dayEsc(t.title)}</span></div>
+        <textarea class="nd-t" rows="6" spellcheck="true">${escapeHtml(d.text)}</textarea>
+        <div class="nd-note">Drafted ${escapeHtml(d.date)}. Edit it if you like, copy it, and send it your way. Hodo never sends anything. Mark as sent keeps it in the task.</div>
+        <div class="nd-a"><button type="button" class="ln-btn quiet" data-ndp="discard">Discard</button><span class="g"></span><button type="button" class="ln-btn" data-ndp="copy">Copy</button><button type="button" class="ln-btn pri" data-ndp="sent">Mark as sent</button></div>`;
+      document.body.appendChild(ndEl);
+      const r = anchor.getBoundingClientRect(), w = ndEl.offsetWidth, h = ndEl.offsetHeight;
+      ndEl.style.left = Math.max(8, Math.min(r.left - 20, innerWidth - w - 8)) + 'px'; ndEl.style.top = (r.bottom + 6 + h > innerHeight - 8 ? Math.max(8, r.top - h - 6) : r.bottom + 6) + 'px';
+      const ta = ndEl.querySelector('textarea'), keep = () => { const f = findTaskById(t.id); if (f && ta.value.trim() !== (ndOf(f.task) || {}).text) { ndSet(f.task, ta.value); markChanged(); } };
+      ta.addEventListener('blur', keep);
+      ndEl.querySelector('[data-ndp="copy"]').addEventListener('click', async e => { keep(); try { await navigator.clipboard.writeText(ta.value.trim()); e.currentTarget.textContent = 'Copied'; } catch (x) { ta.select(); } });
+      ndEl.querySelector('[data-ndp="sent"]').addEventListener('click', () => { const f = findTaskById(t.id), sent = ta.value.trim(); ndClose(); if (!f) return; ndSent(f.task, sent); markChanged(); waitNudge(f.task); renderTasks(); applyWaitRail(); });
+      ndEl.querySelector('[data-ndp="discard"]').addEventListener('click', () => { const f = findTaskById(t.id); ndClose(); if (!f) return; ndSet(f.task, null); markChanged(); renderTasks(); applyWaitRail(); toast('Draft discarded', 1800); });
+      setTimeout(() => ta.focus({ preventScroll: true }), 30);
+    }
+    document.addEventListener('click', e => {
+      const b = e.target.closest && e.target.closest('[data-nd]'); if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      const holder = b.closest('.task-card, [data-id]'), id = holder && (holder.dataset.id || holder.dataset.taskId), f = id && (findTaskById(parseFloat(id)) || findTaskById(id)); if (!f) return;
+      if (b.dataset.nd === 'ask') ndAsk(f.task); else ndOpen(f.task, b);
+    }, true);
+    document.addEventListener('mousedown', e => { if (ndEl && !ndEl.contains(e.target) && !e.target.closest('[data-nd]')) { const ta = ndEl.querySelector('textarea'); if (ta) ta.blur(); ndClose(); } }, true);
+    document.addEventListener('keydown', e => { if (ndEl && e.key === 'Escape') { e.stopPropagation(); ndClose(); } }, true);
+    setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .nd-pop'; }); } catch (e) {} }, 0);
+    // Settings → Hodo Link: drafting on a schedule (asked for once in Claude)
+    { const _lp2 = lkPaint; lkPaint = function () {
+        const r = _lp2.apply(this, arguments);
+        try {
+          if (!lkSec || !lkOn()) return r;
+          const box = lkSec.querySelector('.lk-body'), tidyRow = [...box.querySelectorAll('.lk-row')].find(x => /Tidy my captures/.test(x.textContent)); if (!tidyRow || box.querySelector('[data-ln]')) return r;
+          const after = tidyRow.nextElementSibling && tidyRow.nextElementSibling.classList.contains('lk-ask') ? tidyRow.nextElementSibling : tidyRow, on = lk.nudges === 'morning';
+          after.insertAdjacentHTML('afterend', `<div class="lk-row"><div>Draft my nudges<small>Claude writes the follow-ups that are due, for you to copy and send</small></div><span class="lk-seg"><button type="button" data-ln="ask" class="${on ? '' : 'on'}">When I ask</button><button type="button" data-ln="morning" class="${on ? 'on' : ''}">Every workday morning</button></span></div>${on ? `<div class="lk-ask">Ask Claude once: <b>“Draft my Hodo nudges every workday morning.”</b> <button type="button" class="sp-btn" data-ln="copy">Copy</button></div>` : ''}`);
+          box.querySelectorAll('[data-ln="ask"], [data-ln="morning"]').forEach(b => b.addEventListener('click', async () => { await lkWrite({ nudges: b.dataset.ln }); lkPaint(); }));
+          const cp = box.querySelector('[data-ln="copy"]'); if (cp) cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText('Draft my Hodo nudges every workday morning.'); cp.textContent = 'Copied'; } catch (e) {} });
+        } catch (e) {}
+        return r;
+      }; }
+    { const lkg = GUIDE_ITEMS.find(x => x.id === 'link'); if (lkg) lkg.d = 'Let Claude work on your tasks: add and change them from any chat, tidy your captures for you to review, and draft the nudges for people you’re waiting on. Changes are marked “by Claude”. No API key.'; }
+    if (!GUIDE_ITEMS.some(x => x.id === 'ndraft')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'nudge'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'ndraft', g: 'moves', t: 'Nudge drafts', d: 'With Hodo Link, a Waiting On card with a nudge due offers “Draft”: Claude writes the follow-up and the card shows “Draft ready”. Open it to edit, Copy, then Mark as sent: it counts as the nudge and the message stays in the task as “Nudge sent”. Hodo never sends anything.', kw: 'follow up message email draft nudge sent' }); }
     applyWaitRail();
   </script>
 </body>
