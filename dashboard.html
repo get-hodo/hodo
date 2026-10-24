@@ -5307,6 +5307,9 @@
     .lk-hint button.x { color: var(--text-muted); font-weight: 400; font-size: 15px; }
     .sp-pill.lk-newpill { background: var(--brand); color: #fff; }
     [data-theme="dark"] .sp-pill.lk-newpill { color: #1e1612; }
+    .ns-cta { margin-top: 14px; }
+    .ns-cta button { height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--brand); background: var(--brand); color: #fff; font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; }
+    [data-theme="dark"] .ns-cta button { color: #1e1612; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7671,7 +7674,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '1.9';
+    const KOI_VERSION = '2.0';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -16770,6 +16773,11 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.0': [
+        { k: 'new', t: 'Hodo Link', d: 'Use Claude? Let it work on your tasks.<ul><li><b>From any Claude chat:</b> add tasks, change them, move them, finish them or park them.</li><li><b>Captures:</b> Claude turns your captures into proper tasks, and you review each one in Captured before it reaches your board.</li></ul>Every change shows in Hodo at once, marked “by Claude”. It needs no API key, and you choose whether Claude can add or delete.<div class="ns-cta"><button type="button" data-ns-link>Set up Hodo Link</button></div>' },
+        { k: 'new', t: 'Promise to this week, from the card', d: 'A task in Coming up now has a quick action to promise it this week. One click moves it above the line.' },
+        { k: 'shelved', t: 'Focus', d: 'We’ve shelved Focus while we rework it. Music is still in the header.' }
+      ],
       '1.9': [
         { k: 'new', t: 'The welcome tour', d: 'A short guided tour through the essentials, one step at a time: catch a thought, finish something, promise it this week, park something and plan your day. It uses practice tasks, which you can clear at the end. Take it any time from <b>Settings → The welcome tour</b>.<br><br>People opening Hodo for the first time get the full welcome:<ul><li>Choose Early Bird or Night Owl.</li><li>Learn where their tasks are saved.</li><li>Set up their folder, or just try Hodo first in the browser.</li></ul>' }
       ],
