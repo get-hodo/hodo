@@ -72,6 +72,7 @@
   - Hodo Link (Claude works on the folder)    "Hodo Link (Oct 24)" (lkRead, lkWrite, lkPaint, lkTidyNow; the extension itself is tools/link)
   - Focus switched off (KOI_FOCUS_PAUSED)      "Focus paused (Oct 24)"
   - Promise a Coming up task to this week      "Promise to this week (Oct 24)" (hzWeekBtn)
+  - Guide entries for Today, Land, Weekly reset, This week, Hodo Link   "Guide: Today, Land, Weekly reset, This week, Hodo Link (Oct 24)"
   - Weekly reset                              "Weekly reset (Oct 23)" (wkRender, wkSeal, wkLedger, wkAuto; CSS "/* Weekly reset")
   - Horizons: This week line, Coming up, Done = "Horizons (Oct 21)" (hzModel, hzBoard, hzList, doneOf, dnAsk)
   - Copy tasks for Docs / Excel rows / Excel columns "Copy out (Oct 20)" (koiCopyOpen, koiCopyDo, cpDocs, cpExcel)
@@ -19169,7 +19170,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       openFocus = function () {};
       document.documentElement.classList.add('focus-off');
       try { if (typeof focusState !== 'undefined' && focusState) closeFocus(); } catch (e) {}
-      for (let i = GUIDE_ITEMS.length - 1; i >= 0; i--) if (['focus', 'k-f', 'k-arrows'].includes(GUIDE_ITEMS[i].id)) GUIDE_ITEMS.splice(i, 1);
+      for (let i = GUIDE_ITEMS.length - 1; i >= 0; i--) if (['focus', 'k-f', 'k-arrows', 'focusview'].includes(GUIDE_ITEMS[i].id)) GUIDE_ITEMS.splice(i, 1);
       try { GUIDE_CLIPS.delete('focus'); } catch (e) {}
       // the Focus tools are taken out of cards and List rows (not just hidden), so menus built from them don't list Focus
       { const _ccF = createCard; createCard = function () { const el = _ccF.apply(this, arguments); try { el.querySelectorAll('[data-qa="focus"], .focus-btn').forEach(x => x.remove()); } catch (e) {} return el; }; }
@@ -19264,6 +19265,30 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       document.getElementById('settingsBtn').addEventListener('click', () => setTimeout(() => { if (!lkOn()) { lkSec.classList.add('sp-instant'); open(true); requestAnimationFrame(() => lkSec.classList.remove('sp-instant')); } }, 0));
       lkPaint(); if (!lkOn()) open(true);
     }
+    // ===== Guide: Today, Land, Weekly reset, This week, Hodo Link (Oct 24) =====
+    // The Guide (?) catches up with what came after the Rundown: Today and its three moments, the This week line, Done =,
+    // the quick look, working hours, the welcome tour and Hodo Link. (Guide changes never appear in New stuff!.)
+    (function guideCatchUp() {
+      const put = (afterId, items) => { let i = GUIDE_ITEMS.findIndex(x => x.id === afterId); items.forEach(it => { if (GUIDE_ITEMS.some(x => x.id === it.id)) return; GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : ++i, 0, it); }); };
+      const first = GUIDE_ITEMS.findIndex(x => x.g === 'concepts');
+      [
+        { id: 'today', g: 'concepts', t: 'Today', d: 'One page that lives the day with you: Launch in the morning, The Day while you work, Land in the evening. Hodo opens on it each workday until you start your day.', kw: 'day plan morning evening home page' },
+        { id: 'three', g: 'concepts', t: 'Today’s Three', d: 'Three things that would make today a good day. Hodo suggests them, each with its reason; keep them or swap in your own. Hold “Start the day” for 2 seconds to promise them. They carry a number on the board and in the List.', kw: 'picks promise suggestion launch start' },
+        { id: 'theday', g: 'concepts', t: 'The Day', d: 'While you work: the promise ring (“1 of 3 kept”), Next up, Done and Swap on each of the Three, Also today, and who’s due a nudge. Plans changed? ⋯ next to the date → Release today’s promise.', kw: 'ring next up bonus also today release swap' },
+        { id: 'land', g: 'concepts', t: 'Land the day', d: 'From the last hour of your workday: what you finished, a home for each unfinished promise (Tomorrow, This week, Park), nudges, what’s on your mind, and tomorrow’s first move. Then Close the day.', kw: 'evening wrap up close end of day tomorrow' },
+        { id: 'wreset', g: 'concepts', t: 'Weekly reset', d: 'At the start of each week, before you plan the day: last week, what didn’t make it, this week against your usual pace, Parked and Captured. Hold “Seal the week”. Later keeps it waiting until midweek.', kw: 'monday week review plan reset seal' },
+        { id: 'horizons', g: 'concepts', t: 'This week and Coming up', d: 'Pending has a line. Above it is what you’ve promised this week (“4 this week · your usual 6”); below it, Coming up stays folded. Drag a task across the line, or use “Promise to this week” on its card.', kw: 'line promise week coming up pace usual horizon' },
+        { id: 'doneeq', g: 'concepts', t: 'Done = …', d: 'A task’s finish line: one sentence that says what finished looks like. Hodo asks for it when you move a task to In Progress or choose today’s Three.', kw: 'finish line definition done criteria' }
+      ].reverse().forEach(it => { if (!GUIDE_ITEMS.some(x => x.id === it.id)) GUIDE_ITEMS.splice(Math.max(0, first), 0, it); });
+      const rv = GUIDE_ITEMS.find(x => x.id === 'review'); if (rv) { rv.t = 'Parked review'; rv.d = 'Parked’s own review: three items to keep, start or let go, once a week. It also comes up inside the Weekly reset.'; }
+      put('status', [{ id: 'promise', g: 'moves', t: 'Promise to this week', d: 'On a Coming up card (or List row), the arrow-up button in its strip moves it above the This week line.', kw: 'week commit coming up line' }]);
+      put('caldl', [{ id: 'daypeek', g: 'mouse', t: 'Quick look on Today', d: 'On the Today page, click a task’s title to see its description, Done =, dates and sub-tasks. Tick sub-tasks right there, or open the details.', kw: 'peek preview title today look' }]);
+      put('you', [
+        { id: 'hours', g: 'capture', t: 'Working hours', d: 'The hours you want your work to fit in. Today uses them to offer Land at the end, and the page’s light drifts from morning to evening across them. Settings → You.', kw: 'hours day start end light' },
+        { id: 'link', g: 'capture', t: 'Hodo Link', d: 'Let Claude work on your tasks: add and change them from any chat, and tidy your captures for you to review. Changes are marked “by Claude”. No API key.', how: 'Settings → Hodo Link → download the Hodo extension, drag it onto the Claude desktop app (or Settings → Extensions → Install Extension in Claude), and choose your Hodo folder.', kw: 'claude ai extension mcp connect assistant' },
+        { id: 'tour', g: 'capture', t: 'The welcome tour', d: 'Five small steps through the essentials, with practice tasks. Settings → The welcome tour.', kw: 'tour help start learn onboard' }
+      ]);
+    })();
     applyWaitRail();
   </script>
 </body>
