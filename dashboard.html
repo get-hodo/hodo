@@ -66,6 +66,9 @@
   - Night Owl switch = lights off, then colours flicker on "Night Owl: lights off" (koiNeonDark)
   - List: status first, Done celebrates in place, right-click menu "List (Oct 20)" (koiListDone, lvCtx)
   - Today: Launch and The Day "Today (Oct 21): Launch and The Day" (dayRender, dayRenderLaunch, dayRenderDay, dayCommit, dayHeart, dayLightPaint)
+  - Land: the evening                         "Land (Oct 23): the evening" (dayRenderLand, dayClose, dayRenderClosed, dayYesterday)
+  - Peek on the Today page                    "Peek (Oct 23)" (dayPeek; titles carry data-peek)
+  - Weekly reset                              "Weekly reset (Oct 23)" (wkRender, wkSeal, wkLedger, wkAuto; CSS "/* Weekly reset")
   - Horizons: This week line, Coming up, Done = "Horizons (Oct 21)" (hzModel, hzBoard, hzList, doneOf, dnAsk)
   - Copy tasks for Docs / Excel rows / Excel columns "Copy out (Oct 20)" (koiCopyOpen, koiCopyDo, cpDocs, cpExcel)
   - Waste Yard                                 "// ===== Waste yard (Oct 9)"
@@ -4858,7 +4861,7 @@
     .dn-k kbd { font: 600 10.5px inherit; font-family: inherit; border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
     /* ===== Today (Oct 21) ===== */
     .day-panel { display: none; }
-    .day-panel.active { display: block; }
+    .day-panel.active { display: block; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }   /* Oct 23: the page scrolls inside itself (body doesn't scroll) */
     .day-light { position: fixed; inset: 0; z-index: -1; pointer-events: none; transition: background 2s linear; }
     #dayPanel .ln-in { max-width: 980px; margin: 0 auto; padding: 18px 24px 60px; }
     #dayPanel .ln-date { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
@@ -5064,6 +5067,80 @@
     .lnd-closed p b { color: var(--text-primary); font-weight: 600; }
     #mainTabToggle #dayTabBtn.dt-closed .pl-ic svg path { fill: none; }
     @media (max-width: 760px) { .lnd-tiles { grid-template-columns: repeat(2, 1fr); } .lnd-home { flex-wrap: wrap; } }
+    /* Weekly reset (Oct 23) */
+    .wk-step { display: inline-flex; width: 18px; height: 18px; border-radius: 6px; align-items: center; justify-content: center; background: var(--brand); color: #fff; font-size: 10.5px; letter-spacing: 0; }
+    [data-theme="dark"] .wk-step { color: #1e1612; }
+    .wk-days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
+    .wk-day { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-light); }
+    .wk-day b { display: block; font-size: 13px; color: var(--text-primary); }
+    .wk-day span { font-size: 11.5px; color: var(--text-muted); }
+    .wk-day.rest { background: transparent; border-style: dashed; }
+    .wk-day .dy-ring text { font-size: 9px; }
+    .wk-fold { align-self: flex-start; border: 0; background: transparent; font: inherit; font-size: 12.5px; color: var(--text-muted); padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+    .wk-fold:hover { color: var(--brand); }
+    .wk-fold svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; transition: transform .15s; }
+    .wk-fold.on svg { transform: rotate(90deg); }
+    .wk-fold .count { font-size: 11px; padding: 1px 7px; border-radius: 9px; border: 1px solid var(--border); }
+    .wk-q { margin-left: 8px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); }
+    .wk-q.w { color: var(--st-pending-edge); }
+    .wk-left.third .ln-row { border-radius: 10px 10px 0 0; }
+    .wk-small { display: flex; gap: 8px; align-items: center; padding: 10px 12px 10px 24px; border-radius: 0 0 10px 10px; background: color-mix(in srgb, var(--brand) 5%, var(--bg-card)); border: 1px solid var(--border-light); border-top: 0; font-size: 12.5px; color: var(--text-secondary); }
+    .wk-small input { flex: 1; height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--border)); background: var(--bg-card); color: var(--text-primary); font: inherit; font-size: 13px; }
+    .wk-small input:focus { outline: none; border-color: var(--brand); }
+    .wk-small b { color: var(--text-primary); font-weight: 600; }
+    .wk-meter { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-light); }
+    .wk-meter > div:first-child { white-space: nowrap; }
+    .wk-meter .bar { flex: 1; display: flex; gap: 4px; }
+    .wk-meter .bar i { flex: 1; height: 8px; border-radius: 4px; transition: background .3s; }
+    .wk-meter .bar i.f { background: var(--brand); }
+    .wk-meter .bar i.over { background: color-mix(in srgb, var(--brand) 65%, #e0a040); }
+    .wk-meter .bar i.lk { background: color-mix(in srgb, var(--brand) 55%, var(--bg-card)); }
+    .wk-meter .bar i.u { outline: 1.5px dashed color-mix(in srgb, var(--brand) 40%, transparent); outline-offset: -1.5px; }
+    .wk-meter b { font-size: 14px; color: var(--text-primary); }
+    .wk-meter span { font-size: 12.5px; color: var(--text-muted); }
+    .wk-in { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .wk-in .dy-none { padding: 2px 12px; }
+    .wk-lock { margin-left: auto; font-size: 11.5px; color: var(--text-muted); display: inline-flex; gap: 5px; align-items: center; flex: none; }
+    .wk-lock svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+    .wk-in .dy-row:hover .wk-out { opacity: 1; }
+    .wk-cands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+    .wk-cand { position: relative; display: block; text-align: left; padding: 12px 14px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-light); font-size: 13.5px; color: var(--text-primary); }
+    .wk-cand:hover { border-color: color-mix(in srgb, var(--brand) 45%, var(--border)); }
+    .wk-cand > .t { display: block; padding-right: 30px; font-weight: 550; }
+    .wk-cand .plus { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; padding: 0; border-radius: 7px; border: 1px solid var(--border); background: var(--bg-card); display: flex; align-items: center; justify-content: center; color: var(--brand); font: inherit; font-size: 16px; line-height: 1; cursor: pointer; }
+    .wk-cand .plus:hover { border-color: var(--brand); background: var(--accent-soft); }
+    .wk-cand .ln-chip { margin-top: 8px; display: inline-flex; }
+    .wk-go { min-width: 230px; }
+    .wk-go .lbl { display: inline-flex; align-items: center; gap: 8px; }
+    .wk-ring circle { fill: none; stroke-width: 2.4; transform: rotate(-90deg); transform-origin: 50% 50%; stroke-linecap: round; transition: stroke .2s; }
+    .wk-ring .bg { stroke: color-mix(in srgb, var(--brand) 30%, transparent); }
+    .wk-ring .fg { stroke: var(--brand); }
+    .wk-go.done .wk-ring .fg { stroke: #fff; }
+    [data-theme="dark"] .wk-go.done .wk-ring .fg { stroke: #1e1612; }
+    .wk-wait { margin-top: 14px; }
+    .wk-wait .ic { background: transparent; }
+    @media (max-width: 760px) { .wk-days, .wk-cands { grid-template-columns: repeat(2, 1fr); } .wk-left .ln-row { flex-wrap: wrap; } }
+    /* Peek (Oct 23) */
+    #dayPanel [data-peek] { cursor: pointer; text-decoration: underline dotted transparent; text-underline-offset: 3px; transition: text-decoration-color .15s, color .15s; }
+    #dayPanel [data-peek]:hover { text-decoration-color: currentColor; color: var(--brand); }
+    .dy-peek { position: fixed; z-index: 2700; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); animation: nsFade .12s ease-out both; width: 380px; max-width: calc(100vw - 16px); max-height: min(460px, calc(100vh - 16px)); overflow-y: auto; padding: 12px 14px; font-size: 13px; }
+    .dy-peek .pe-t { font-size: 14.5px; font-weight: 650; color: var(--text-primary); line-height: 1.35; }
+    .dy-peek .pe-m { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .dy-peek .pe-m span { font-size: 11.5px; padding: 2px 7px; border-radius: 6px; background: var(--bg-secondary); color: var(--text-secondary); }
+    .dy-peek .pe-m span:first-child { color: var(--brand); background: var(--accent-soft); font-weight: 600; }
+    .dy-peek .pe-done { margin-top: 10px; color: var(--text-secondary); } .dy-peek .pe-done b { color: var(--text-muted); font-weight: 650; }
+    .dy-peek .pe-d { margin-top: 10px; white-space: pre-wrap; line-height: 1.5; color: var(--text-secondary); max-height: 150px; overflow-y: auto; }
+    .dy-peek .pe-l { margin-top: 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .dy-peek .pe-l span { margin-left: 4px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+    .dy-peek .pe-subs { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+    .dy-peek .pe-sub { display: flex; align-items: flex-start; gap: 8px; padding: 4px 6px; border-radius: 7px; cursor: pointer; color: var(--text-primary); line-height: 1.4; }
+    .dy-peek .pe-sub:hover { background: var(--bg-secondary); }
+    .dy-peek .pe-sub input { position: absolute; opacity: 0; pointer-events: none; }
+    .dy-peek .pe-sub i { flex: none; width: 14px; height: 14px; margin-top: 2px; border-radius: 4px; border: 1.5px solid var(--border); }
+    .dy-peek .pe-sub.on i { background: var(--st-done-edge); border-color: var(--st-done-edge); }
+    .dy-peek .pe-sub.on span { color: var(--text-muted); text-decoration: line-through; }
+    .dy-peek .pe-none { margin-top: 10px; color: var(--text-muted); }
+    .dy-peek .pe-f { display: flex; justify-content: flex-end; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-light); }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7428,7 +7505,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '1.6';
+    const KOI_VERSION = '1.7';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -16547,6 +16624,14 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '1.7': [
+        { k: 'new', t: 'Today', d: 'A new Today tab, before Tasks. On a workday, Hodo opens on it until you start your day.<ul><li><b>Choose today’s Three:</b> Hodo suggests three tasks, each with its reason. Keep them, or swap in your own by clicking or dragging.</li><li>Give each one a finish line and a part of the day: Morning, After lunch or Afternoon.</li><li>Hold <b>Start the day</b> for 2 seconds to commit.</li></ul>During the day, Today shows your promise ring, what’s Next up, Focus, Done and Swap on each of the Three, Also today, and who’s due a nudge. The Three are marked on the board and in the List too. Plans changed? ⋯ → Release today’s promise.' },
+        { k: 'new', t: 'Land the day', d: 'From the last hour of your workday, <b>Land the day</b> shows what you finished, including what you parked or let go. Then:<ul><li>Give each unfinished promise a home: Tomorrow, This week or Park.</li><li>Nudge anyone you’re waiting on.</li><li>Type anything still on your mind into Captured.</li><li>Choose the task tomorrow starts with.</li></ul>Close the day, and tomorrow’s Three already has your first move in slot 1.' },
+        { k: 'new', t: 'The This week line', d: 'Pending now has a line. Above it is what you’ve promised this week: “4 this week · your usual 6”. Below it, Coming up stays folded until you need it. Drag a task across the line to promise it or set it aside. A deadline this week always keeps a task above the line.' },
+        { k: 'new', t: 'Done = …', d: 'Give a task a finish line: one sentence that says what finished looks like. Hodo asks for it when you move a task to In Progress, and when you choose today’s Three.' },
+        { k: 'new', t: 'Working hours', d: 'In Settings, set the hours you want your work to fit in. Today uses them to know when to offer Land, and the page’s light drifts slowly from morning to evening across those hours.' },
+        { k: 'solved', t: 'Parked jumps to a task and glows when you open it.', d: 'Now Parked opens plainly at the top.' }
+      ],
       '1.6': [
         { k: 'new', t: 'Copy out', d: 'Copy tasks straight into Google Docs or Excel. Click the Copy out button on a task (or on the selection bar) and choose:<ul><li><b>For Docs:</b> a numbered list with each task’s priority, status, dates, description and sub-tasks.</li><li><b>For Excel, as rows:</b> one task per row.</li><li><b>For Excel, as columns:</b> one task per column.</li></ul>Turn on “With headers” to add the field names. Leave it off to paste under headers you already have. If the task is part of a selection, the whole selection is copied.' },
         { k: 'new', t: 'Copy out and Select all from the keyboard', d: '<ul><li><kbd>Ctrl</kbd>+<kbd>C</kbd> opens Copy out for your selection, or for the task under your pointer.</li><li>In the pop-up, <kbd>1</kbd>, <kbd>2</kbd> and <kbd>3</kbd> pick the format, and <kbd>H</kbd> turns headers on or off.</li><li><kbd>Ctrl</kbd>+<kbd>A</kbd> selects every task on screen; press it again to clear.</li></ul>' }
@@ -17722,12 +17807,12 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         const f = dayFind(x.id); if (!f) return '';
         const dn = doneOf(f.task.description), w = dayS.when[String(x.id)];
         return `<div class="ln-slot${x.mine ? ' solid' : ''}" data-slot="${i}"><span class="n">${i + 1}</span>
-          <div class="ln-card" draggable="true" data-id="${x.id}"><button type="button" class="ln-x" data-out="${i}" title="Send it back">${DAY_IC.x}</button><div class="t">${dayEsc(f.task.title)}</div>${dayChip(dayReason(x.id))}${x.mine ? '' : '<span class="ln-sugg">Suggested</span>'}
+          <div class="ln-card" draggable="true" data-id="${x.id}"><button type="button" class="ln-x" data-out="${i}" title="Send it back">${DAY_IC.x}</button><div class="t" data-peek="${x.id}">${dayEsc(f.task.title)}</div>${dayChip(dayReason(x.id))}${x.mine ? '' : '<span class="ln-sugg">Suggested</span>'}
             <label class="ln-done${dn ? '' : ' ask'}"><b>Done =</b><input data-done="${x.id}" value="${escapeHtml(dn)}" placeholder="what does finished look like?" autocomplete="off"></label></div>
           <div class="ln-when">${WHEN.map(([k, l]) => `<button type="button" data-when="${k}" data-id="${x.id}" class="${w === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>`;
       };
       const sinceRow = it => {
-        const t = it.t, title = `<b>${dayEsc(t.title)}</b>`;
+        const t = it.t, title = `<b data-peek="${t.id}">${dayEsc(t.title)}</b>`;
         const what = it.kind === 'parked' ? `${title} <span class="q">is back from Parked</span>` : `${title} <span class="q">${it.d === 0 ? 'deadline today' : `deadline was ${kShort(it.dl)} · ${-it.d} day${it.d === -1 ? '' : 's'} late`}</span>`;
         const acts = it.kind === 'parked' ? `<button class="ln-btn" data-sa="week">This week</button><button class="ln-btn quiet" data-sa="again">Park again</button>` : `<button class="ln-btn" data-sa="date">New date</button><button class="ln-btn quiet" data-sa="park">Park it</button>`;
         return `<div class="ln-row" data-k="${escapeHtml(it.k)}"><span class="ic">${it.kind === 'parked' ? DAY_IC.park : DAY_IC.flag}</span><span class="w">${what}</span><span class="acts"><button class="ln-btn ln-sq" data-sa="today" title="Add to today's Three">${DAY_SUN}</button>${acts}</span></div>`;
@@ -17896,9 +17981,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const order = dayOrder();
       const card = ({ x, i }) => {
         const f = dayFind(x.id); if (!f) return '';
-        if (dayDoneTask(f)) { const at = dayS.kept[String(x.id)]; return `<div class="dy-card kept" data-id="${x.id}"><span class="n">${i + 1}</span><div class="body"><div class="t">${dayEsc(f.task.title)}</div></div><span class="dy-kept-l">Kept${at ? ' · ' + new Date(at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : ''}</span></div>`; }
+        if (dayDoneTask(f)) { const at = dayS.kept[String(x.id)]; return `<div class="dy-card kept" data-id="${x.id}"><span class="n">${i + 1}</span><div class="body"><div class="t" data-peek="${x.id}">${dayEsc(f.task.title)}</div></div><span class="dy-kept-l">Kept${at ? ' · ' + new Date(at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : ''}</span></div>`; }
         const dn = doneOf(f.task.description), w = WHEN.find(([kk]) => kk === dayS.when[String(x.id)]);
-        return `<div class="dy-card" data-id="${x.id}"><span class="n">${i + 1}</span><div class="body"><div class="t">${dayEsc(f.task.title)}${String(next) === String(x.id) ? ' <span class="dy-nextup">Next up</span>' : ''}</div>
+        return `<div class="dy-card" data-id="${x.id}"><span class="n">${i + 1}</span><div class="body"><div class="t"><span data-peek="${x.id}">${dayEsc(f.task.title)}</span>${String(next) === String(x.id) ? ' <span class="dy-nextup">Next up</span>' : ''}</div>
           <div class="meta">${w ? `<span class="dy-when">${w[1]}</span>` : ''}${dayChip(dayReason(x.id))}</div>
           ${dn ? `<div class="done-l"><b>Done =</b> ${escapeHtml(dn)}</div>` : `<label class="ln-done ask dy-ask"><b>Done =</b><input data-done="${x.id}" placeholder="what does finished look like?" autocomplete="off"></label>`}</div>
           <div class="acts"><button class="dy-btn" data-dy="focus">${DAY_IC.focus}Focus</button><button class="dy-btn pri" data-dy="done">${DAY_IC.check}Done</button><button class="dy-btn sq" data-dy="swap" title="Swap for another task">${DAY_IC.swap}</button></div></div>`;
@@ -17906,7 +17991,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       dayS.also = (dayS.also || []).filter(id => dayFind(id));
       const allKept = n && k >= n, firstOpenAlso = dayS.also.find(id => dayOpen(dayFind(id)));
       const also = dayS.also.map(id => { const f = dayFind(id); const dn = dayDoneTask(f);
-        return `<div class="dy-row${dn ? ' done' : ''}" data-id="${id}"><button type="button" class="tick" data-also="done" title="${dn ? 'Done' : 'Mark done'}"></button><span class="tx">${dayEsc(f.task.title)}</span>${allKept && String(id) === String(firstOpenAlso) ? '<span class="dy-bonus">Bonus?</span>' : ''}<button type="button" class="dy-rm" data-also="rm" title="Take off today">${DAY_IC.x}</button></div>`; }).join('');
+        return `<div class="dy-row${dn ? ' done' : ''}" data-id="${id}"><button type="button" class="tick" data-also="done" title="${dn ? 'Done' : 'Mark done'}"></button><span class="tx" data-peek="${id}">${dayEsc(f.task.title)}</span>${allKept && String(id) === String(firstOpenAlso) ? '<span class="dy-bonus">Bonus?</span>' : ''}<button type="button" class="dy-rm" data-also="rm" title="Take off today">${DAY_IC.x}</button></div>`; }).join('');
       let waits = [];
       try { const db = waitSync(); sections.filter(s => isWaitSection(s.id)).forEach(s => (tasks[s.id] || []).forEach(t => { const st = waitState(t, db[wKey(t)] || { since: wDay(Date.now()), nudges: [] }); if (st.nIn <= 0 && !st.nudgedToday) waits.push({ t, st }); })); } catch (e) {}
       const since = daySince();
@@ -18046,7 +18131,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
           taskViewToggle.style.display = 'none';
           document.documentElement.classList.add('on-day');
           try { closeTaskPanel(); } catch (e) {} try { selClear(true); } catch (e) {}
-          dayS = dayLoad(); dayRender(); window.scrollTo(0, 0); return;
+          dayS = dayLoad(); dayRender(); dayPanel.scrollTop = 0; return;
         }
         dayTabBtn.classList.remove('active'); dayPanel.classList.remove('active'); document.documentElement.classList.remove('on-day');
         return _sw2.apply(this, arguments);
@@ -18157,10 +18242,10 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const waits = dayWaitsDue(), tm = dayTomorrow(), caught = dayS.caught || [];
       const head = !L.moved ? 'A quiet day. Tomorrow is a fresh start.' : n && L.kept >= n ? 'Every promise kept. Well landed.' : L.kept ? `${L.moved} thing${L.moved === 1 ? '' : 's'} moved forward today.` : `${L.moved} thing${L.moved === 1 ? '' : 's'} moved forward today.`;
       const tile = (v, l) => `<div class="lnd-tile"><b>${v}</b><span>${l}</span></div>`;
-      const doneRow = d => `<div class="dy-row done lnd-done"><span class="tick"></span>${d.promise ? `<span class="day-n">${d.i + 1}</span>` : ''}<span class="tx">${dayEsc(d.t.title)}</span><span class="lnd-tag${d.promise ? ' p' : ''}">${d.promise ? 'Promise' : 'Bonus'}</span></div>`;
-      const decRow = d => `<div class="dy-row lnd-dec"><span class="ic">${d.kind === 'parked' ? DAY_IC.park : DAY_IC.x}</span><span class="tx">${dayEsc(d.t.title)}</span><span class="lnd-tag">${d.kind === 'parked' ? 'Parked' : 'Let go'}</span></div>`;
+      const doneRow = d => `<div class="dy-row done lnd-done"><span class="tick"></span>${d.promise ? `<span class="day-n">${d.i + 1}</span>` : ''}<span class="tx" data-peek="${d.t.id}">${dayEsc(d.t.title)}</span><span class="lnd-tag${d.promise ? ' p' : ''}">${d.promise ? 'Promise' : 'Bonus'}</span></div>`;
+      const decRow = d => `<div class="dy-row lnd-dec"><span class="ic">${d.kind === 'parked' ? DAY_IC.park : DAY_IC.x}</span><span class="tx" data-peek="${d.t.id}">${dayEsc(d.t.title)}</span><span class="lnd-tag">${d.kind === 'parked' ? 'Parked' : 'Let go'}</span></div>`;
       const homeRow = ({ x, i }) => { const f = dayFind(x.id), h = homes[String(x.id)];
-        return `<div class="ln-row lnd-home" data-id="${x.id}"><span class="day-n">${i + 1}</span><span class="w"><b>${dayEsc(f.task.title)}</b></span><span class="lnd-seg">${[['tomorrow', 'Tomorrow'], ['week', 'This week'], ['park', 'Park']].map(([k, l]) => `<button type="button" data-home="${k}" class="${h === k ? 'on' : ''}">${l}</button>`).join('')}</span></div>`; };
+        return `<div class="ln-row lnd-home" data-id="${x.id}"><span class="day-n">${i + 1}</span><span class="w"><b data-peek="${x.id}">${dayEsc(f.task.title)}</b></span><span class="lnd-seg">${[['tomorrow', 'Tomorrow'], ['week', 'This week'], ['park', 'Park']].map(([k, l]) => `<button type="button" data-home="${k}" class="${h === k ? 'on' : ''}">${l}</button>`).join('')}</span></div>`; };
       dayPanel.innerHTML = `<div class="ln-in lnd">
         <div class="ln-date">${escapeHtml(dayDate())}</div>
         <h1>Here’s your day.</h1>
@@ -18174,7 +18259,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         <div class="lnd-mind"><input data-mind placeholder="Anything still in your head? It waits in Captured." autocomplete="off" maxlength="300"><button type="button" class="ln-btn" data-mindgo>Catch it</button></div>
         ${caught.length ? `<div class="lnd-caught">${caught.map(c => `<span>${escapeHtml(c)}</span>`).join('')}</div>` : ''}
         <div class="ln-lbl">Tomorrow starts with</div>
-        <div class="lnd-tm">${tm ? `<span class="day-n">1</span><span class="w"><b>${dayEsc(tm.t.title)}</b>${tm.why ? ` <span class="q">· ${escapeHtml(tm.why)}</span>` : ''}</span>` : '<span class="w q">Nothing set. Tomorrow’s Launch will suggest.</span>'}<button type="button" class="ln-btn quiet" data-tm>Change</button></div>
+        <div class="lnd-tm">${tm ? `<span class="day-n">1</span><span class="w"><b data-peek="${tm.id}">${dayEsc(tm.t.title)}</b>${tm.why ? ` <span class="q">· ${escapeHtml(tm.why)}</span>` : ''}</span>` : '<span class="w q">Nothing set. Tomorrow’s Launch will suggest.</span>'}<button type="button" class="ln-btn quiet" data-tm>Change</button></div>
         <div class="ln-foot lnd-foot"><button type="button" class="ln-skip" data-land="back">Back to the day</button><button type="button" class="ln-go lnd-close" data-land="close">${dayNight() ? DAY_MOON : DAY_SET}<span>Close the day</span></button></div>
       </div>`;
       dayWireLand();
@@ -18254,7 +18339,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         _rl.apply(this, arguments);
         const ys = dayYesterday(); if (!ys.length) return;
         const wrap = document.createElement('div');
-        wrap.innerHTML = `<div class="ln-lbl">Settle yesterday <span class="count">${ys.length}</span></div><div class="ln-since lnd-ysettle">${ys.map(t => `<div class="ln-row" data-y="${t.id}"><span class="ic">${DAY_SET}</span><span class="w"><b>${dayEsc(t.title)}</b> <span class="q">was one of yesterday’s Three</span></span><span class="acts"><button class="ln-btn ln-sq" data-ya="today" title="Add to today's Three">${DAY_SUN}</button><button class="ln-btn" data-ya="week">This week</button><button class="ln-btn quiet" data-ya="park">Park it</button></span></div>`).join('')}</div>`;
+        wrap.innerHTML = `<div class="ln-lbl">Settle yesterday <span class="count">${ys.length}</span></div><div class="ln-since lnd-ysettle">${ys.map(t => `<div class="ln-row" data-y="${t.id}"><span class="ic">${DAY_SET}</span><span class="w"><b data-peek="${t.id}">${dayEsc(t.title)}</b> <span class="q">was one of yesterday’s Three</span></span><span class="acts"><button class="ln-btn ln-sq" data-ya="today" title="Add to today's Three">${DAY_SUN}</button><button class="ln-btn" data-ya="week">This week</button><button class="ln-btn quiet" data-ya="park">Park it</button></span></div>`).join('')}</div>`;
         const sub = dayPanel.querySelector('.ln-sub'); sub.after(...wrap.childNodes);
         dayPanel.querySelectorAll('[data-y]').forEach(row => row.querySelectorAll('[data-ya]').forEach(b => b.addEventListener('click', e => {
           e.stopPropagation(); const f = dayFind(row.dataset.y); if (!f) return; const a = b.dataset.ya; daySettle('y:' + f.task.id);
@@ -18280,7 +18365,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         const cf = dayPanel.querySelector('.dy-confirm [data-cf="release"]');
         if (cf && dayConfirm === 'ask') { const b = document.createElement('button'); b.type = 'button'; b.className = 'ln-btn'; b.textContent = 'Land the day'; cf.before(b); b.addEventListener('click', () => { dayConfirm = null; dayLandStart(); }); }
       }; }
-    function dayLandStart() { dayS.landing = true; dayS.homes = dayS.homes || {}; daySave(); dayHeart.low(); dayRender(); window.scrollTo(0, 0); }
+    function dayLandStart() { dayS.landing = true; dayS.homes = dayS.homes || {}; daySave(); dayHeart.low(); dayRender(); dayPanel.scrollTop = 0; }
     // the tab after the day is closed: a setting sun (Early Bird) or a moon (Night Owl)
     { const _tp = dayTabPaint; dayTabPaint = function () {
         _tp.apply(this, arguments);
@@ -18296,6 +18381,257 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
           dayLight.style.background = `linear-gradient(0deg, rgba(${wc},${a}) 0%, rgba(${wc},${(a * 0.4).toFixed(3)}) 30%, rgba(${wc},0) 60%)`; }
       }; }
     new MutationObserver(() => { dayLightPaint(); dayTabPaint(); if (activeMainTab === 'day' && dayS.state === 'closed') dayRender(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    // ===== Weekly reset (Oct 23): the week's reset =====
+    // On the first workdays of the week (until midweek) the Today page opens on the Weekly reset before Launch:
+    // 1 Last week (counts, a ring per day, what got finished), 2 Didn't make it (Keep this week · Coming up · Park · Let go;
+    // from the third week, "Make the first step smaller?"), 3 This week (the pace meter, deadlines locked in, Coming up
+    // suggestions with reasons), 4 Parked (the review, inline), 5 Captured (only when something waits). "Hold to seal the
+    // week" (2 seconds, a five-part ring closes) applies step 2, then Launch follows. "Later" leaves a quiet row in Launch
+    // until midweek; ⋯ on The Day opens it any time until it's done. Saved: answers as task changes; the rest in this browser.
+    const wkLS = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+    // ---- the day history: each day's promise (kept of n), for the week's strip ----
+    { const _ds = daySave; daySave = function () {
+        const r = _ds.apply(this, arguments);
+        try { if (sections.length) { const h = wkLS.get('koi-days', {}); const n = dayS.slots.filter(Boolean).length;
+          h[dayS.date] = { k: Math.max(dayKeptCount(), Object.keys(dayS.kept || {}).filter(id => daySlotOf(id) >= 0).length), n, st: dayS.state };
+          const cut = ymd(new Date(Date.now() - 45 * 864e5)); Object.keys(h).forEach(d => { if (d < cut) delete h[d]; }); wkLS.set('koi-days', h); } } catch (e) {}
+        return r;
+      }; }
+    const wkKey = () => ymd(hzWeek0());
+    const wkRec = () => { const r = wkLS.get('koi-wk', null); return r && r.week === wkKey() ? r : null; };
+    function wkDayIndex() { let n = 0; const d = hzWeek0(), t = hzDay(new Date()); for (; d < t; d.setDate(d.getDate() + 1)) if (!isWeekend(d)) n++; return n; }
+    const wkEarly = () => dayIsWork() && wkDayIndex() <= 2;   // the first three workdays of the week
+    const wkDone = () => { const r = wkRec(); return !!(r && r.state === 'done'); };
+    function wkAuto() { const r = wkRec(); let on = true; try { on = localStorage.getItem('koi-wk-auto') !== '0'; } catch (e) {} return on && wkEarly() && !r && !!sections.length; }
+    let wkOpen = false, wkS = { left: {}, small: {}, parkedSeen: false }, wkFoldDone = false, wkFoldCu = false;
+    const wkInRange = (d, a, b) => d && hzDay(d) >= a && hzDay(d) < b;
+    const wkLastWeek = () => { const b = hzWeek0(); return [new Date(b.getFullYear(), b.getMonth(), b.getDate() - 7), b]; };
+    function wkLedger() {
+      const [a, b] = wkLastWeek(), done = [];
+      sections.forEach(sec => (tasks[sec.id] || []).forEach(t => { const i = splitNoteCapsules(t.note || '');
+        if (i.date && i.date.kind === 'done' && wkInRange(i.date.date, a, b)) done.push({ t, promise: !!(i.pick && wkInRange(i.pick.date, a, b)) }); }));
+      done.sort((x, y) => y.promise - x.promise);
+      let dec = 0;
+      try { (deep.items || []).forEach(t => { if (wkInRange(deepMeta(t).added, a, b)) dec++; }); (deep.released || []).forEach(t => { if (wkInRange(deepMeta(t).released, a, b)) dec++; }); } catch (e) {}
+      try { (koiBin || []).forEach(t => { const d = binInfo(t).day; if (d && wkInRange(new Date(d + 'T00:00:00'), a, b)) dec++; }); } catch (e) {}
+      const h = wkLS.get('koi-days', {}), days = []; let k = 0, n = 0;
+      for (const d = new Date(a); d < b; d.setDate(d.getDate() + 1)) { if (isWeekend(d)) continue; const r = h[ymd(d)], on = r && r.n && (r.st === 'active' || r.st === 'closed');
+        days.push({ d: new Date(d), k: on ? r.k : null, n: on ? r.n : null }); if (on) { k += r.k; n += r.n; } }
+      return { done, dec, days, k, n };
+    }
+    const wkCarry = () => wkLS.get('koi-carry', {});
+    function wkLeftovers() { const m = hzModel(); return m ? m.left : []; }
+    function wkCands(m) {
+      const since = hzSince(), today = hzDay(new Date());
+      return m.cu.map(t => { const i = splitNoteCapsules(t.note || ''), rs = [];
+          if (i.deadline) { const d = kDiff(i.deadline); if (d <= 21) rs.push({ pts: 100 - d * 3, txt: `Deadline ${i.deadline.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`, cls: 'dl' }); }
+          if (i.priority === 'high') rs.push({ pts: 45, txt: 'High impact', cls: 'hi' });
+          const s = since[hzKey(t)], w = s ? Math.floor((today - new Date(s + 'T00:00:00')) / (7 * 864e5)) : 0; if (w >= 2) rs.push({ pts: 8 * w, txt: `Waiting ${w} weeks`, cls: 'pd' });
+          if (i.priority === 'medium') rs.push({ pts: 10, txt: 'Medium', cls: '' });
+          rs.sort((x, y) => y.pts - x.pts); return { t, score: rs.reduce((x, r) => x + r.pts, 0), reason: rs[0] || null };
+        }).sort((x, y) => y.score - x.score);
+    }
+    function wkParked() {
+      const out = [], seen = new Set(), today = dayStart(new Date());
+      try {
+        if (deepTideDue()) deep.items.map(t => ({ t, m: deepMeta(t) })).filter(x => !(x.m.resurface && dayStart(x.m.resurface) > today))
+          .map(x => ({ ...x, s: (x.m.pearl ? 3000 : 0) + (deepState(x.m) === 'ready' ? 2000 : 0) + (x.m.after ? 300 : 0) + (deepAge(x.m) ?? 999) }))
+          .sort((a, b) => b.s - a.s).slice(0, 3).forEach(x => { seen.add(x.t); out.push({ t: x.t, m: x.m, why: pkStale(x.m) ? `going quiet · ${deepAge(x.m)} days` : deepState(x.m) === 'ready' ? 'back today' : x.m.after ? `when ${x.m.after}` : 'someday · back for review' }); });
+        deep.items.forEach(t => { const m = deepMeta(t); if (!seen.has(t) && pkStale(m)) out.push({ t, m, why: `going quiet · ${deepAge(m)} days` }); });
+      } catch (e) {}
+      return out.slice(0, 6);
+    }
+    const WK_LOCK = '<svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7"/></svg>';
+    function wkRingSvg(k, size) {   // the week's five-part ring (sealing)
+      const r = size / 2 - 2.5, c = 2 * Math.PI * r, seg = c / 5; let a = '';
+      for (let i = 0; i < 5; i++) a += `<circle class="${i < k ? 'fg' : 'bg'}" data-wi="${i}" cx="${size / 2}" cy="${size / 2}" r="${r}" stroke-dasharray="${seg - 2.4} ${c}" stroke-dashoffset="${-i * seg}"/>`;
+      return `<svg class="wk-ring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${a}</svg>`;
+    }
+    function wkRender() {
+      const L = wkLedger(), m = hzModel() || { week: [], left: [], cu: [], progress: 0, pace: 0 }, carry = wkCarry();
+      const left = m.left, keeps = left.filter(t => wkS.left[String(t.id)] === 'keep');
+      const load = m.week.length + keeps.length + m.progress, pace = m.pace;
+      const cands = wkCands(m), top = cands.slice(0, 3), topSet = new Set(top.map(c => c.t));
+      const parked = wkParked(), cap = (koiTray || []).filter(t => !capReading.has(String(t.id)));
+      let sn = 0; const step = (i, l, c) => `<div class="ln-lbl"><span class="wk-step">${i}</span> ${l}${c != null ? ` <span class="count">${c}</span>` : ''}</div>`;
+      const seg = (id, on) => `<span class="lnd-seg" data-left="${id}">${[['keep', 'Keep this week'], ['cu', 'Coming up'], ['park', 'Park'], ['go', 'Let go']].map(([k, l]) => `<button type="button" data-lv="${k}" class="${on === k ? 'on' : ''}">${l}</button>`).join('')}</span>`;
+      const dayCard = x => x.k == null ? `<div class="wk-day rest"><svg class="dy-ring" viewBox="0 0 34 34" width="34" height="34"><circle class="bg" cx="17" cy="17" r="14" stroke-dasharray="3 5"/></svg><div><b>${x.d.toLocaleDateString('en-US', { weekday: 'short' })}</b><span>A free day</span></div></div>`
+        : `<div class="wk-day">${dayRingSvg(x.k, x.n, 34)}<div><b>${x.d.toLocaleDateString('en-US', { weekday: 'short' })}</b><span>${x.k >= x.n ? 'All kept' : `${x.k} of ${x.n} kept`}</span></div></div>`;
+      const doneRow = d => `<div class="dy-row done"><span class="tick"></span><span class="tx" data-peek="${d.t.id}">${dayEsc(d.t.title)}</span><span class="lnd-tag${d.promise ? ' p' : ''}">${d.promise ? 'Promise' : 'Bonus'}</span></div>`;
+      const leftRow = t => { const id = String(t.id), wks = (carry[hzKey(t)] || 1) + 1, third = wks >= 3, sm = wkS.small[id];
+        return `<div class="wk-left${third ? ' third' : ''}" data-id="${id}"><div class="ln-row"><span class="w"><b data-peek="${t.id}">${dayEsc(t.title)}</b><span class="wk-q${third ? ' w' : ''}">${third ? `${['', '', 'second', 'third', 'fourth'][wks] || wks + 'th'} week` : 'promised last week'}</span></span>${seg(id, wkS.left[id])}</div>
+          ${third ? `<div class="wk-small">${sm ? `<span>First step added: <b>${escapeHtml(sm)}</b></span>` : `<span>Make the first step smaller?</span><input data-small="${id}" placeholder="One small step you could start without thinking" autocomplete="off" maxlength="120"><button type="button" class="ln-btn" data-smallgo="${id}">Add as first step</button>`}</div>` : ''}</div>`; };
+      const weekRow = t => { const i = splitNoteCapsules(t.note || ''), forced = hzForced(t);
+        const tail = forced ? `<span class="wk-lock">${WK_LOCK}Deadline ${i.deadline.toLocaleDateString('en-US', { weekday: 'short' })}</span>` : i.week ? `<button type="button" class="dy-rm wk-out" data-out="${t.id}" title="Back to Coming up">${DAY_IC.x}</button>` : i.date && i.date.date ? `<span class="lnd-tag">Planned ${i.date.date.toLocaleDateString('en-US', { weekday: 'short' })}</span>` : '';
+        return `<div class="dy-row"><span class="ic">${forced ? DAY_IC.flag : DAY_IC.check}</span><span class="tx" data-peek="${t.id}">${dayEsc(t.title)}</span>${tail}</div>`; };
+      const segs = Math.min(15, Math.max(pace || 0, load, 1)), locked = m.week.filter(hzForced).length;
+      const bar = Array.from({ length: segs }, (_, i) => `<i class="${i < locked ? 'lk' : i < load ? (pace && i >= pace ? 'f over' : 'f') : 'u'}"></i>`).join('');
+      const heavy = pace && load > pace * 1.5;
+      const pkRow = ({ t, m: pm, why }) => `<div class="ln-row" data-pk="${hzKey(t)}"><span class="ic">${DAY_IC.park}</span><span class="w"><b data-peek="${t.id}">${dayEsc(t.title)}</b> <span class="q">${escapeHtml(why)}</span></span><span class="acts"><button class="ln-btn" data-pa2="week">This week</button><button class="ln-btn" data-pa2="cu">Coming up</button><button class="ln-btn quiet" data-pa2="keep">Keep parked</button>${pm.pearl ? '' : '<button class="ln-btn quiet" data-pa2="go">Let go</button>'}</span></div>`;
+      const capRow = t => `<div class="ln-row" data-cap="${t.id}"><span class="w"><b data-peek="${t.id}">${dayEsc(t.title)}</b>${(() => { const c = capInfo(t).caught; return c ? ` <span class="q">caught ${c.toLocaleDateString('en-US', { weekday: 'short' })}</span>` : ''; })()}</span><span class="acts"><button class="ln-btn" data-ca="week">This week</button><button class="ln-btn" data-ca="cu">Coming up</button><button class="ln-btn quiet" data-ca="park">Park</button><button class="ln-btn quiet" data-ca="discard">Discard</button></span></div>`;
+      const shown = wkFoldDone ? L.done : L.done.slice(0, 3);
+      dayPanel.innerHTML = `<div class="ln-in lnd wk">
+        <div class="ln-date">${escapeHtml(dayDate())}</div>
+        <h1>Weekly reset.</h1>
+        <div class="ln-sub">Close last week and set this one. About four minutes, then on to today.</div>
+        ${step(++sn, 'Last week', L.done.length)}
+        <div class="lnd-sum" style="margin-top:0">${L.n ? dayRingSvg(L.k, L.n, 64) : ''}<div class="lnd-tiles" style="grid-template-columns:repeat(3,1fr)"><div class="lnd-tile"><b>${L.done.length}</b><span>Finished</span></div><div class="lnd-tile"><b>${L.k}<small> of ${L.n}</small></b><span>Promises kept</span></div><div class="lnd-tile"><b>${L.dec}</b><span>Decisions made</span></div></div></div>
+        <div class="wk-days">${L.days.map(dayCard).join('')}</div>
+        <div class="dy-also" style="margin-top:10px">${shown.map(doneRow).join('') || '<div class="dy-none">Nothing finished last week. This week is a fresh start.</div>'}${L.done.length > 3 ? `<button type="button" class="wk-fold${wkFoldDone ? ' on' : ''}" data-fold="done">${HZ_CHEV}${wkFoldDone ? 'Show less' : `${L.done.length - 3} more`}</button>` : ''}</div>
+        ${left.length ? step(++sn, 'Didn’t make it', left.length) + `<div class="ln-since">${left.map(leftRow).join('')}</div>` : ''}
+        ${step(++sn, 'This week')}
+        <div class="wk-meter"><div><b>${load} promised</b>${pace ? ` <span>· your usual ${pace}</span>` : ''}${heavy ? ' <span class="hz-heavy">· more than usual</span>' : ''}</div><div class="bar">${bar}</div></div>
+        <div class="wk-in">${m.week.map(weekRow).join('')}${keeps.map(t => `<div class="dy-row"><span class="ic">${DAY_IC.check}</span><span class="tx" data-peek="${t.id}">${dayEsc(t.title)}</span><span class="lnd-tag">Kept from last week</span></div>`).join('')}${m.progress ? `<div class="dy-none">Plus ${m.progress} in progress.</div>` : ''}</div>
+        ${top.length ? `<div class="wk-cands">${top.map(c => `<div class="wk-cand"><button type="button" class="plus" data-add="${c.t.id}" title="Promise it this week">+</button><span class="t" data-peek="${c.t.id}">${dayEsc(c.t.title)}</span>${c.reason ? dayChip(c.reason) : ''}</div>`).join('')}</div>` : ''}
+        ${cands.length > top.length ? `<button type="button" class="wk-fold${wkFoldCu ? ' on' : ''}" data-fold="cu">${HZ_CHEV}Everything in Coming up <span class="count">${cands.length - top.length}</span></button>${wkFoldCu ? `<div class="ln-weeklist">${cands.filter(c => !topSet.has(c.t)).map(c => `<div class="ln-wrow" data-add="${c.t.id}">${dayEsc(c.t.title)}</div>`).join('')}</div>` : ''}` : ''}
+        ${parked.length ? step(++sn, 'Parked', parked.length) + `<div class="ln-since">${parked.map(pkRow).join('')}</div>` : ''}
+        ${cap.length ? step(++sn, 'Captured', cap.length) + `<div class="ln-since">${cap.slice(0, 8).map(capRow).join('')}</div>` : ''}
+        <div class="ln-foot">
+          <span class="ln-real"><i></i>${load} promised for this week. ${dayS.state === 'plan' ? 'Today comes next.' : ''}</span>
+          <button type="button" class="ln-skip" data-wk="later">Later</button>
+          <button type="button" class="ln-go hold wk-go" data-wk="seal"><svg class="trace" preserveAspectRatio="none"><rect pathLength="1"/></svg><span class="fill"></span><span class="lbl">${wkRingSvg(0, 18)}Hold to seal the week</span></button>
+        </div>
+        <div class="ln-hint" hidden>Keep holding to seal it</div>
+      </div>`;
+      wkWire();
+    }
+    function wkWire() {
+      const P = dayPanel, re = () => { markChanged(); wkRender(); };
+      P.querySelectorAll('[data-fold]').forEach(b => b.addEventListener('click', () => { if (b.dataset.fold === 'done') wkFoldDone = !wkFoldDone; else wkFoldCu = !wkFoldCu; wkRender(); }));
+      P.querySelectorAll('[data-left]').forEach(s => s.querySelectorAll('[data-lv]').forEach(b => b.addEventListener('click', () => {
+        const id = s.dataset.left, on = wkS.left[id] === b.dataset.lv; if (on) delete wkS.left[id]; else { wkS.left[id] = b.dataset.lv; dayHeart.note(0, 0.5); } wkRender(); })));
+      P.querySelectorAll('[data-smallgo]').forEach(b => {
+        const id = b.dataset.smallgo, inp = P.querySelector(`[data-small="${CSS.escape(id)}"]`);
+        const go = () => { const v = inp.value.trim(), f = dayFind(id); if (!v || !f) { inp.focus(); return; } (f.task.subtasks = f.task.subtasks || []).unshift({ text: v, checked: false }); wkS.small[id] = v; dayHeart.note(1, 0.55); re(); };
+        b.addEventListener('click', go); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+      });
+      P.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => { const f = dayFind(b.dataset.add); if (!f) return; hzSet(f.task, 'week'); dayHeart.note(2, 0.6); re(); }));
+      P.querySelectorAll('[data-out]').forEach(b => b.addEventListener('click', () => { const f = dayFind(b.dataset.out); if (!f) return; hzSet(f.task, 'cu'); re(); }));
+      P.querySelectorAll('[data-pk]').forEach(row => row.querySelectorAll('[data-pa2]').forEach(b => b.addEventListener('click', () => {
+        const t = deep.items.find(x => hzKey(x) === row.dataset.pk); if (!t) return; const a = b.dataset.pa2; wkS.parkedSeen = true;
+        if (a === 'keep') { const pm = deepMeta(t); pm.kept = new Date(); if (pm.resurface && dayStart(pm.resurface) <= dayStart(new Date())) pm.resurface = null; deepSetMeta(t, pm); deepChanged(false); }
+        else if (a === 'go') deepLetGo(t);
+        else { const id = t.id; deepBringUp(t, '', null, true); const f = dayFind(id); if (f && f.sectionId === hzPendingId()) hzSet(f.task, a === 'week' ? 'week' : 'cu'); }
+        re();
+      })));
+      P.querySelectorAll('[data-cap]').forEach(row => row.querySelectorAll('[data-ca]').forEach(b => b.addEventListener('click', () => {
+        const t = koiTray.find(x => String(x.id) === row.dataset.cap); if (!t) return; const a = b.dataset.ca;
+        if (a === 'discard') { capDiscard(t); wkRender(); return; }
+        if (!capAdd(t, true)) return; const f = dayFind(t.id);
+        if (f && a === 'park') sinkTask(f.task, null); else if (f && f.sectionId === hzPendingId()) hzSet(f.task, a === 'week' ? 'week' : 'cu');
+        re();
+      })));
+      P.querySelector('[data-wk="later"]').addEventListener('click', () => { if (!wkRec()) wkLS.set('koi-wk', { week: wkKey(), state: 'later' }); wkOpen = false; dayRender(); });
+      wkWireHold(P.querySelector('[data-wk="seal"]'));
+    }
+    function wkWireHold(btn) {
+      const trace = btn.querySelector('rect'), hint = dayPanel.querySelector('.ln-hint'), segs = () => [...btn.querySelectorAll('.wk-ring circle')];
+      let anim = null, timers = [], stopHum = null, holding = false, done = false;
+      const start = () => {
+        if (holding || done) return; holding = true; hint.hidden = true; btn.classList.add('holding');
+        anim = trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: DAY_HOLD, easing: 'linear', fill: 'forwards' });
+        stopHum = dayHeart.hum(DAY_HOLD / 1000);
+        [0, 1, 2, 3, 4].forEach(i => timers.push(setTimeout(() => { const s = segs()[i]; if (s) s.setAttribute('class', 'fg'); dayHeart.note(i % 3, 0.45); }, DAY_HOLD * (i + 1) / 5 - (i === 4 ? 30 : 0))));
+        timers.push(setTimeout(() => { done = true; holding = false; if (stopHum) stopHum(); wkSeal(btn); }, DAY_HOLD));
+      };
+      const cancel = () => {
+        if (!holding || done) return; holding = false; timers.forEach(clearTimeout); timers = []; if (stopHum) stopHum(); btn.classList.remove('holding');
+        if (anim) { const cur = +getComputedStyle(trace).strokeDashoffset || 0; anim.cancel(); trace.animate([{ strokeDashoffset: cur }, { strokeDashoffset: 1 }], { duration: 300, easing: 'ease-out' }); }
+        segs().forEach(s => s.setAttribute('class', 'bg')); hint.hidden = false;
+      };
+      btn.addEventListener('pointerdown', e => { e.preventDefault(); btn.setPointerCapture && btn.setPointerCapture(e.pointerId); start(); });
+      btn.addEventListener('pointerup', cancel); btn.addEventListener('pointercancel', cancel); btn.addEventListener('lostpointercapture', cancel);
+      btn.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) { e.preventDefault(); start(); } });
+      btn.addEventListener('keyup', e => { if (e.key === 'Enter' || e.key === ' ') cancel(); });
+      btn.addEventListener('click', e => e.preventDefault());
+    }
+    function wkSeal(btn) {
+      const carry = wkCarry();
+      wkLeftovers().forEach(t => { const id = String(t.id), a = wkS.left[id], f = dayFind(id); if (!a || !f) return;
+        if (a === 'keep') { carry[hzKey(t)] = (carry[hzKey(t)] || 1) + 1; hzSet(f.task, 'week'); }
+        else { delete carry[hzKey(t)]; if (a === 'cu') hzSet(f.task, 'cu'); else if (a === 'park') sinkTask(f.task, null); else if (a === 'go') deleteTask(f.task); } });
+      wkLS.set('koi-carry', carry);
+      if (wkS.parkedSeen) try { localStorage.setItem('koi-review', new Date().toISOString()); } catch (e) {}
+      wkLS.set('koi-wk', { week: wkKey(), state: 'done', at: Date.now() });
+      markChanged();
+      btn.classList.remove('holding'); btn.classList.add('done'); btn.querySelector('.lbl').innerHTML = `${wkRingSvg(5, 18)}This week is set ✓`;
+      if (!reduceMotion) { btn.querySelector('.fill').animate([{ transform: 'scale(.2)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' }); dayRing(btn, 1.7, 1200, 12); }
+      else { const fl = btn.querySelector('.fill'); fl.style.transform = 'scale(1)'; fl.style.opacity = 1; }
+      dayHeart.chord(0.9);
+      setTimeout(() => {
+        dayHeart.swell(); setTimeout(() => dayHeart.low(), 900);
+        if (!reduceMotion) { const r = btn.getBoundingClientRect(), wx = r.left + r.width / 2, wy = r.top + r.height / 2, R0 = 1600;
+          const w = document.createElement('div'); w.className = 'day-wave'; Object.assign(w.style, { left: (wx - R0) + 'px', top: (wy - R0) + 'px', width: 2 * R0 + 'px', height: 2 * R0 + 'px' }); document.body.appendChild(w);
+          w.animate([{ transform: 'scale(.08)', opacity: 1 }, { transform: 'scale(1)', opacity: 0 }], { duration: 2000, easing: 'cubic-bezier(.25,.6,.35,1)', fill: 'forwards' }).onfinish = () => w.remove();
+          dayPanel.querySelector('.ln-in').animate([{ opacity: 1 }, { opacity: 1, offset: .5 }, { opacity: 0, transform: 'translateY(-8px)' }], { duration: 1500, fill: 'forwards' }); }
+        setTimeout(() => { wkOpen = false; wkS = { left: {}, small: {}, parkedSeen: false }; renderTasks(); dayRender(); dayPanel.scrollTop = 0;
+          if (!reduceMotion) { const n = dayPanel.querySelector('.ln-in'); if (n) n.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'ease-out' }); } }, reduceMotion ? 200 : 1500);
+      }, 260);
+    }
+    const wkStart = () => { wkOpen = true; wkFoldDone = false; wkFoldCu = false; dayRender(); dayPanel.scrollTop = 0; };
+    // ---- wiring: the Today page shows the reset first; Launch keeps a quiet row after "Later"; ⋯ on The Day ----
+    { const _r = dayRender; dayRender = function () {
+        if (!dayPanel) return;
+        if (!wkOpen && dayS.state === 'plan' && wkAuto()) wkOpen = true;
+        if (wkOpen && sections.length) { wkRender(); dayTabPaint(); return; }
+        return _r.apply(this, arguments);
+      }; }
+    { const _rl = dayRenderLaunch; dayRenderLaunch = function () {
+        _rl.apply(this, arguments);
+        const r = wkRec(); if (!(r && r.state === 'later' && wkEarly())) return;
+        const row = document.createElement('div'); row.className = 'ln-row wk-wait';
+        row.innerHTML = `<span class="ic">${wkRingSvg(0, 16)}</span><span class="w">Your weekly reset is waiting <span class="q">· about four minutes</span></span><span class="acts"><button class="ln-btn" data-wk="open">Open it</button></span>`;
+        dayPanel.querySelector('.ln-sub').after(row); row.querySelector('[data-wk="open"]').addEventListener('click', wkStart);
+      }; }
+    { const _rd = dayRenderDay; dayRenderDay = function () {
+        _rd.apply(this, arguments);
+        const cf = dayPanel.querySelector('.dy-confirm [data-cf="release"]');
+        if (cf && dayConfirm === 'ask' && !wkDone()) { const b = document.createElement('button'); b.type = 'button'; b.className = 'ln-btn'; b.textContent = 'Weekly reset'; cf.before(b); b.addEventListener('click', () => { dayConfirm = null; wkStart(); }); }
+      }; }
+    { const _sw3 = switchMainTab; switchMainTab = function (tab) { if (tab !== 'day') wkOpen = false; return _sw3.apply(this, arguments); }; }
+    // ===== Peek (Oct 23): click a task's title on the Today page for a quick look =====
+    // Status or where it lives, its dates and priority, Done =, the description and the sub-tasks (tick them right there),
+    // with "Open details" for the full panel. Works for board tasks, Parked tasks and captures. Esc or clicking away closes it.
+    let dayPeekEl = null;
+    function dayPeekClose() { if (dayPeekEl) { dayPeekEl.remove(); dayPeekEl = null; } }
+    function dayPeekFind(id) {
+      const f = findTaskById(id); if (f) { const sec = sections.find(x => x.id === f.sectionId); return { t: f.task, where: sec ? sec.name : '', board: true }; }
+      const d = (deep.items || []).find(x => String(x.id) === String(id)); if (d) return { t: d, where: 'Parked', board: false };
+      const c = (koiTray || []).find(x => String(x.id) === String(id)); if (c) return { t: c, where: 'Captured', board: false };
+      return null;
+    }
+    function dayPeek(id, anchor) {
+      if (dayPeekEl && dayPeekEl.dataset.id === String(id)) { dayPeekClose(); return; }
+      dayPeekClose(); const P = dayPeekFind(id); if (!P) return;
+      const t = P.t, info = splitNoteCapsules(t.note || ''), dn = doneOf(t.description), body = descBody(t.description || '').trim(), subs = (t.subtasks || []).filter(x => (x.text || '').trim());
+      const f = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const meta = [P.where, info.who ? (info.whoRole === 'with' ? 'with ' : 'for ') + info.who : '', info.waitOn ? 'waiting on ' + info.waitOn : '',
+        info.date && info.date.date ? (info.date.kind === 'done' ? 'finished ' : 'planned ') + f(info.date.date) : '', info.deadline ? 'deadline ' + f(info.deadline) : '',
+        info.priority === 'high' ? 'high impact' : info.priority || '', ...(info.workstreams || [])].filter(Boolean);
+      const el = document.createElement('div'); el.className = 'dy-peek'; el.dataset.id = String(id);
+      el.innerHTML = `<div class="pe-t">${dayEsc(t.title)}</div><div class="pe-m">${meta.map(m => `<span>${escapeHtml(m)}</span>`).join('')}</div>
+        ${dn ? `<div class="pe-done"><b>Done =</b> ${escapeHtml(dn)}</div>` : ''}
+        ${body ? `<div class="pe-d">${escapeHtml(body.length > 900 ? body.slice(0, 900) + '…' : body)}</div>` : ''}
+        ${subs.length ? `<div class="pe-l">Sub-tasks <span>${subs.filter(x => x.checked).length} of ${subs.length}</span></div><div class="pe-subs">${subs.map((x, i) => `<label class="pe-sub${x.checked ? ' on' : ''}"><input type="checkbox" data-si="${(t.subtasks || []).indexOf(x)}"${x.checked ? ' checked' : ''}${P.board ? '' : ' disabled'}><i></i><span>${escapeHtml(x.text)}</span></label>`).join('')}</div>` : ''}
+        ${!dn && !body && !subs.length ? '<div class="pe-none">No description or sub-tasks yet.</div>' : ''}
+        ${P.board ? '<div class="pe-f"><button type="button" class="ln-btn" data-pe="open">Open details</button></div>' : ''}`;
+      document.body.appendChild(el); dayPeekEl = el;
+      const r = anchor.getBoundingClientRect(), w = el.offsetWidth, h = el.offsetHeight;
+      el.style.left = Math.max(8, Math.min(r.left - 10, innerWidth - w - 8)) + 'px';
+      el.style.top = (r.bottom + 6 + h > innerHeight - 8 ? Math.max(8, r.top - h - 6) : r.bottom + 6) + 'px';
+      el.querySelectorAll('[data-si]').forEach(cb => cb.addEventListener('change', () => {
+        const s = t.subtasks[+cb.dataset.si]; if (!s) return; s.checked = cb.checked; cb.closest('.pe-sub').classList.toggle('on', cb.checked);
+        const l = el.querySelector('.pe-l span'); if (l) l.textContent = `${subs.filter(x => x.checked).length} of ${subs.length}`;
+        markChanged(); clearTimeout(el._rt); el._rt = setTimeout(() => { try { renderTasks(); } catch (e) {} }, 500);
+      }));
+      const op = el.querySelector('[data-pe="open"]'); if (op) op.addEventListener('click', () => { dayPeekClose(); openTaskPanel(t); });
+    }
+    dayPanel.addEventListener('click', e => { const el = e.target.closest('[data-peek]'); if (!el || !dayPanel.contains(el)) return; e.stopPropagation(); e.preventDefault(); dayPeek(el.dataset.peek, el); }, true);
+    document.addEventListener('mousedown', e => { if (dayPeekEl && !dayPeekEl.contains(e.target) && !e.target.closest('[data-peek]')) dayPeekClose(); }, true);
+    document.addEventListener('keydown', e => { if (dayPeekEl && e.key === 'Escape') { e.stopPropagation(); dayPeekClose(); } }, true);
+    dayPanel.addEventListener('scroll', dayPeekClose, { passive: true });
+    { const _sw4 = switchMainTab; switchMainTab = function () { dayPeekClose(); return _sw4.apply(this, arguments); }; }
+    setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .dy-peek'; }); } catch (e) {} }, 0);
     applyWaitRail();
   </script>
 </body>
