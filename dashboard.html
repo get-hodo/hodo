@@ -7505,7 +7505,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '1.7';
+    const KOI_VERSION = '1.8';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -16624,6 +16624,11 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '1.8': [
+        { k: 'new', t: 'Weekly reset', d: 'At the start of each week, the Today page opens on the Weekly reset before you plan your day. It takes about four minutes:<ul><li><b>Last week:</b> what you finished and how each day went.</li><li><b>Didn’t make it:</b> decide what to do with each unfinished promise: Keep this week, Coming up, Park or Let go. A task on its third week offers to make the first step smaller.</li><li><b>This week:</b> see your load against your usual pace, and promise suggestions from Coming up with one click.</li><li><b>Parked and Captured:</b> decide on what’s due.</li></ul>Hold <b>Seal the week</b> for 2 seconds, then plan today. Busy? Choose Later and it waits in Launch until midweek.' },
+        { k: 'new', t: 'A quick look at any task on Today', d: 'Click a task’s title on the Today page to see its description, Done =, dates and sub-tasks in a small card. Tick sub-tasks right there, or choose Open details for everything.' },
+        { k: 'solved', t: 'The Today page doesn’t scroll, so the buttons at the bottom are out of reach.', d: 'Now the Today page scrolls, all the way down to its last button.' }
+      ],
       '1.7': [
         { k: 'new', t: 'Today', d: 'A new Today tab, before Tasks. On a workday, Hodo opens on it until you start your day.<ul><li><b>Choose today’s Three:</b> Hodo suggests three tasks, each with its reason. Keep them, or swap in your own by clicking or dragging.</li><li>Give each one a finish line and a part of the day: Morning, After lunch or Afternoon.</li><li>Hold <b>Start the day</b> for 2 seconds to commit.</li></ul>During the day, Today shows your promise ring, what’s Next up, Focus, Done and Swap on each of the Three, Also today, and who’s due a nudge. The Three are marked on the board and in the List too. Plans changed? ⋯ → Release today’s promise.' },
         { k: 'new', t: 'Land the day', d: 'From the last hour of your workday, <b>Land the day</b> shows what you finished, including what you parked or let go. Then:<ul><li>Give each unfinished promise a home: Tomorrow, This week or Park.</li><li>Nudge anyone you’re waiting on.</li><li>Type anything still on your mind into Captured.</li><li>Choose the task tomorrow starts with.</li></ul>Close the day, and tomorrow’s Three already has your first move in slot 1.' },

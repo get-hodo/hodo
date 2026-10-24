@@ -3,7 +3,7 @@
 // changes (the builder names CACHE after the version and build), so the new helper downloads the new copy in the
 // background, takes over and deletes the old copy. Hodo then shows "Bring it in" (or the next open uses it).
 // Tasks are never here: they live in the person's own folder.
-const CACHE = 'hodo-1.7-7d1b4df1';
+const CACHE = 'hodo-1.8-345eb0bd';
 const CORE = ['./', 'dashboard.html', 'capture.html', 'manifest.webmanifest', 'hodo-192.png', 'hodo-512.png', 'hodo-maskable.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
