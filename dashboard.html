@@ -68,6 +68,7 @@
   - Today: Launch and The Day "Today (Oct 21): Launch and The Day" (dayRender, dayRenderLaunch, dayRenderDay, dayCommit, dayHeart, dayLightPaint)
   - Land: the evening                         "Land (Oct 23): the evening" (dayRenderLand, dayClose, dayRenderClosed, dayYesterday)
   - Peek on the Today page                    "Peek (Oct 23)" (dayPeek; titles carry data-peek)
+  - First-run welcome and guided tour         "Welcome (Oct 24): first run" (hwShow, hwTrialStart, hwKeep, hwTourStart, HW_STEPS; CSS "/* Welcome (Oct 24)")
   - Weekly reset                              "Weekly reset (Oct 23)" (wkRender, wkSeal, wkLedger, wkAuto; CSS "/* Weekly reset")
   - Horizons: This week line, Coming up, Done = "Horizons (Oct 21)" (hzModel, hzBoard, hzList, doneOf, dnAsk)
   - Copy tasks for Docs / Excel rows / Excel columns "Copy out (Oct 20)" (koiCopyOpen, koiCopyDo, cpDocs, cpExcel)
@@ -5141,6 +5142,115 @@
     .dy-peek .pe-sub.on span { color: var(--text-muted); text-decoration: line-through; }
     .dy-peek .pe-none { margin-top: 10px; color: var(--text-muted); }
     .dy-peek .pe-f { display: flex; justify-content: flex-end; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-light); }
+    /* Welcome (Oct 24) */
+    .hw-ov { position: fixed; inset: 0; z-index: 2900; overflow-y: auto; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
+    .hw-ov::before { content: ''; position: fixed; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(190,214,232,.55), rgba(190,214,232,0) 50%); transition: background .6s; }
+    [data-theme="dark"] .hw-ov::before { background: linear-gradient(180deg, rgba(96,128,170,.16), rgba(96,128,170,0) 50%); }
+    .hw-card { position: relative; width: min(760px, 100%); text-align: center; animation: nsFade .3s ease-out both; }
+    .hw-logo { display: inline-flex; transform: scale(1.6); margin-bottom: 34px; }
+    .hw-h { font-size: 34px; font-weight: 700; letter-spacing: -.02em; color: var(--text-primary); margin: 0; }
+    .hw-s { font-size: 15.5px; color: var(--text-secondary); margin: 12px auto 0; max-width: 520px; line-height: 1.55; }
+    .hw-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 26px; border-radius: 11px; border: 1px solid var(--brand); background: var(--brand); color: #fff; font: inherit; font-size: 15px; font-weight: 650; cursor: pointer; }
+    .hw-btn:hover { filter: brightness(1.05); }
+    [data-theme="dark"] .hw-btn { color: #1e1612; }
+    .hw-btn.sec { background: var(--bg-card); color: var(--text-primary); border-color: var(--border); }
+    .hw-btn.sm { height: 30px; padding: 0 12px; font-size: 12.5px; border-radius: 8px; }
+    .hw-link { border: 0; background: transparent; padding: 0; font: inherit; color: var(--brand); font-weight: 600; cursor: pointer; }
+    .hw-link.quiet { color: var(--text-muted); font-weight: 500; }
+    .hw-note { margin-top: 14px; font-size: 12.5px; color: var(--text-muted); }
+    .hw-dots { display: flex; gap: 6px; justify-content: center; margin-top: 40px; }
+    .hw-dots i { width: 6px; height: 6px; border-radius: 3px; background: var(--border); transition: width .2s; }
+    .hw-dots i.on { background: var(--brand); width: 18px; }
+    .hw-themes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 30px auto 0; max-width: 620px; text-align: left; }
+    .hw-th { all: unset; box-sizing: border-box; position: relative; display: block; border-radius: 16px; border: 1.5px solid var(--border); background: var(--bg-card); overflow: hidden; cursor: pointer; transition: transform .15s, box-shadow .2s; }
+    .hw-th:hover { transform: translateY(-2px); }
+    .hw-th:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+    .hw-th.on { border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent), 0 10px 28px var(--shadow-hover); }
+    .hw-th .sc { display: block; height: 118px; position: relative; }
+    .hw-th.eb .sc { background: linear-gradient(180deg, #cfe3f1 0%, #f4efe6 70%, #f7d9bd 100%); }
+    .hw-th.no .sc { background: linear-gradient(180deg, #1d2028 0%, #262a33 65%, #4a3727 100%); }
+    .hw-th .sc svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hw-th .tx { display: block; padding: 14px 16px 16px; }
+    .hw-th .tx b { display: block; font-size: 16px; color: var(--text-primary); }
+    .hw-th .tx span { display: block; margin-top: 4px; font-size: 12.8px; line-height: 1.5; color: var(--text-secondary); }
+    .hw-th .ck { position: absolute; top: 10px; right: 10px; z-index: 1; width: 24px; height: 24px; border-radius: 50%; background: var(--brand); display: none; align-items: center; justify-content: center; }
+    .hw-th.on .ck { display: flex; }
+    .hw-th .ck svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    [data-theme="dark"] .hw-th .ck svg { stroke: #1e1612; }
+    .hw-mini { position: absolute; left: 18px; bottom: 14px; width: 120px; padding: 7px; border-radius: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .hw-th.eb .hw-mini { background: #fff; box-shadow: 0 3px 10px rgba(0,0,0,.08); } .hw-th.no .hw-mini { background: #2f333d; }
+    .hw-mini i { display: block; height: 5px; border-radius: 3px; }
+    .hw-th.eb .hw-mini i { background: #e7e2d8; } .hw-th.no .hw-mini i { background: #454a56; }
+    .hw-th.eb .hw-mini i.a { background: #b8603f; width: 45%; } .hw-th.no .hw-mini i.a { background: #d8b27a; width: 45%; }
+    .hw-split { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; text-align: left; align-items: center; width: min(940px, 100%); animation: nsFade .3s ease-out both; }
+    .hw-k { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand); }
+    .hw-h2 { font-size: 28px; font-weight: 700; letter-spacing: -.015em; color: var(--text-primary); margin: 8px 0 18px; }
+    .hw-pts { display: flex; flex-direction: column; gap: 12px; margin: 0 0 22px; padding: 0; list-style: none; }
+    .hw-pts li { display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px; color: var(--text-primary); line-height: 1.45; }
+    .hw-pts li span { color: var(--text-muted); display: block; font-size: 13px; }
+    .hw-pts svg { flex: none; width: 22px; height: 22px; padding: 4px; border-radius: 7px; background: var(--accent-soft); stroke: var(--brand); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .hw-acts { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .hw-try { margin-top: 16px; font-size: 13.5px; color: var(--text-secondary); } .hw-try span { color: var(--text-muted); }
+    .hw-back { margin-top: 26px; font-size: 13px; }
+    .hw-warn { margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--accent-soft); color: var(--text-primary); font-size: 13.5px; line-height: 1.5; }
+    .hw-art { position: relative; padding: 26px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border-light); box-shadow: 0 10px 30px var(--shadow-hover); }
+    .hw-path { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .hw-node { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+    .hw-node svg { width: 58px; height: 58px; fill: none; stroke: var(--text-primary); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+    .hw-node.h svg { stroke: var(--brand); }
+    .hw-arr { flex: 1; height: 0; border-top: 1.5px dashed var(--border); margin-bottom: 22px; }
+    .hw-perm { margin-top: 24px; padding: 14px 16px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-secondary); }
+    .hw-perm .lab { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+    .hw-perm .box { padding: 12px 14px 26px; border-radius: 10px; background: var(--bg-card); box-shadow: 0 4px 14px var(--shadow-hover); font-size: 13px; color: var(--text-primary); }
+    .hw-perm .box b { display: block; margin-bottom: 10px; font-weight: 600; }
+    .hw-perm .row { display: flex; gap: 8px; justify-content: flex-end; }
+    .hw-perm .row span { font-size: 12px; padding: 5px 12px; border-radius: 7px; border: 1px solid var(--border); color: var(--text-secondary); }
+    .hw-perm .row span.y { background: var(--brand); border-color: var(--brand); color: #fff; position: relative; }
+    [data-theme="dark"] .hw-perm .row span.y { color: #1e1612; }
+    .hw-perm .row span.y::after { content: 'Choose this'; position: absolute; top: calc(100% + 6px); right: 0; white-space: nowrap; font-size: 11px; font-weight: 700; color: var(--brand); }
+    .hw-perm .hint { margin-top: 14px; font-size: 12.5px; color: var(--text-secondary); }
+    .hw-foot { position: fixed; bottom: 30px; left: 0; right: 0; pointer-events: none; }
+    .hw-about { width: min(560px, 100%); text-align: left; }
+    .hw-about .hw-dots { margin-top: 30px; }
+    .hw-l { display: block; margin-top: 18px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .hw-l input { display: block; width: 100%; box-sizing: border-box; margin-top: 6px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font: inherit; font-size: 14.5px; font-weight: 400; }
+    .hw-l input:focus { outline: none; border-color: var(--brand); }
+    .hw-l small { display: block; margin-top: 6px; font-weight: 400; font-size: 12px; color: var(--text-muted); }
+    .hw-weeks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+    .hw-weeks button { text-align: left; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); font: inherit; cursor: pointer; color: var(--text-primary); }
+    .hw-weeks button b { display: block; font-size: 13px; } .hw-weeks button span { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 400; color: var(--text-muted); }
+    .hw-weeks button.on { border-color: var(--brand); box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 22%, transparent); }
+    .hw-hours { display: flex; align-items: center; gap: 10px; } .hw-hours input { width: 140px; display: inline-block; } .hw-hours span { margin-top: 6px; font-weight: 400; }
+    .hw-trialbar { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2300; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 26px var(--shadow-hover); font-size: 13px; color: var(--text-secondary); }
+    /* the tour */
+    .hw-dim { position: fixed; inset: 0; z-index: 2380; pointer-events: none; }
+    .hw-dim svg { display: block; } .hw-dim path { fill: rgba(20,16,14,.42); }
+    [data-theme="dark"] .hw-dim path { fill: rgba(0,0,0,.58); }
+    .hw-ring { position: fixed; z-index: 2381; pointer-events: none; border-radius: 14px; outline: 2px solid var(--brand); outline-offset: 0; transition: left .2s, top .2s, width .2s, height .2s; }
+    .hw-ring.two { outline-style: dashed; animation: hwPulse 1.6s ease-in-out infinite; }
+    @keyframes hwPulse { 50% { outline-color: color-mix(in srgb, var(--brand) 40%, transparent); } }
+    .hw-arrow { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 2382; pointer-events: none; overflow: visible; }
+    .hw-coach { position: fixed; z-index: 2383; width: 340px; padding: 16px 18px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 18px 50px rgba(0,0,0,.25); font-size: 13.5px; line-height: 1.5; color: var(--text-secondary); transition: left .25s, top .25s; }
+    .hw-coach .k { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand); }
+    .hw-coach h3 { margin: 6px 0; font-size: 17px; color: var(--text-primary); }
+    .hw-coach b { color: var(--text-primary); }
+    .hw-coach kbd { font: 600 11px/1 inherit; padding: 2px 6px; border-radius: 5px; border: 1px solid var(--border); background: var(--bg-secondary); }
+    .hw-coach .f { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+    .hw-coach .f .hw-dots { margin: 0; }
+    .hw-coach .wait { font-size: 12px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px; }
+    .hw-coach .wait i { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); animation: hwBlink 1.4s infinite; }
+    .hw-coach .wait.ok { color: var(--st-done-edge); font-weight: 650; }
+    @keyframes hwBlink { 50% { opacity: .3; } }
+    .hw-coach .sk { margin-top: 10px; text-align: right; font-size: 12.5px; }
+    .hw-endov { position: fixed; inset: 0; z-index: 2900; display: grid; place-items: center; background: rgba(20,16,14,.35); padding: 16px; }
+    [data-theme="dark"] .hw-endov { background: rgba(0,0,0,.55); }
+    .hw-end { width: min(460px, 100%); padding: 30px 28px 24px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 24px 60px rgba(0,0,0,.3); text-align: center; animation: nsFade .25s ease-out both; }
+    .hw-endic svg { width: 44px; height: 44px; fill: none; stroke: var(--brand); stroke-width: 1.4; stroke-linecap: round; }
+    .hw-endic .wk-ring circle { stroke-width: 3; }
+    .hw-end h2 { margin: 12px 0 6px; font-size: 22px; color: var(--text-primary); }
+    .hw-end p { margin: 0 0 20px; font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+    .hw-install { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-light); font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
+    @media (max-width: 760px) { .hw-split, .hw-themes { grid-template-columns: 1fr; } .hw-weeks { grid-template-columns: 1fr; } .hw-h { font-size: 28px; } }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7505,7 +7615,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '1.8';
+    const KOI_VERSION = '1.9';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -16418,49 +16528,29 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
 
     // ===== Start fresh in an empty folder (Oct 17) =====
     // From the web address, a new person has no TASKS.md yet. Opening a folder without one offers to start Hodo there:
-    // a starter TASKS.md (a few example tasks that teach the basics) and memory/areas.md. Nothing is ever overwritten.
+    // a clean starter TASKS.md (the welcome tour adds its own practice tasks) and memory/areas.md. Nothing is ever overwritten.
     const KOI_STARTER_TASKS = `# Tasks
 <!-- hodo: column settings -->
 
 ## Pending
-- [ ] **Try Hodo: capture a thought by voice** - Getting started · High
-  > Press C (or click the lightning button), hold V and say something like "Remind me to send the report to Sam on Thursday". Hodo turns it into a task.
-  - [ ] Capture one thing by typing
-  - [ ] Capture one thing by voice
-  - [ ] Add it from the Captured list to Pending
-- [ ] **Add a few tasks one after another** - Getting started · Medium
-  > Click + Add task, type a title and press Enter. The next box opens by itself; press Tab instead to add details.
-- [ ] **Book a dentist check-up** - Personal · Low
-- [ ] **Draft the kickoff email for the new project** - Work · Medium
-  > Who needs to be there, the goal, and the first meeting date.
-  - [ ] List who needs to be on it
-  - [ ] Write the goal in two lines
-  - [ ] Propose a first meeting date
 
 ## In Progress
-- [ ] **Read two chapters of the book on the desk** - Learning · Low
 
 ## Waiting On <!-- hodo: waiting -->
-- [ ] **Feedback on the proposal** - waiting on ? · Work · Medium
-  > Click "Someone" to set who you're waiting on. Hodo reminds you when it's time to nudge them.
 
 ## Done <!-- hodo: done -->
-- [x] **Set up Hodo** - Getting started
 
 ## Parked
-- [ ] **Learn to cook three new dishes** - Personal · big
-  > Something for later. Parked items wait here until you're ready; Hodo asks you to review them once a week.
 
 ## Let go
 
 ## Captured
-`;
+`;   // Oct 24: a clean start; the welcome tour brings its own practice tasks and clears them after
     const KOI_STARTER_AREAS = `# Areas
 The areas your tasks belong to (Settings → You → Areas). "Suggest when text mentions" = words that make Hodo suggest this area for a new task.
 
 | Area | Colour | Suggest when text mentions |
 |---|---|---|
-| Getting started | Amber | hodo, rundown, capture |
 | Work | Purple | meeting, report, client, project, email, deadline |
 | Personal | Teal | dentist, doctor, family, home, gym, groceries |
 | Learning | Blue | read, book, course, learn, study |
@@ -16481,7 +16571,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     async function koiStartFresh() {
       if (typeof memoryDirHandle === 'undefined' || !memoryDirHandle || taskFileHandle || koiReopening) return;
       try { await memoryDirHandle.getFileHandle('TASKS.md'); return; } catch (e) {}   // it has one: nothing to do
-      const ok = await koiAsk('Start Hodo in this folder?', `“${memoryDirHandle.name}” has no tasks yet. Hodo will add TASKS.md (with a few example tasks to show you around) and a memory folder for your areas. Nothing else in the folder is touched.`, 'Start here', 'Choose another folder');
+      const ok = await koiAsk('Start Hodo in this folder?', `“${memoryDirHandle.name}” has no tasks yet. Hodo will add TASKS.md and a memory folder for your areas. Nothing else in the folder is touched.`, 'Start here', 'Choose another folder');
       if (!ok) { try { loadMemoryDirectory(); } catch (e) {} return; }
       try {
         const fh = await memoryDirHandle.getFileHandle('TASKS.md', { create: true });
@@ -16624,6 +16714,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '1.9': [
+        { k: 'new', t: 'The welcome tour', d: 'A short guided tour through the essentials, one step at a time: catch a thought, finish something, promise it this week, park something and plan your day. It uses practice tasks, which you can clear at the end. Take it any time from <b>Settings → The welcome tour</b>.<br><br>People opening Hodo for the first time get the full welcome:<ul><li>Choose Early Bird or Night Owl.</li><li>Learn where their tasks are saved.</li><li>Set up their folder, or just try Hodo first in the browser.</li></ul>' }
+      ],
       '1.8': [
         { k: 'new', t: 'Weekly reset', d: 'At the start of each week, the Today page opens on the Weekly reset before you plan your day. It takes about four minutes:<ul><li><b>Last week:</b> what you finished and how each day went.</li><li><b>Didn’t make it:</b> decide what to do with each unfinished promise: Keep this week, Coming up, Park or Let go. A task on its third week offers to make the first step smaller.</li><li><b>This week:</b> see your load against your usual pace, and promise suggestions from Coming up with one click.</li><li><b>Parked and Captured:</b> decide on what’s due.</li></ul>Hold <b>Seal the week</b> for 2 seconds, then plan today. Busy? Choose Later and it waits in Launch until midweek.' },
         { k: 'new', t: 'A quick look at any task on Today', d: 'Click a task’s title on the Today page to see its description, Done =, dates and sub-tasks in a small card. Tick sub-tasks right there, or choose Open details for everything.' },
@@ -18637,6 +18730,263 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     dayPanel.addEventListener('scroll', dayPeekClose, { passive: true });
     { const _sw4 = switchMainTab; switchMainTab = function () { dayPeekClose(); return _sw4.apply(this, arguments); }; }
     setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .dy-peek'; }); } catch (e) {} }, 0);
+    // ===== Welcome (Oct 24): first run =====
+    // For someone opening Hodo for the first time (no folder yet, never welcomed): 1 choose Early Bird or Night Owl (the
+    // whole welcome switches at once; the computer's own light/dark setting is picked first); 2 where your tasks live (on
+    // your computer, a folder you choose; a preview of the browser's question) with Make my Hodo folder · I already have one ·
+    // Just try it first (practice in this browser, no folder; "Keep my tasks" saves them to a folder later); 3 a little about
+    // you (name, work week, working hours; skippable); 4 a guided tour, one step at a time, done by doing: catch a thought,
+    // finish something, promise it this week, park something, plan your day; then "You're set" (clear the practice tasks,
+    // install as an app). Browsers that can't open folders get the practice mode only.
+    const HW_PRACTICE = { done: 'Drag me to Done', week: 'Promise me to this week', park: 'Park me for later' };
+    const HW_PRACTICE_DESC = { done: 'Practice task. Drag it into Done to see how finishing feels.', week: 'Practice task. Drag it above the This week line to promise it this week.', park: 'Practice task. Drop it on Parked to set it aside without losing it.' };
+    const hwCanFolder = () => !!window.showDirectoryPicker;
+    let hwEl = null, hwTrial = false, hwAutoYes = false, hwTouring = false;
+    const hwLS = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; };
+    const HW_LOGO = () => (document.querySelector('.hodo-logo') || {}).outerHTML || '<b>Hodo</b>';
+    const hwDots = (n, k) => `<div class="hw-dots">${Array.from({ length: n }, (_, i) => `<i class="${i === k ? 'on' : ''}"></i>`).join('')}</div>`;
+    // ---- the screens ----
+    function hwShow(step) {
+      if (!hwEl) { hwEl = document.createElement('div'); hwEl.className = 'hw-ov'; hwEl.setAttribute('role', 'dialog'); hwEl.setAttribute('aria-label', 'Welcome to Hodo'); document.body.appendChild(hwEl); }
+      hwEl.dataset.step = step;
+      if (step === 1) hwTheme(); else if (step === 2) hwWhere(); else if (step === 3) hwAbout();
+      const f = hwEl.querySelector('.hw-btn'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 40);
+    }
+    function hwClose() { if (hwEl) { hwEl.remove(); hwEl = null; } }
+    function hwTheme() {
+      const dark = currentTheme() === 'dark', CK = '<span class="ck"><svg viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.6"/></svg></span>';
+      hwEl.innerHTML = `<div class="hw-card"><div class="hw-logo">${HW_LOGO()}</div>
+        <h1 class="hw-h">Every task gets an answer.</h1>
+        <p class="hw-s">Before anything else: how do you like to work?</p>
+        <div class="hw-themes">
+          <button type="button" class="hw-th eb${dark ? '' : ' on'}" data-hwt="default">${CK}<span class="sc"><svg viewBox="0 0 300 118" aria-hidden="true"><circle cx="232" cy="40" r="16" fill="#f3b77a"/><g stroke="#f3b77a" stroke-width="2" stroke-linecap="round"><path d="M232 14v-6M232 72v-6M206 40h-6M264 40h-6M214 22l-4-4M254 62l-4-4M214 58l-4 4M254 18l-4 4"/></g></svg><span class="hw-mini"><i class="a"></i><i></i><i style="width:70%"></i></span></span>
+            <span class="tx"><b>Early Bird</b><span>Light and calm, like morning paper. Finished tasks are struck through in ink.</span></span></button>
+          <button type="button" class="hw-th no${dark ? ' on' : ''}" data-hwt="dark">${CK}<span class="sc"><svg viewBox="0 0 300 118" aria-hidden="true"><path d="M246 26a17 17 0 1 0 14 26 14 14 0 0 1-14-26z" fill="#e6c48c"/><g fill="#e6dccb"><circle cx="196" cy="22" r="1.4"/><circle cx="214" cy="56" r="1"/><circle cx="270" cy="20" r="1.2"/><circle cx="180" cy="44" r="1"/><circle cx="282" cy="64" r="1.3"/></g><path d="M150 18l-30 14" stroke="#e6dccb" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg><span class="hw-mini"><i class="a"></i><i></i><i style="width:70%"></i></span></span>
+            <span class="tx"><b>Night Owl</b><span>Dark and warm, easy on the eyes after hours. Finished tasks leave with a shooting star.</span></span></button>
+        </div>
+        <div class="hw-note" style="margin-top:12px">You can switch between them any time with T.</div>
+        <div style="margin-top:30px"><button type="button" class="hw-btn" data-hw="next">Get started</button></div>
+        <div class="hw-note">Setting up Hodo takes about 5 minutes, start to finish.</div>${hwDots(4, 0)}</div>`;
+      hwEl.querySelectorAll('[data-hwt]').forEach(b => b.addEventListener('click', () => {
+        const t = b.dataset.hwt; hwEl.querySelectorAll('[data-hwt]').forEach(x => x.classList.toggle('on', x === b));
+        if (currentTheme() !== t) { try { if (window.koiThemeAuto) koiThemeAuto.manual(); } catch (e) {} fadeToTheme(t); }
+      }));
+      hwEl.querySelector('[data-hw="next"]').addEventListener('click', () => hwShow(2));
+    }
+    function hwWhere() {
+      const I = { pc: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="11" rx="2"/><path d="M2 19h20"/></svg>', no: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5 7-5s5.8 1.4 7 5M4 4l16 16"/></svg>', sync: '<svg viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4 4 0 0 1-.5 8.5H7z"/></svg>' };
+      const can = hwCanFolder();
+      hwEl.innerHTML = `<div class="hw-split"><div>
+          <div class="hw-k">Where your tasks live</div>
+          <h2 class="hw-h2">Your tasks stay on your computer.</h2>
+          <ul class="hw-pts">
+            <li>${I.pc}<div>In a folder you choose<span>Hodo keeps everything in one plain file there, TASKS.md.</span></div></li>
+            <li>${I.no}<div>No account, no sign-up<span>Nothing is sent to our servers. Your tasks are yours.</span></div></li>
+            <li>${I.sync}<div>On all your computers<span>Put the folder in OneDrive or Google Drive and it follows you.</span></div></li>
+          </ul>
+          ${can ? `<div class="hw-acts"><button type="button" class="hw-btn" data-hw="make">Make my Hodo folder</button><button type="button" class="hw-btn sec" data-hw="have">I already have one</button></div>
+          <div class="hw-try">Not sure yet? <button type="button" class="hw-link" data-hw="try">Just try it first →</button> <span>Practice tasks, no folder needed.</span></div>`
+          : `<div class="hw-warn">This browser can’t open folders yet. To keep your tasks in a folder, open Hodo in <b>Chrome</b> or <b>Edge</b> on a computer.</div>
+          <div class="hw-acts"><button type="button" class="hw-btn" data-hw="try">Try it in this browser</button></div><div class="hw-try"><span>Your practice tasks stay in this browser until you move to Chrome or Edge.</span></div>`}
+          <div class="hw-back"><button type="button" class="hw-link quiet" data-hw="back">← Back</button></div>
+        </div>
+        <div class="hw-art" aria-hidden="true">
+          <div class="hw-path">
+            <div class="hw-node"><svg viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="22" rx="3"/><path d="M3 38h42"/></svg>Your computer</div><div class="hw-arr"></div>
+            <div class="hw-node h"><svg viewBox="0 0 48 48"><path d="M6 14a3 3 0 0 1 3-3h9l4 4h17a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z"/></svg>Hodo folder</div><div class="hw-arr"></div>
+            <div class="hw-node"><svg viewBox="0 0 48 48"><path d="M13 6h15l9 9v27H13z"/><path d="M28 6v9h9M18 24h14M18 30h14M18 36h9"/></svg>TASKS.md</div>
+          </div>
+          ${can ? `<div class="hw-perm"><div class="lab">Next, your browser will ask</div>
+            <div class="box"><b>Let Hodo view and save files in “Hodo”?</b><div class="row"><span>Cancel</span><span class="y">Allow</span></div></div>
+            <div class="hint">Tip: in the folder picker, choose <b>New folder</b>, call it <b>Hodo</b>, then select it.</div></div>` : ''}
+        </div></div>
+        <div class="hw-foot">${hwDots(4, 1)}</div>`;
+      const pick = async () => { hwAutoYes = true; try { await loadMemoryDirectory(); } catch (e) {}
+        for (let i = 0; i < 40 && !(taskFileHandle && sections.length); i++) await new Promise(r => setTimeout(r, 200));
+        hwAutoYes = false; if (taskFileHandle && sections.length) hwShow(3); };
+      const q = s => hwEl.querySelector(s);
+      if (q('[data-hw="make"]')) q('[data-hw="make"]').addEventListener('click', pick);
+      if (q('[data-hw="have"]')) q('[data-hw="have"]').addEventListener('click', pick);
+      q('[data-hw="try"]').addEventListener('click', () => { hwTrialStart(); hwShow(3); });
+      q('[data-hw="back"]').addEventListener('click', () => hwShow(1));
+    }
+    function hwAbout() {
+      const p = koiProfile || {}, h = dayHours(); let week = p.week || '';
+      hwEl.innerHTML = `<div class="hw-card hw-about"><div class="hw-k">A little about you</div>
+        <h2 class="hw-h2">So Hodo fits your week.</h2>
+        <label class="hw-l">Your first name<input data-hwf="name" value="${escapeHtml(p.name || '')}" placeholder="e.g. Sara" autocomplete="given-name"></label>
+        <div class="hw-l">Your work week<div class="hw-weeks">${KOI_WEEK_OPTS.map(([v, l, d]) => `<button type="button" data-hww="${v}" class="${week === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div></div>
+        <div class="hw-l">The hours you want to work<div class="hw-hours"><input type="time" data-hwh="s" value="${h.s}"><span>to</span><input type="time" data-hwh="e" value="${h.e}"></div><small>Today uses them to pace your day. Not every hour you might work, just the ones you aim for.</small></div>
+        <div class="hw-acts" style="justify-content:center;margin-top:26px"><button type="button" class="hw-btn sec" data-hw="skip">Skip</button><button type="button" class="hw-btn" data-hw="go">Continue to the tour</button></div>
+        ${hwDots(4, 2)}</div>`;
+      hwEl.querySelectorAll('[data-hww]').forEach(b => b.addEventListener('click', () => { week = b.dataset.hww; hwEl.querySelectorAll('[data-hww]').forEach(x => x.classList.toggle('on', x === b)); }));
+      const save = () => {
+        const name = hwEl.querySelector('[data-hwf="name"]').value.trim();
+        if (name || week) { try { koiProfileApply(Object.assign({}, koiProfile || {}, { name: name || (koiProfile || {}).name || '', short: (name || (koiProfile || {}).name || '').split(' ')[0], week: week || (koiProfile || {}).week || '' }), !!memoryDirHandle); } catch (e) {} }
+        const s = hwEl.querySelector('[data-hwh="s"]').value, e = hwEl.querySelector('[data-hwh="e"]').value;
+        if (s && e && dayMin(e) > dayMin(s)) hwLS('koi-hours', JSON.stringify({ s, e }));
+      };
+      hwEl.querySelector('[data-hw="go"]').addEventListener('click', () => { save(); hwLS('koi-welcomed', '1'); hwClose(); hwTourStart(); });
+      hwEl.querySelector('[data-hw="skip"]').addEventListener('click', () => { hwLS('koi-welcomed', '1'); hwClose(); hwTourStart(); });
+      setTimeout(() => { const n = hwEl && hwEl.querySelector('[data-hwf="name"]'); if (n) n.focus(); }, 60);
+    }
+    // the folder question is already answered in the welcome: "Start Hodo in this folder?" says yes by itself
+    { const _ka = koiAsk; koiAsk = function (title) { if (hwAutoYes && /^Start Hodo in this folder/.test(title)) return Promise.resolve(true); return _ka.apply(this, arguments); }; }
+    // ---- practice in this browser (no folder) ----
+    function hwTrialLoad(md) {
+      const r = koiGuardParse(md); sections = r.sections; tasks = r.tasks; hwTrial = true;
+      try { switchTaskView(currentView); } catch (e) {} renderTasks(); hwTrialBar();
+    }
+    function hwTrialStart() { hwTrialLoad(KOI_STARTER_TASKS); hwLS('koi-trial-md', toMarkdown()); }
+    { const _as = autoSave; autoSave = async function () {
+        if (!taskFileHandle && hwTrial) { hwLS('koi-trial-md', toMarkdown()); hasChanges = false; try { saveBtn.disabled = true; } catch (e) {} return; }
+        return _as.apply(this, arguments);
+      }; }
+    function hwTrialBar() {
+      document.querySelectorAll('.hw-trialbar').forEach(x => x.remove()); if (!hwTrial) return;
+      const b = document.createElement('div'); b.className = 'hw-trialbar';
+      b.innerHTML = hwCanFolder() ? `<span>You’re trying Hodo in this browser.</span><button type="button" class="hw-btn sm" data-hw="keep">Keep my tasks</button>` : `<span>You’re trying Hodo in this browser. Open it in Chrome or Edge to keep your tasks in a folder.</span>`;
+      document.body.appendChild(b);
+      const k = b.querySelector('[data-hw="keep"]'); if (k) k.addEventListener('click', hwKeep);
+    }
+    async function hwKeep() {
+      let h; try { h = await window.showDirectoryPicker({ mode: 'readwrite' }); } catch (e) { return; }
+      let has = true; try { await h.getFileHandle('TASKS.md'); } catch (e) { has = false; }
+      if (has && !(await koiAsk('This folder already has tasks', `“${h.name}” already has a TASKS.md. Open it instead? What you tried here stays in this browser.`, 'Open it', 'Choose another folder'))) return hwKeep();
+      try {
+        if (!has) { const fh = await h.getFileHandle('TASKS.md', { create: true }); const w = await fh.createWritable(); await w.write(toMarkdown()); await w.close();
+          const mem = await h.getDirectoryHandle('memory', { create: true }); let ar = true; try { await mem.getFileHandle('areas.md'); } catch (e) { ar = false; }
+          if (!ar) { const aw = await (await mem.getFileHandle('areas.md', { create: true })).createWritable(); await aw.write(KOI_STARTER_AREAS); await aw.close(); } }
+        hwTrial = false; hwLS('koi-trial-md', null); hwTrialBar();
+        sections = []; tasks = {}; taskFileHandle = null;
+        await loadMemoryHandle(h); koiIdbSet('memory', h);
+        try { if (koiProfile && (koiProfile.name || koiProfile.week)) koiMemWrite('profile.md', profSerialize(koiProfile)).catch(() => {}); } catch (e) {}
+        showStatus(`Your tasks are saved in ${h.name}`);
+      } catch (e) { showStatus('Couldn’t save there: ' + e.message); }
+    }
+    // ---- the guided tour: one step at a time, each done by doing it ----
+    let hwT = null;
+    const hwFindT = title => { for (const s of sections) { const t = (tasks[s.id] || []).find(x => x.title === title); if (t) return { task: t, sectionId: s.id }; } return null; };
+    function hwPracticeAdd() {
+      const pid = hzPendingId(); if (!pid) return;
+      [['park'], ['week'], ['done']].forEach(([k]) => { if (hwFindT(HW_PRACTICE[k])) return;
+        (tasks[pid] = tasks[pid] || []).unshift({ id: Date.now() + Math.random(), title: HW_PRACTICE[k], note: '', checked: false, subtasks: [], description: HW_PRACTICE_DESC[k], section: pid }); });
+      hzOpen = true; hwLS('koi-cu-open', '1'); markChanged(); renderTasks();
+    }
+    function hwPracticeClear() {
+      const titles = new Set(Object.values(HW_PRACTICE)), ids = new Set();
+      sections.forEach(s => { tasks[s.id] = (tasks[s.id] || []).filter(t => { if (titles.has(t.title)) { ids.add(String(t.id)); return false; } return true; }); });
+      try { for (let i = deep.items.length - 1; i >= 0; i--) if (titles.has(deep.items[i].title)) { ids.add(String(deep.items[i].id)); deep.items.splice(i, 1); } } catch (e) {}
+      if (dayS.slots.some(x => x && ids.has(String(x.id)))) { dayS = { date: dayKey(), state: 'plan', slots: [null, null, null], when: {}, also: [], kept: {}, settled: [], prev: dayS.prev }; daySave(); }
+      markChanged(); renderTasks(); try { deepRefresh(); } catch (e) {}
+    }
+    const hwCard = title => { const f = hwFindT(title); return f ? document.querySelector(`#board .task-card[data-id="${CSS.escape(String(f.task.id))}"]`) : null; };
+    const hwCol = id => { const t = document.querySelector(`#board .column-title[data-section-id="${CSS.escape(String(id))}"]`); return t ? t.closest('.column') : null; };
+    const HW_STEPS = [
+      { k: 'catch', title: 'Catch a thought', text: 'Press <kbd>C</kbd>, or click <b>Capture</b>, type anything on your mind and press Enter. It waits in Captured until you decide what it is.', wait: 'Waiting for your first capture',
+        start: s => { s.n0 = (koiTray || []).length; }, targets: () => [document.getElementById('captureBtn')], done: s => (koiTray || []).length > s.n0 },
+      { k: 'done', title: 'Finish something', text: 'Drag <b>Drag me to Done</b> into the Done column and watch it finish. Everything you finish lands there, with its date.', wait: 'Waiting for you to drag it', arrow: true,
+        targets: () => { const d = koiDoneTarget(); return [hwCard(HW_PRACTICE.done), d && hwCol(d.id)]; }, done: () => { const f = hwFindT(HW_PRACTICE.done); return !!(f && isDoneSection(f.sectionId)); } },
+      { k: 'week', title: 'Promise it this week', text: 'Pending has a line. Above it is what you promise to do this week; below it, Coming up. Drag <b>Promise me to this week</b> above the line.', wait: 'Waiting for you to drag it up', arrow: true,
+        targets: () => [hwCard(HW_PRACTICE.week), hwBand(document.querySelector('#board .hz-line'))], done: () => { const f = hwFindT(HW_PRACTICE.week); return !!(f && hzZone(f.task) === 'week'); } },
+      { k: 'park', title: 'Park something', text: 'Not now, but not never? Drop <b>Park me for later</b> on <b>Parked</b>. It waits there, out of sight, and comes back when you decide.', wait: 'Waiting for you to park it', arrow: true,
+        targets: () => [hwCard(HW_PRACTICE.park), document.getElementById('parkBtn')], done: () => (deep.items || []).some(t => t.title === HW_PRACTICE.park) },
+      { k: 'day', title: 'Plan your day', text: '', wait: '',
+        targets: () => activeMainTab === 'day' ? [document.querySelector('#dayPanel [data-act="hold"]'), document.querySelector('#dayPanel .ln-slots')] : [document.getElementById('dayTabBtn')],
+        copy: () => activeMainTab === 'day' ? ['Hodo has suggested your Three for today. <b>Hold Start the day</b> for 2 seconds to promise them.', 'Waiting for you to hold it'] : ['Every morning starts on <b>Today</b>: choose three things that would make it a good day. Open Today.', 'Waiting for you to open Today'],
+        done: () => dayS.state === 'active' }
+    ];
+    function hwTourStart() {
+      hwTouring = true; hwLS('koi-wl', 'tour');
+      switchMainTab('tasks'); try { if (currentView !== 'board') switchTaskView('board'); } catch (e) {}
+      hwPracticeAdd();
+      hwT = { i: -1, els: {} };
+      const mk = (cls, tag) => { const e = document.createElement(tag || 'div'); e.className = cls; document.body.appendChild(e); return e; };
+      hwT.els.dim = mk('hw-dim'); hwT.els.dim.innerHTML = '<svg width="100%" height="100%"><path fill-rule="evenodd"/></svg>';
+      hwT.els.r1 = mk('hw-ring'); hwT.els.r2 = mk('hw-ring two');
+      hwT.els.arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); hwT.els.arrow.setAttribute('class', 'hw-arrow'); document.body.appendChild(hwT.els.arrow);
+      hwT.els.coach = mk('hw-coach');
+      hwNext();
+      hwT.timer = setInterval(hwTick, 250);
+    }
+    function hwNext() {
+      hwT.i++; const s = HW_STEPS[hwT.i]; if (!s) { hwTourEnd(false); return; }
+      if (s.start) s.start(s); hwT.passed = false; hwPaintCoach(); hwTick();
+    }
+    function hwPaintCoach() {
+      const s = HW_STEPS[hwT.i], c = s.copy ? s.copy() : [s.text, s.wait]; hwT.copyKey = c[0];
+      hwT.els.coach.innerHTML = `<div class="k">Step ${hwT.i + 1} of ${HW_STEPS.length}</div><h3>${s.title}</h3><div class="tx">${c[0]}</div>
+        <div class="f">${hwDots(HW_STEPS.length, hwT.i)}<span class="wait"><i></i>${c[1]}</span></div><div class="sk"><button type="button" class="hw-link quiet" data-hw="skiptour">Skip the tour</button></div>`;
+      hwT.els.coach.querySelector('[data-hw="skiptour"]').addEventListener('click', () => hwTourEnd(true));
+    }
+    const hwBand = el => el && { isConnected: el.isConnected, getBoundingClientRect: () => { const r = el.getBoundingClientRect(); return { left: r.left, right: r.right, width: r.width, top: r.top - 22, bottom: r.bottom + 3, height: r.height + 25 }; } };   // a thin line, made a band you can aim at
+    const hwVis = el => { if (!el || !el.isConnected) return null; const r = el.getBoundingClientRect(); return r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight ? r : null; };
+    function hwTick() {
+      if (!hwT) return; const s = HW_STEPS[hwT.i]; if (!s) return;
+      if (!hwT.passed && s.done(s)) {
+        hwT.passed = true; dayHeart.note(hwT.i % 3, 0.7);
+        const w = hwT.els.coach.querySelector('.wait'); if (w) { w.classList.add('ok'); w.innerHTML = '✓ Nicely done'; }
+        setTimeout(() => { if (hwT) hwNext(); }, 1100); return;
+      }
+      if (s.copy && s.copy()[0] !== hwT.copyKey) hwPaintCoach();
+      const busy = !!document.querySelector('.qc-overlay, .kd-ov, .dn-pop, .tpanel.open');
+      const [a, b] = s.targets().map(hwVis), W = innerWidth, H = innerHeight, pad = 6;
+      Object.values(hwT.els).forEach(e => e.style.visibility = busy ? 'hidden' : 'visible');
+      const hole = r => { if (!r) return ''; const x = r.left - pad, y = r.top - pad, w = r.width + 2 * pad, h = r.height + 2 * pad, q = Math.min(14, w / 2, h / 2); return `M${x + q} ${y}H${x + w - q}A${q} ${q} 0 0 1 ${x + w} ${y + q}V${y + h - q}A${q} ${q} 0 0 1 ${x + w - q} ${y + h}H${x + q}A${q} ${q} 0 0 1 ${x} ${y + h - q}V${y + q}A${q} ${q} 0 0 1 ${x + q} ${y}Z`; };
+      hwT.els.dim.querySelector('path').setAttribute('d', `M0 0H${W}V${H}H0Z ${hole(a)} ${hole(b)}`);
+      const place = (el, r) => { if (!r) { el.style.display = 'none'; return; } el.style.display = 'block'; Object.assign(el.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + 2 * pad + 'px', height: r.height + 2 * pad + 'px' }); };
+      place(hwT.els.r1, a); place(hwT.els.r2, b);
+      if (s.arrow && a && b) {
+        const x0 = a.right + 4, y0 = a.top + a.height / 2, x1 = b.left + b.width / 2, y1 = b.top + Math.min(40, b.height / 2);
+        const stacked = b.bottom <= a.top + 4 && b.left < a.right && b.right > a.left;   // the target sits right above (the This week line)
+        const d = stacked ? (() => { const x = a.left + a.width * 0.62, ty = b.top + b.height / 2; return `M${x} ${a.top - 8} Q ${x + 46} ${(a.top + ty) / 2} ${x} ${ty + 2}`; })()
+          : `M${x0} ${y0} Q ${(x0 + x1) / 2} ${Math.min(y0, y1) - 90} ${x1} ${y1 - 10}`;
+        const end = stacked ? [a.left + a.width * 0.62, b.top + b.height / 2 + 2] : [x1, y1 - 8];
+        hwT.els.arrow.innerHTML = `<path d="${d}" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-dasharray="7 7" stroke-linecap="round"/><circle cx="${end[0]}" cy="${end[1]}" r="4" fill="var(--brand)"/>`;
+      } else hwT.els.arrow.innerHTML = '';
+      const c = hwT.els.coach, cw = c.offsetWidth || 340, ch = c.offsetHeight || 180;
+      let left, top;
+      if (a) { left = Math.min(Math.max(12, a.left), W - cw - 12); top = a.bottom + 18; if (top + ch > H - 12) top = Math.max(12, a.top - ch - 18); if (b && top < b.bottom && top + ch > b.top && left + cw > b.left && left < b.right) left = Math.max(12, b.left - cw - 24); }
+      else { left = (W - cw) / 2; top = (H - ch) / 2; }
+      c.style.left = left + 'px'; c.style.top = top + 'px';
+    }
+    function hwTourEnd(skipped) {
+      if (hwT) { clearInterval(hwT.timer); Object.values(hwT.els).forEach(e => e.remove()); hwT = null; }
+      hwTouring = false; hwLS('koi-wl', 'done'); hwLS('koi-welcomed', '1');
+      const ov = document.createElement('div'); ov.className = 'hw-endov';
+      ov.innerHTML = `<div class="hw-end" role="dialog"><div class="hw-endic">${skipped ? DAY_SUN : wkRingSvg(5, 44)}</div><h2>${skipped ? 'The tour is skipped.' : 'You’re set.'}</h2>
+        <p>${skipped ? 'You can take it again any time from Settings.' : 'That’s the heart of Hodo: catch it, decide when, finish it, and start each day with three promises.'}</p>
+        <div class="hw-acts" style="justify-content:center"><button type="button" class="hw-btn" data-hw="clear">Clear the practice tasks</button><button type="button" class="hw-btn sec" data-hw="keepp">Keep them for now</button></div>
+        ${koiInstallEvt ? `<div class="hw-install"><span>Want Hodo in its own window, with an icon on your desktop?</span><button type="button" class="hw-link" data-hw="install">Install Hodo as an app</button></div>` : ''}</div>`;
+      document.body.appendChild(ov);
+      const close = () => { ov.remove(); if (activeMainTab !== 'tasks') switchMainTab('tasks'); };
+      ov.querySelector('[data-hw="clear"]').addEventListener('click', () => { hwPracticeClear(); close(); });
+      ov.querySelector('[data-hw="keepp"]').addEventListener('click', close);
+      const ins = ov.querySelector('[data-hw="install"]'); if (ins) ins.addEventListener('click', async () => { const e = koiInstallEvt; if (!e) return; e.prompt(); try { await e.userChoice; } catch (x) {} koiInstallEvt = null; koiInstallPaint(); ins.parentNode.remove(); });
+      if (!skipped) dayHeart.chord(0.8);
+    }
+    window.hwTour = { start: () => { hwPracticeAdd(); hwTourStart(); } };
+    // the tour keeps the Weekly reset out of its way
+    { const _wa = wkAuto; wkAuto = function () { return !hwTouring && _wa.apply(this, arguments); }; }
+    // Settings: take the tour again
+    (function hwSettingsRow() {
+      const wk = document.querySelector('#settingsPanel [data-pf-k="week"]'); const row = wk && wk.closest('.sp-row'); if (!row) return;
+      const r = document.createElement('div'); r.className = 'sp-row';
+      r.innerHTML = `<div class="sp-rl"><span class="sp-rt">The welcome tour</span><span class="sp-hint">Five small steps through the essentials, with practice tasks.</span></div><button type="button" class="ln-btn" data-hw="retour">Take the tour</button>`;
+      row.parentNode.appendChild(r);
+      r.querySelector('[data-hw="retour"]').addEventListener('click', () => { if (!sections.length) { showStatus('Open your Hodo folder first'); return; } { const sp = document.getElementById('settingsPanel'); if (sp) sp.hidden = true; const sb = document.getElementById('settingsBtn'); if (sb) sb.classList.remove('open', 'active'); } setTimeout(() => window.hwTour.start(), 150); });
+    })();
+    // ---- when to show it ----
+    (async function hwBoot() {
+      await new Promise(r => setTimeout(r, 900));
+      const trial = hwLS('koi-trial-md');
+      let th = null, mh = null; try { th = await koiIdbGet('tasks'); mh = await koiIdbGet('memory'); } catch (e) {}
+      if (taskFileHandle || (typeof memoryDirHandle !== 'undefined' && memoryDirHandle) || th || mh || sections.length) return;
+      if (trial) { hwTrialLoad(trial); return; }
+      if (hwLS('koi-welcomed') === '1' || hwLS('koi-wl') === 'done') return;
+      try { if (!hwLS('pd-theme') && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark'); } catch (e) {}
+      hwShow(1);
+    })();
     applyWaitRail();
   </script>
 </body>
