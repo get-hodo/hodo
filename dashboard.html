@@ -20,6 +20,7 @@
   - Waiting On rail                            "Waiting On: a slim follow-up rail"
   - Details panel                              "Task detail panel"
   - Focus                                      "FOCUS OVERLAY", "focus layout with description"
+  - Today keeps its Three on re-read (Oct 25) "Today keeps its Three when TASKS.md is re-read (Oct 25)"
   - Rundown: REMOVED Oct 24 (parked Oct 17). Left: "Kept from the Rundown" (Undo toast, tdIsToday, tdFinish) and "Rundown paused" (maps the old tab to Tasks)
   - Look: Minimalist, theme change, music      "Minimalist: same information", "Theme change as light", "Soundtrack" (= Music)
   - Celebrations                               "CELEBRATIONS", "contained celebrations"
@@ -7225,7 +7226,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.1';
+    const KOI_VERSION = '2.1.1';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -15312,6 +15313,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.1.1': [
+        { k: 'solved', t: 'Today’s Three disappear after Hodo reloads your tasks', d: 'Now Today keeps your Three when TASKS.md changes, for example after Claude or OneDrive updates it, an Undo, or an update. They stay on The Day and marked on the board. If Hodo ever can’t find them, it asks you to pick them again instead of showing an empty promise.' }
+      ],
       '2.1': [
         { k: 'new', t: 'Nudge drafts', d: 'Use Hodo Link? When it’s time to nudge someone you’re waiting on, a Waiting On card shows <b>Draft</b>. Claude writes the follow-up, and the card shows <b>Draft ready</b>.<ul><li>Open it to edit, Copy, or Discard.</li><li><b>Mark as sent</b> counts as the nudge, and the message stays in the task as “Nudge sent”, so Claude won’t repeat itself next time.</li></ul>Want the drafts every workday morning? Turn that on in <b>Settings → Hodo Link</b>. Hodo never sends anything for you.<br><br>To get nudge drafts, reinstall the Hodo Link extension from <b>Settings → Hodo Link</b>.' },
         { k: 'reworked', t: 'Asking Claude takes one click', d: 'Draft and Tidy now open a new Claude conversation with the request already typed in. Just press Enter.' },
@@ -17931,6 +17935,44 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       }; }
     { const lkg = GUIDE_ITEMS.find(x => x.id === 'link'); if (lkg) lkg.d = 'Let Claude work on your tasks: add and change them from any chat, tidy your captures for you to review, and draft the nudges for people you’re waiting on. Changes are marked “by Claude”. No API key.'; }
     if (!GUIDE_ITEMS.some(x => x.id === 'ndraft')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'nudge'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'ndraft', g: 'moves', t: 'Nudge drafts', d: 'With Hodo Link, a Waiting On card with a nudge due offers “Draft”: Claude writes the follow-up and the card shows “Draft ready”. Open it to edit, Copy, then Mark as sent: it counts as the nudge and the message stays in the task as “Nudge sent”. Hodo never sends anything.', kw: 'follow up message email draft nudge sent' }); }
+    // ===== Today keeps its Three when TASKS.md is re-read (Oct 25) =====
+    // Hodo gives tasks new in-memory ids every time it reads TASKS.md (a change from Claude or OneDrive, an Undo, an
+    // update brought in). Today remembered its Three by those ids, so after a re-read The Day showed none and the board lost
+    // its marks. Now every id Today stores is saved with the task's lasting key (the hidden id in its line); after a re-read
+    // the old ids are swapped for the new ones. If the re-read dropped today's picks from the file, Today writes them back.
+    // If the Three can't be found at all, Today goes back to planning instead of showing an empty promise.
+    function dayIdKeys() {
+      const bare = JSON.stringify(Object.assign({}, dayS, { keys: null, prev: dayS.prev ? Object.assign({}, dayS.prev, { keys: null }) : null })), out = {};
+      allTasksFlat().forEach(x => { const id = String(x.task.id); if (bare.includes(id)) out[id] = koiTaskKey(x.task); });
+      return out;
+    }
+    { const _dsv = daySave; daySave = function () { try { if (sections.length) dayS.keys = Object.assign({}, dayS.keys || {}, dayIdKeys()); } catch (e) {} return _dsv.apply(this, arguments); }; }
+    function dayRemap() {
+      if (!sections.length || !dayS) return false;
+      const keys = Object.assign({}, (dayS.prev && dayS.prev.keys) || {}, dayS.keys || {}), byKey = {};
+      allTasksFlat().forEach(x => { if (x.task.uid) byKey['id:' + x.task.uid] = String(x.task.id); });
+      let js = JSON.stringify(dayS), ch = false;
+      Object.keys(keys).forEach(old => { if (findTaskById(old)) return; const nw = byKey[keys[old]]; if (!nw || nw === old) return; js = js.split(old).join(nw); ch = true; });
+      if (ch) { try { dayS = JSON.parse(js); } catch (e) { return false; } }
+      if (dayActive()) {
+        const slots = dayS.slots.filter(Boolean);
+        if (slots.length && !slots.some(x => dayFind(x.id))) {   // no keys to go on: try today's picks in the file
+          const today = hzDay(new Date()), got = [null, null, null];
+          allTasksFlat().forEach(x => { const pk = splitNoteCapsules(x.task.note || '').pick; if (pk && pk.date && hzSame(pk.date, today) && pk.n >= 1 && pk.n <= 3) got[pk.n - 1] = { id: x.task.id, mine: true }; });
+          if (got.some(Boolean)) { dayS.slots = got; ch = true; }
+          else { dayS.state = 'plan'; dayS.slots = [null, null, null]; dayS.committedAt = 0; ch = true; setTimeout(() => { try { toast('Hodo lost track of today’s Three. Please pick them again.', 6000); } catch (e) {} }, 300); }
+        }
+        if (dayActive()) {   // the file lost today's picks: write them back
+          const today = hzDay(new Date());
+          const miss = dayS.slots.some((x, i) => { const f = x && dayFind(x.id); if (!f || dayDoneTask(f)) return false; const pk = splitNoteCapsules(f.task.note || '').pick; return !(pk && pk.date && hzSame(pk.date, today) && pk.n === i + 1); });
+          if (miss) { dayWritePicks(true); setTimeout(() => { try { markChanged(); } catch (e) {} }, 0); }
+        }
+      }
+      if (ch) daySave();
+      return ch;
+    }
+    { const _rtK = renderTasks; renderTasks = function () { try { dayRemap(); } catch (e) {} return _rtK.apply(this, arguments); }; }
+    try { if (sections.length) daySave(); } catch (e) {}
     applyWaitRail();
   </script>
 </body>

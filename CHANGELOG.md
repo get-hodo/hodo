@@ -1,6 +1,9 @@
 # Hodo: what changed
 
-## Hodo 2.1 · Oct 24, 2026
+## Hodo 2.1.1 · Oct 25, 2026
+- SOLVED: Today’s Three disappear after Hodo reloads your tasks
+
+## Hodo 2.1 · Oct 25, 2026
 - NEW: Nudge drafts
 - REWORKED: Asking Claude takes one click
 - SHELVED: Hodo AI
