@@ -20,6 +20,7 @@
   - Waiting On rail                            "Waiting On: a slim follow-up rail"
   - Details panel                              "Task detail panel"
   - Focus                                      "FOCUS OVERLAY", "focus layout with description"
+  - Your Hodo Folder (Oct 27)                 "Your Hodo Folder (Oct 27)" (hfPick / hfOpen / hfWhere)
   - Today keeps its Three on re-read (Oct 25) "Today keeps its Three when TASKS.md is re-read (Oct 25)"
   - Rundown: REMOVED Oct 24 (parked Oct 17). Left: "Kept from the Rundown" (Undo toast, tdIsToday, tdFinish) and "Rundown paused" (maps the old tab to Tasks)
   - Look: Minimalist, theme change, music      "Minimalist: same information", "Theme change as light", "Soundtrack" (= Music)
@@ -4865,6 +4866,14 @@
     .nd-a { display: flex; align-items: center; gap: 6px; } .nd-a .g { flex: 1; }
     .nd-a .ln-btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
     [data-theme="dark"] .nd-a .ln-btn.pri { color: #1e1612; }
+    .hw-perm2 .lab { margin-bottom: 10px; }
+    .hw-steps2 { margin: 0; padding: 0 0 0 20px; display: grid; gap: 12px; font-size: 13px; line-height: 1.5; color: var(--text-primary); text-align: left; }
+    .hw-steps2 li::marker { color: var(--brand); font-weight: 700; }
+    .hw-steps2 span { display: block; color: var(--text-secondary); font-size: 12.5px; margin-top: 2px; }
+    .hw-steps2 .box { margin: 8px 0 6px; }
+    .hw-saved { display: flex; align-items: center; gap: 8px; justify-content: center; margin: -6px auto 14px; padding: 8px 14px; border-radius: 999px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--text-secondary); background: color-mix(in srgb, #2f855a 10%, var(--bg-card)); border: 1px solid color-mix(in srgb, #2f855a 30%, var(--border)); }
+    .hw-saved svg { width: 15px; height: 15px; fill: none; stroke: #2f855a; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .hw-saved b { color: var(--text-primary); font-weight: 650; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -5030,7 +5039,7 @@
               <h3 class="sp-gh"><button class="sp-toggle" type="button" aria-expanded="false"><svg class="sp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="sp-gt">Files &amp; rhythm</span></button></h3>
               <div class="sp-gb"><div class="sp-gbi">
               <div class="sp-row">
-                <div class="sp-rl"><span class="sp-rt">Task file</span><span class="sp-hint" id="spFileName">Not connected</span></div>
+                <div class="sp-rl"><span class="sp-rt">Your Hodo Folder</span><span class="sp-hint" id="spFileName">Not connected</span></div>
                 <button class="sp-btn" id="spFileBtn">Change</button>
               </div>
               <div class="sp-row">
@@ -5106,9 +5115,9 @@
     <div class="kf-banner" id="kfBanner" hidden></div>
     <div class="board" id="board">
       <div class="empty-state" id="boardEmptyState" style="width: 100%;">
-        <p style="margin-bottom: 8px; font-size: 18px; font-weight: 600; color: var(--text-primary);">Open your Hodo folder</p>
+        <p style="margin-bottom: 8px; font-size: 18px; font-weight: 600; color: var(--text-primary);">Open your Hodo Folder</p>
         <p style="margin-bottom: 22px; font-size: 13px; color: var(--text-muted);">New here? Make an empty folder (for example Documents\Hodo) and pick it: Hodo sets it up. Already using Hodo? Pick the folder with your TASKS.md.</p>
-        <button id="openFolderLarge">Open your Hodo folder</button>
+        <button id="openFolderLarge">Open your Hodo Folder</button>
         <button id="openBtnLarge" class="koi-alt-open">Just a TASKS.md file</button>
       </div>
     </div>
@@ -7226,7 +7235,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.1.1';
+    const KOI_VERSION = '2.1.2';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -7829,14 +7838,8 @@
         .join(' ');
     }
 
-    async function loadMemoryDirectory() {
-      try {
-        const h = await window.showDirectoryPicker({ mode: 'readwrite' });
-        await loadMemoryHandle(h);
-        koiIdbSet('memory', h);
-      } catch (e) {
-        if (e.name !== 'AbortError') { showStatus('Error: ' + e.message); }
-      }
+    async function loadMemoryDirectory() {   // Oct 27: the smart Hodo Folder picker ("Your Hodo Folder" module)
+      try { await hfOpen('open'); } catch (e) { if (e.name !== 'AbortError') { showStatus('Error: ' + e.message); } }
     }
     async function loadMemoryHandle(h) {
       try {
@@ -8393,7 +8396,7 @@
         const make = (host) => {
           if (!host) return;
           const b = document.createElement('button'); b.className = 'koi-reopen';
-          b.innerHTML = `Reopen <b>${escapeHtml(label)}</b>`;
+          b.innerHTML = /^hodo folder$/i.test(label) ? 'Reconnect your <b>Hodo Folder</b>' : `Reconnect <b>${escapeHtml(label)}</b>`;
           b.title = 'Pick up where you left off';
           b.addEventListener('click', async () => {
             let any = false; koiReopening = true;
@@ -13422,8 +13425,8 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       sync();
       // Settings rows
       const fileName = document.getElementById('spFileName'), panel = document.getElementById('settingsPanel');
-      document.getElementById('settingsBtn').addEventListener('click', () => { fileName.textContent = taskFileHandle ? (taskFileName || 'TASKS.md') : 'Not connected'; document.getElementById('spFileBtn').textContent = taskFileHandle ? 'Change' : 'Connect'; koiThemeAuto.sync(); });
-      document.getElementById('spFileBtn').addEventListener('click', () => { panel.hidden = true; openTaskBtn.click(); });
+      document.getElementById('settingsBtn').addEventListener('click', () => { fileName.textContent = memoryDirHandle ? memoryDirHandle.name + ' › TASKS.md' : taskFileHandle ? (taskFileName || 'TASKS.md') : 'Not connected'; document.getElementById('spFileBtn').textContent = taskFileHandle ? 'Change' : 'Connect'; koiThemeAuto.sync(); });
+      document.getElementById('spFileBtn').addEventListener('click', () => { panel.hidden = true; if (window.showDirectoryPicker) hfOpen('open'); else openTaskBtn.click(); });
       document.getElementById('spMemoryBtn').addEventListener('click', () => { panel.hidden = true; document.getElementById('settingsBtn').classList.remove('active'); switchMainTab('memory'); });
       document.getElementById('saveState').addEventListener('click', e => { if (e.currentTarget.classList.contains('error')) { hasChanges = true; autoSave(); } });
     })();
@@ -15313,6 +15316,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.1.2': [
+        { k: 'reworked', t: 'Your Hodo Folder', d: 'The folder that holds your tasks is now called your <b>Hodo Folder</b>, and choosing it takes one step:<ul><li><b>Make my Hodo Folder:</b> pick a place, like Documents or OneDrive, and Hodo makes the folder there for you.</li><li><b>Pick the wrong folder?</b> Hodo finds the Hodo Folder inside it, or offers to make one there.</li><li>Find it any time in <b>Settings → Files &amp; rhythm → Your Hodo Folder</b>.</li></ul>Your current folder stays exactly as it is.' }
+      ],
       '2.1.1': [
         { k: 'solved', t: 'Today’s Three disappear after Hodo reloads your tasks', d: 'Now Today keeps your Three when TASKS.md changes, for example after Claude or OneDrive updates it, an Undo, or an update. They stay on The Day and marked on the board. If Hodo ever can’t find them, it asks you to pick them again instead of showing an empty promise.' }
       ],
@@ -17395,7 +17401,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
             <li>${I.no}<div>No account, no sign-up<span>Nothing is sent to our servers. Your tasks are yours.</span></div></li>
             <li>${I.sync}<div>On all your computers<span>Put the folder in OneDrive or Google Drive and it follows you.</span></div></li>
           </ul>
-          ${can ? `<div class="hw-acts"><button type="button" class="hw-btn" data-hw="make">Make my Hodo folder</button><button type="button" class="hw-btn sec" data-hw="have">I already have one</button></div>
+          ${can ? `<div class="hw-acts"><button type="button" class="hw-btn" data-hw="make">Make my Hodo Folder</button><button type="button" class="hw-btn sec" data-hw="have">I already have one</button></div>
           <div class="hw-try">Not sure yet? <button type="button" class="hw-link" data-hw="try">Just try it first →</button> <span>Practice tasks, no folder needed.</span></div>`
           : `<div class="hw-warn">This browser can’t open folders yet. To keep your tasks in a folder, open Hodo in <b>Chrome</b> or <b>Edge</b> on a computer.</div>
           <div class="hw-acts"><button type="button" class="hw-btn" data-hw="try">Try it in this browser</button></div><div class="hw-try"><span>Your practice tasks stay in this browser until you move to Chrome or Edge.</span></div>`}
@@ -17404,26 +17410,30 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         <div class="hw-art" aria-hidden="true">
           <div class="hw-path">
             <div class="hw-node"><svg viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="22" rx="3"/><path d="M3 38h42"/></svg>Your computer</div><div class="hw-arr"></div>
-            <div class="hw-node h"><svg viewBox="0 0 48 48"><path d="M6 14a3 3 0 0 1 3-3h9l4 4h17a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z"/></svg>Hodo folder</div><div class="hw-arr"></div>
+            <div class="hw-node h"><svg viewBox="0 0 48 48"><path d="M6 14a3 3 0 0 1 3-3h9l4 4h17a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z"/></svg>Hodo Folder</div><div class="hw-arr"></div>
             <div class="hw-node"><svg viewBox="0 0 48 48"><path d="M13 6h15l9 9v27H13z"/><path d="M28 6v9h9M18 24h14M18 30h14M18 36h9"/></svg>TASKS.md</div>
           </div>
-          ${can ? `<div class="hw-perm"><div class="lab">Next, your browser will ask</div>
-            <div class="box"><b>Let Hodo view and save files in “Hodo”?</b><div class="row"><span>Cancel</span><span class="y">Allow</span></div></div>
-            <div class="hint">Tip: in the folder picker, choose <b>New folder</b>, call it <b>Hodo</b>, then select it.</div></div>` : ''}
+          ${can ? `<div class="hw-perm hw-perm2"><div class="lab">How it goes</div>
+            <ol class="hw-steps2">
+              <li><b>Pick a place for it,</b> like Documents or OneDrive. <span>Hodo makes the Hodo Folder there for you.</span></li>
+              <li><b>Your browser asks to let Hodo save there.</b>
+                <div class="box"><b>Let Hodo edit files in “Documents”?</b><div class="row"><span>Cancel</span><span class="y">Allow</span></div></div>
+                <span>It names the place you picked. Hodo only uses the Hodo Folder it makes there. If you see <b>Allow on every visit</b>, choose it, so Hodo never has to ask again.</span></li>
+            </ol></div>` : ''}
         </div></div>
         <div class="hw-foot">${hwDots(4, 1)}</div>`;
-      const pick = async () => { hwAutoYes = true; try { await loadMemoryDirectory(); } catch (e) {}
+      const pick = async mode => { hwAutoYes = true; try { await hfOpen(mode); } catch (e) {}
         for (let i = 0; i < 40 && !(taskFileHandle && sections.length); i++) await new Promise(r => setTimeout(r, 200));
         hwAutoYes = false; if (taskFileHandle && sections.length) hwShow(3); };
       const q = s => hwEl.querySelector(s);
-      if (q('[data-hw="make"]')) q('[data-hw="make"]').addEventListener('click', pick);
-      if (q('[data-hw="have"]')) q('[data-hw="have"]').addEventListener('click', pick);
+      if (q('[data-hw="make"]')) q('[data-hw="make"]').addEventListener('click', () => pick('make'));
+      if (q('[data-hw="have"]')) q('[data-hw="have"]').addEventListener('click', () => pick('open'));
       q('[data-hw="try"]').addEventListener('click', () => { hwTrialStart(); hwShow(3); });
       q('[data-hw="back"]').addEventListener('click', () => hwShow(1));
     }
     function hwAbout() {
       const p = koiProfile || {}, h = dayHours(); let week = p.week || '';
-      hwEl.innerHTML = `<div class="hw-card hw-about"><div class="hw-k">A little about you</div>
+      hwEl.innerHTML = `<div class="hw-card hw-about">${hfWhere && memoryDirHandle ? `<div class="hw-saved"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg><span>Your tasks live in <b>${escapeHtml(hfWhere)} › TASKS.md</b></span></div>` : ''}<div class="hw-k">A little about you</div>
         <h2 class="hw-h2">So Hodo fits your week.</h2>
         <label class="hw-l">Your first name<input data-hwf="name" value="${escapeHtml(p.name || '')}" placeholder="e.g. Sara" autocomplete="given-name"></label>
         <div class="hw-l">Your work week<div class="hw-weeks">${KOI_WEEK_OPTS.map(([v, l, d]) => `<button type="button" data-hww="${v}" class="${week === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div></div>
@@ -17461,9 +17471,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const k = b.querySelector('[data-hw="keep"]'); if (k) k.addEventListener('click', hwKeep);
     }
     async function hwKeep() {
-      let h; try { h = await window.showDirectoryPicker({ mode: 'readwrite' }); } catch (e) { return; }
+      const r = await hfPick('keep'); if (!r) return; const h = r.dir;
       let has = true; try { await h.getFileHandle('TASKS.md'); } catch (e) { has = false; }
-      if (has && !(await koiAsk('This folder already has tasks', `“${h.name}” already has a TASKS.md. Open it instead? What you tried here stays in this browser.`, 'Open it', 'Choose another folder'))) return hwKeep();
+      if (has && !r.asked && !(await koiAsk('This folder already has tasks', `“${h.name}” already has a TASKS.md. Open it instead? What you tried here stays in this browser.`, 'Open it', 'Choose another folder'))) return hwKeep();
       try {
         if (!has) { const fh = await h.getFileHandle('TASKS.md', { create: true }); const w = await fh.createWritable(); await w.write(toMarkdown()); await w.close();
           const mem = await h.getDirectoryHandle('memory', { create: true }); let ar = true; try { await mem.getFileHandle('areas.md'); } catch (e) { ar = false; }
@@ -17585,7 +17595,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const r = document.createElement('div'); r.className = 'sp-row';
       r.innerHTML = `<div class="sp-rl"><span class="sp-rt">The welcome tour</span><span class="sp-hint">Five small steps through the essentials, with practice tasks.</span></div><button type="button" class="ln-btn" data-hw="retour">Take the tour</button>`;
       row.parentNode.appendChild(r);
-      r.querySelector('[data-hw="retour"]').addEventListener('click', () => { if (!sections.length) { showStatus('Open your Hodo folder first'); return; } { const sp = document.getElementById('settingsPanel'); if (sp) sp.hidden = true; const sb = document.getElementById('settingsBtn'); if (sb) sb.classList.remove('open', 'active'); } setTimeout(() => window.hwTour.start(), 150); });
+      r.querySelector('[data-hw="retour"]').addEventListener('click', () => { if (!sections.length) { showStatus('Open your Hodo Folder first'); return; } { const sp = document.getElementById('settingsPanel'); if (sp) sp.hidden = true; const sb = document.getElementById('settingsBtn'); if (sb) sb.classList.remove('open', 'active'); } setTimeout(() => window.hwTour.start(), 150); });
     })();
     // ---- when to show it ----
     (async function hwBoot() {
@@ -17678,7 +17688,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         box.innerHTML = `<p class="lk-intro">Use Claude? Let it work on your tasks: add them from any chat, tidy your captures, keep things moving. No API key needed.</p>
           <div class="lk-steps"><div class="lk-step"><i>1</i><div>Download the Hodo extension<span>One small file, Hodo.mcpb.</span></div></div>
           <div class="lk-step"><i>2</i><div>Add it to the Claude desktop app<span>Drag the file onto the Claude window, or in Claude: Settings → Extensions → Advanced settings → Install Extension.</span></div></div>
-          <div class="lk-step"><i>3</i><div>Choose your Hodo folder<span>The same folder Hodo uses${typeof memoryDirHandle !== 'undefined' && memoryDirHandle ? ` (“${escapeHtml(memoryDirHandle.name)}”)` : ''}. That’s it.</span></div></div></div>
+          <div class="lk-step"><i>3</i><div>Choose your Hodo Folder<span>The same folder Hodo uses${typeof memoryDirHandle !== 'undefined' && memoryDirHandle ? ` (“${escapeHtml(memoryDirHandle.name)}”)` : ''}. That’s it.</span></div></div></div>
           <a class="lk-btn" href="Hodo.mcpb" download="Hodo.mcpb"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7l3.2 3.2L11.2 7M3 12.8h10"/></svg>Download the Hodo extension</a>
           <div class="lk-note">Needs the Claude desktop app on this computer. Tidying on a schedule needs a paid Claude plan. Hodo works fully without any of this.</div>`;
         return;
@@ -17973,6 +17983,71 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     }
     { const _rtK = renderTasks; renderTasks = function () { try { dayRemap(); } catch (e) {} return _rtK.apply(this, arguments); }; }
     try { if (sections.length) daySave(); } catch (e) {}
+    // ===== Your Hodo Folder (Oct 27): picking or making it, seamlessly =====
+    // "Make my Hodo Folder": you pick a place (the picker opens in Documents and remembers), Hodo makes "Hodo Folder" there.
+    // "I already have one" / Change folder: a folder with TASKS.md opens; a Hodo Folder (or Hodo) inside the folder you picked
+    // is found and offered; an empty folder, or one called Hodo / Hodo Folder, is used as is; any other folder asks
+    // "No Hodo tasks here. Make a Hodo Folder inside it?". hfWhere ("Documents › Hodo Folder") feeds the welcome's confirmation.
+    const HF_NAME = 'Hodo Folder', HF_RE = /^hodo( folder)?( \d+)?$/i;
+    let hfWhere = '';
+    async function hfEntries(h) { const out = []; try { for await (const e of h.values()) { out.push(e); if (out.length > 500) break; } } catch (e) {} return out; }
+    async function hfHasTasks(h) { try { await h.getFileHandle('TASKS.md'); return true; } catch (e) { return false; } }
+    async function hfMake(parent, ents) {
+      const names = new Set((ents || await hfEntries(parent)).map(e => String(e.name).toLowerCase()));
+      let n = HF_NAME, i = 2; while (names.has(n.toLowerCase())) n = `${HF_NAME} ${i++}`;
+      return parent.getDirectoryHandle(n, { create: true });
+    }
+    function hfAsk(title, text, yes, no) {   // like koiAsk, but Esc or a click outside means "neither"
+      return new Promise(res => {
+        const ov = document.createElement('div'); ov.className = 'kd-ov';
+        ov.innerHTML = `<div class="kd-box" role="dialog" aria-label="${escapeHtml(title)}"><div class="kd-h">${escapeHtml(title)}</div><p class="kd-p">${escapeHtml(text)}</p>
+          <div class="kd-acts"><button type="button" class="kd-cancel" data-a="no">${escapeHtml(no)}</button><button type="button" class="kd-yes" data-a="yes">${escapeHtml(yes)}</button></div></div>`;
+        document.body.appendChild(ov);
+        const done = v => { ov.remove(); document.removeEventListener('keydown', key, true); res(v); };
+        const key = e => { if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); done(null); } };
+        document.addEventListener('keydown', key, true);
+        ov.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (b) done(b.dataset.a); else if (e.target === ov) done(null); });
+        setTimeout(() => { const b = ov.querySelector('.kd-yes'); if (b) b.focus(); }, 30);
+      });
+    }
+    // mode: 'make' (Make my Hodo Folder), 'open' (I already have one · Change folder · reconnect), 'keep' (keep what you tried)
+    async function hfPick(mode) {
+      if (!window.showDirectoryPicker) return null;
+      let h;
+      try { h = await window.showDirectoryPicker({ id: 'hodo-folder', mode: 'readwrite', startIn: 'documents' }); }
+      catch (e) { if (e && e.name !== 'AbortError') showStatus('Hodo couldn’t open that folder. Please choose another one.'); return null; }
+      if (await hfHasTasks(h)) { hfWhere = h.name; return { dir: h, fresh: false }; }
+      const ents = await hfEntries(h);
+      for (const e of ents) {
+        if (e.kind !== 'directory' || !HF_RE.test(e.name)) continue;
+        let sub; try { sub = await h.getDirectoryHandle(e.name); } catch (x) { continue; }
+        if (!(await hfHasTasks(sub))) continue;
+        const a = await hfAsk(`Found your ${HF_NAME}`, `“${h.name}” already has ${e.name === HF_NAME ? `a ${HF_NAME}` : `a folder called “${e.name}”`} with your tasks. Use it?`, 'Use it', 'Make a new one');
+        if (a === null) return null;
+        if (a === 'yes') { hfWhere = `${h.name} › ${sub.name}`; return { dir: sub, fresh: false, asked: true }; }
+        const nw = await hfMake(h, ents); hfWhere = `${h.name} › ${nw.name}`; return { dir: nw, fresh: true };
+      }
+      if (!ents.length || HF_RE.test(h.name)) { hfWhere = h.name; return { dir: h, fresh: true }; }   // empty, or already called Hodo: start right here
+      if (mode === 'open') {
+        const a = await hfAsk('No Hodo tasks here', `“${h.name}” has no TASKS.md. Make a ${HF_NAME} inside it?`, 'Make it here', 'Choose another folder');
+        if (a === null) return null;
+        if (a === 'no') return hfPick(mode);
+      }
+      const nw = await hfMake(h, ents); hfWhere = `${h.name} › ${nw.name}`; return { dir: nw, fresh: true };
+    }
+    async function hfOpen(mode) {
+      const r = await hfPick(mode); if (!r) return false;
+      try { if (hasChanges && taskFileHandle) await autoSave(); } catch (e) {}
+      let same = false; try { same = !!(memoryDirHandle && await memoryDirHandle.isSameEntry(r.dir)); } catch (e) {}
+      if (!same) { sections = []; tasks = {}; taskFileHandle = null; }
+      const was = hwAutoYes; hwAutoYes = true;   // the folder was chosen just now: no "Start Hodo in this folder?" on top
+      try { await loadMemoryHandle(r.dir); koiIdbSet('memory', r.dir); }
+      finally { if (!was) setTimeout(() => { hwAutoYes = false; }, 4000); }
+      try { renderTasks(); } catch (e) {}
+      showStatus(`Your tasks live in ${hfWhere} › TASKS.md`);
+      return true;
+    }
+    if (!GUIDE_ITEMS.some(x => x.id === 'hfolder')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'backups'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i, 0, { id: 'hfolder', g: 'capture', t: 'Your Hodo Folder', d: 'Everything Hodo keeps lives in one folder on your computer: your tasks (TASKS.md), what Hodo knows about your work (memory) and daily Backups. Pick a place like Documents or OneDrive and Hodo makes the Hodo Folder there; put it in OneDrive or Google Drive to have it on all your computers.', how: 'Settings → Files & rhythm → Your Hodo Folder → Change. Pick the folder that holds TASKS.md, or the place that holds your Hodo Folder, and Hodo finds it.', kw: 'folder file tasks.md where saved location onedrive move computer' }); }
     applyWaitRail();
   </script>
 </body>
