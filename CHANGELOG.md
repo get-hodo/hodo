@@ -1,6 +1,15 @@
 # Hodo: what changed
 
-## Hodo 2.1.2 · Oct 27, 2026
+## Hodo 2.2 · Oct 28, 2026
+- NEW: Week · Plan · Day
+- NEW: Area tabs
+- NEW: Column colours
+- NEW: Reorder sub-tasks
+- REWORKED: Adding people
+- REWORKED: Choosing a slot for today’s Three
+- SOLVED: Typing a date saves the wrong year
+
+## Hodo 2.1.2 · Oct 28, 2026
 - REWORKED: Your Hodo Folder
 
 ## Hodo 2.1.1 · Oct 27, 2026

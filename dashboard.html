@@ -20,6 +20,8 @@
   - Waiting On rail                            "Waiting On: a slim follow-up rail"
   - Details panel                              "Task detail panel"
   - Focus                                      "FOCUS OVERLAY", "focus layout with description"
+  - Colours, area tabs, sub-task order, people (Oct 28) "Column colours, area tabs, sub-task order, quick people entry (Oct 28)" (cc*, at*, st*)
+  - Today steps bar (Oct 27)                  "Today: Week · Plan · Day, and choosing the slot (Oct 27)" (dsBar / dsGo / dayPlanAgain)
   - Your Hodo Folder (Oct 27)                 "Your Hodo Folder (Oct 27)" (hfPick / hfOpen / hfWhere)
   - Today keeps its Three on re-read (Oct 25) "Today keeps its Three when TASKS.md is re-read (Oct 25)"
   - Rundown: REMOVED Oct 24 (parked Oct 17). Left: "Kept from the Rundown" (Undo toast, tdIsToday, tdFinish) and "Rundown paused" (maps the old tab to Tasks)
@@ -4874,6 +4876,57 @@
     .hw-saved { display: flex; align-items: center; gap: 8px; justify-content: center; margin: -6px auto 14px; padding: 8px 14px; border-radius: 999px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--text-secondary); background: color-mix(in srgb, #2f855a 10%, var(--bg-card)); border: 1px solid color-mix(in srgb, #2f855a 30%, var(--border)); }
     .hw-saved svg { width: 15px; height: 15px; fill: none; stroke: #2f855a; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
     .hw-saved b { color: var(--text-primary); font-weight: 650; }
+    .ds-bar { display: flex; align-items: center; gap: 10px; margin: 0 0 22px; flex-wrap: wrap; }
+    .ds-step { display: inline-flex; align-items: center; gap: 8px; padding: 5px 13px 5px 6px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-card); font: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+    .ds-step:hover { color: var(--text-primary); border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+    .ds-dot { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; background: var(--bg-secondary); color: var(--text-muted); }
+    .ds-dot svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .ds-step.cur { color: var(--text-primary); border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 12%, transparent); cursor: default; }
+    .ds-step.cur .ds-dot { background: var(--brand); color: #fff; }
+    [data-theme="dark"] .ds-step.cur .ds-dot { color: #22242a; }
+    .ds-step.done .ds-dot { background: color-mix(in srgb, #2f855a 14%, var(--bg-card)); color: #2f855a; }
+    .ds-step.lock { opacity: .5; cursor: not-allowed; }
+    .ds-line { flex: 0 0 34px; height: 2px; border-radius: 2px; background: var(--border); }
+    .ds-line.on { background: color-mix(in srgb, var(--brand) 55%, var(--border)); }
+    .ds-pickhint { margin: -4px 0 10px; font-size: 13px; color: var(--text-secondary); } .ds-pickhint b { color: var(--brand); }
+    .ln-slot.ds-kept { opacity: .8; } .ln-slot.ds-kept .ln-card { cursor: default; }
+    .ds-keptl { display: inline-flex; align-items: center; gap: 4px; float: right; margin: 0 0 4px 8px; font-size: 11px; font-weight: 700; color: #2f855a; }
+    .ds-keptl svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    :is(.column, .list-section, .cal-pop, .lv-group).cc-col {
+      background: var(--bg-secondary); color: var(--text-primary); box-shadow: inset 0 3px 0 var(--col-tint);
+      --bg-secondary: hsl(var(--cc-h) min(var(--cc-s), 65%) 92%); --bg-card: #ffffff;
+      --text-primary: hsl(var(--cc-h) 45% 11%); --text-secondary: hsl(var(--cc-h) 22% 32%); --text-muted: hsl(var(--cc-h) 13% 50%);
+      --border: hsl(var(--cc-h) min(var(--cc-s), 50%) 82%); --border-light: hsl(var(--cc-h) min(var(--cc-s), 50%) 88%); --col-tint: hsl(var(--cc-h) min(var(--cc-s), 55%) 52%);
+    }
+    [data-theme="dark"] :is(.column, .list-section, .cal-pop, .lv-group).cc-col {
+      --bg-secondary: hsl(var(--cc-h) min(var(--cc-s), 22%) 18%); --bg-card: hsl(var(--cc-h) min(var(--cc-s), 18%) 22%);
+      --text-primary: hsl(var(--cc-h) 18% 86%); --text-secondary: hsl(var(--cc-h) 12% 68%); --text-muted: hsl(var(--cc-h) 9% 52%);
+      --border: hsl(var(--cc-h) min(var(--cc-s), 16%) 28%); --border-light: hsl(var(--cc-h) min(var(--cc-s), 16%) 25%); --col-tint: hsl(var(--cc-h) min(var(--cc-s), 38%) 45%);
+    }
+    .lv-group.cc-col { background: transparent; box-shadow: none; }
+    .cc-row { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-light); }
+    .cc-h { display: flex; align-items: center; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--text-primary); }
+    .cc-def { font: inherit; font-size: 12px; color: var(--text-secondary); background: none; border: 0; cursor: pointer; padding: 0; }
+    .cc-def:hover { color: var(--text-primary); text-decoration: underline; }
+    .cc-sws { display: grid; grid-template-columns: repeat(7, 28px); gap: 8px; }
+    .cc-sw { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--bg-card); background: var(--sw); box-shadow: 0 0 0 1px var(--border); cursor: pointer; padding: 0; position: relative; display: grid; place-items: center; }
+    .cc-sw:hover { transform: scale(1.08); }
+    .cc-sw.on { box-shadow: 0 0 0 2px var(--text-primary); }
+    .cc-cust { background: var(--sw, conic-gradient(#e07a5f, #d9a13b, #8a8d3a, #2f9e94, #4a90c8, #7c7fd0, #d0607e, #e07a5f)); }
+    .cc-cust input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .cc-cust svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(0 0 1px rgba(0,0,0,.6)); pointer-events: none; }
+    .area-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: -2px 0 14px; }
+    .area-tabs[hidden] { display: none; }
+    .at-tab { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-card); font: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+    .at-tab span { font-size: 11.5px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .at-tab:hover { color: var(--text-primary); border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+    .at-tab.on { color: var(--brand); border-color: var(--brand); background: color-mix(in srgb, var(--brand) 9%, var(--bg-card)); }
+    .at-tab.on span { color: inherit; }
+    .st-grip { flex: none; width: 12px; height: 18px; display: grid; place-items: center; margin: 0 2px 0 -6px; color: var(--text-muted); opacity: 0; cursor: grab; }
+    .st-grip svg { width: 8px; height: 14px; fill: currentColor; }
+    .tp-sub:hover .st-grip { opacity: .8; }
+    .tp-sub.st-drag { opacity: .45; }
+    .tp-sub.st-over-a { box-shadow: inset 0 2px 0 var(--brand); } .tp-sub.st-over-b { box-shadow: inset 0 -2px 0 var(--brand); }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -5648,7 +5701,7 @@
         const row2 = document.createElement('div'); row2.className = 'fp-row';
         const inp = document.createElement('input'); inp.type = 'date'; inp.className = 'fp-input';
         if (info.date && info.date.date) inp.value = ymd(info.date.date);
-        inp.onchange = () => { if (!inp.value) return; const [y, m, d] = inp.value.split('-').map(Number); saveField(task, i => { i.date = { kind, date: new Date(y, m - 1, d) }; }); };
+        inp.onchange = () => { const dt = koiDateFromInput(inp.value); if (!dt) return; saveField(task, i => { i.date = { kind, date: dt }; }); };
         row2.appendChild(inp);
         if (!task.checked) {
           const nd = document.createElement('button'); nd.className = 'fp-chip' + (info.date && info.date.kind === 'none' ? ' on' : ''); nd.textContent = 'No date';
@@ -5683,7 +5736,7 @@
         const row2 = document.createElement('div'); row2.className = 'fp-row';
         const inp = document.createElement('input'); inp.type = 'date'; inp.className = 'fp-input';
         if (info.deadline) inp.value = ymd(info.deadline);
-        inp.onchange = () => { if (!inp.value) return; const [y, m, d] = inp.value.split('-').map(Number); saveField(task, i => { i.deadline = new Date(y, m - 1, d); }); };
+        inp.onchange = () => { const dt = koiDateFromInput(inp.value); if (!dt) return; saveField(task, i => { i.deadline = dt; }); };
         row2.appendChild(inp);
         if (info.deadline) { const c = document.createElement('button'); c.className = 'fp-link'; c.textContent = 'Remove deadline'; c.onclick = () => saveField(task, i => { i.deadline = null; }); row2.appendChild(c); }
         body.appendChild(row2);
@@ -7235,7 +7288,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.1.2';
+    const KOI_VERSION = '2.2';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -7370,6 +7423,13 @@
     let calRowClick = null;    // single click waits a moment so a double click can still add a task
 
     function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    // A date box only counts once its year is complete (Oct 28, a tester's report): while you type the year, Chrome already
+    // reports "0002-10-30", and new Date(2, …) means 1902, so the box closed with a date a century off. Years 1900–2200 only.
+    function koiDateFromInput(v) {
+      const m = /^(\d{4,})-(\d{2})-(\d{2})$/.exec(String(v || '')); if (!m) return null;
+      const y = +m[1]; if (y < 1900 || y > 2200) return null;
+      return new Date(y, +m[2] - 1, +m[3]);
+    }
     function parseDateText(txt) {
       const t = txt.replace(new RegExp('^' + WD_RE, 'i'), '').trim();
       let m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -10349,7 +10409,7 @@
             e = { name: 'directory.md', content: '', fileHandle: fh, dirHandle: dir, parsed: null };
             (memoryData.memoryDirs.people = memoryData.memoryDirs.people || []).push(e);
           }
-          if (!e) { if (ppEl) ppRender(); return; }
+          if (!e) { if (ppEl && !ppEl.contains(document.activeElement)) ppRender(); return; }   // never re-render under someone typing (Oct 28)
           const text = ppSerialize(e.content, koiPeople);
           const w = await e.fileHandle.createWritable(); await w.write(text); await w.close();
           e.content = text; ppLastText = text;
@@ -11208,7 +11268,7 @@ How to decide:
           m.kept = new Date(); deepSetMeta(t, m); deepChanged(true);
           if (v === 'when') setTimeout(() => { const a = deepEl && deepEl.querySelector('[data-pa="rswhen"]'); if (a) a.focus(); }, 30);
         }));
-        const rd = el.querySelector('[data-pa="rsdate"]'); if (rd) rd.addEventListener('change', () => { const m = deepMeta(t); if (rd.value) m.resurface = parseDateText(rd.value); m.kept = new Date(); deepSetMeta(t, m); deepChanged(true); });
+        const rd = el.querySelector('[data-pa="rsdate"]'); if (rd) rd.addEventListener('change', () => { const dt = koiDateFromInput(rd.value); if (rd.value && !dt) return; const m = deepMeta(t); if (dt) m.resurface = dt; m.kept = new Date(); deepSetMeta(t, m); deepChanged(true); });
         const ra = el.querySelector('[data-pa="rswhen"]'); if (ra) ra.addEventListener('change', () => { const m = deepMeta(t); m.after = ra.value.trim().replace(/^(when|after)\s+/i, '') || '…'; m.kept = new Date(); deepSetMeta(t, m); deepChanged(true); });
         el.querySelector('[data-pa="collapse"]').addEventListener('click', () => { deepOpenId = null; deepRender(); });
       });
@@ -13219,7 +13279,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
           const n = selEach(info => { if (kind === 'day') { if (d) { info.date = { kind: 'due', date: d }; if (tdIsToday(info.pick) && ymd(d) !== ymd(t0)) info.pick = null; } else if (info.date && info.date.kind === 'due') info.date = null; } else info.deadline = d; });
           selDone(kind === 'day' ? (d ? `${n} planned for ${fmtDue(d)}` : `Day removed from ${n}`) : (d ? `Deadline ${fmtDue(d)} for ${n}` : `Deadline removed from ${n}`), snap, false); };
         p.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => apply(b.dataset.q === 'clear' ? null : q[+b.dataset.q][1])));
-        const inp = p.querySelector('input'); inp.addEventListener('change', () => { if (!inp.value) return; const [y, m, d] = inp.value.split('-').map(Number); apply(new Date(y, m - 1, d)); });
+        const inp = p.querySelector('input'); inp.addEventListener('change', () => { const dt = koiDateFromInput(inp.value); if (dt) apply(dt); });
       });
     }
     function selListPop(anchor, title, items, onPick, clearLabel, withInput) {
@@ -15316,6 +15376,15 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.2': [
+        { k: 'new', t: 'Week · Plan · Day', d: 'A bar at the top of the Today page shows where you are in your day. Started the day and want to change your Three? Click <b>Plan</b>: your Three are already in the slots, finished ones stay kept, and a short hold updates today’s promise. <b>Back to the day</b> leaves it as it was. After you close the day, click <b>Day</b> to open it again.' },
+        { k: 'new', t: 'Area tabs', d: 'Your areas now sit as tabs right above the board. Click one to see only its tasks, click more to see several at once, and <b>All</b> to see everything. Hodo remembers your choice.' },
+        { k: 'new', t: 'Column colours', d: 'Give any column a colour from its <b>⚙</b>: 12 to pick from, or <b>Custom</b> for any colour you like. Hodo keeps it soft and readable in both themes. Done keeps its own green.<ul><li>Use Hodo Link? Reinstall the extension from <b>Settings → Hodo Link</b> so Claude reads coloured columns correctly.</li></ul>' },
+        { k: 'new', t: 'Reorder sub-tasks', d: 'In a task’s details, drag a sub-task by its grip to move it, or press <b>Alt+↑ / Alt+↓</b> while editing it.' },
+        { k: 'reworked', t: 'Adding people', d: 'On the People page, <b>Tab</b> moves to the next field and <b>Enter</b> saves the person and starts the next one, so you can add a whole team without touching the mouse.' },
+        { k: 'reworked', t: 'Choosing a slot for today’s Three', d: 'When all three slots are full, adding a task now asks which slot it replaces, instead of quietly swapping out one of Hodo’s suggestions.' },
+        { k: 'solved', t: 'Typing a date saves the wrong year', d: 'Now a date box waits until you’ve typed the whole year, so typing a date no longer closes the box and saves a date a century off.' }
+      ],
       '2.1.2': [
         { k: 'reworked', t: 'Your Hodo Folder', d: 'The folder that holds your tasks is now called your <b>Hodo Folder</b>, and choosing it takes one step:<ul><li><b>Make my Hodo Folder:</b> pick a place, like Documents or OneDrive, and Hodo makes the folder there for you.</li><li><b>Pick the wrong folder?</b> Hodo finds the Hodo Folder inside it, or offers to make one there.</li><li>Find it any time in <b>Settings → Files &amp; rhythm → Your Hodo Folder</b>.</li></ul>Your current folder stays exactly as it is.' }
       ],
@@ -16557,7 +16626,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     function dayPlace(id, slotIdx, srcEl) {
       if (daySlotOf(id) >= 0) return;
       let i = slotIdx;
-      if (i == null) { i = dayS.slots.findIndex(x => !x || !x.mine); if (i < 0) { dayPick = id; dayRender(); return; } }
+      if (i == null) { i = dayS.slots.findIndex(x => !x); if (i < 0) { dayPick = id; dayRender(); return; } }   // all three filled: you choose which slot (Oct 27)
       dayPick = null;
       dayS.slots[i] = { id, mine: true }; daySave();
       dayRender();
@@ -16624,12 +16693,13 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const start = () => {
         if (holding || done) return; holding = true; hint.hidden = true;
         btn.classList.add('holding');
-        anim = trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: DAY_HOLD, easing: 'linear', fill: 'forwards' });
-        stopHum = dayHeart.hum(DAY_HOLD / 1000);
+        const HOLD = dayPlanAgain ? 1000 : DAY_HOLD;   // updating today's promise is a shorter hold (Oct 27)
+        anim = trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: HOLD, easing: 'linear', fill: 'forwards' });
+        stopHum = dayHeart.hum(HOLD / 1000);
         [0, 1, 2].forEach(i => timers.push(setTimeout(() => {
           const s = lit()[i]; if (s && dayS.slots[i]) { s.classList.add('lit'); s.querySelector('.n').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.35)' }, { transform: 'scale(1)' }], { duration: 380 }); dayRing(s, 1.06, 600); dayHeart.note(i); }
-        }, DAY_HOLD * (i + 1) / 3 - (i === 2 ? 20 : 0))));
-        timers.push(setTimeout(() => { done = true; holding = false; if (stopHum) stopHum(); dayCommit(btn); }, DAY_HOLD));
+        }, HOLD * (i + 1) / 3 - (i === 2 ? 20 : 0))));
+        timers.push(setTimeout(() => { done = true; holding = false; if (stopHum) stopHum(); dayCommit(btn); }, HOLD));
       };
       const cancel = () => {
         if (!holding || done) return; holding = false; timers.forEach(clearTimeout); timers = []; if (stopHum) stopHum();
@@ -17038,9 +17108,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const L = dayLedger(), tm = dayS.tomorrow !== '' && dayS.tomorrow != null ? dayFind(dayS.tomorrow) : null;
       dayPanel.innerHTML = `<div class="ln-in"><div class="dy-rest lnd-closed"><div class="ic">${dayNight() ? DAY_MOON : DAY_SET}</div><h2>Day closed.</h2>
         <p>${L.moved ? `${L.moved} thing${L.moved === 1 ? '' : 's'} moved forward today.` : 'Rest well.'}${tm && dayOpen(tm) ? ` Tomorrow starts with <b>${dayEsc(tm.task.title)}</b>.` : ''}</p>
-        <div class="b"><button type="button" class="ln-btn" data-r="tasks">Go to Tasks</button><button type="button" class="ln-btn quiet" data-r="reopen">Open the day again</button></div></div></div>`;
+        <div class="b"><button type="button" class="ln-btn" data-r="tasks">Go to Tasks</button></div></div></div>`;
       dayPanel.querySelector('[data-r="tasks"]').addEventListener('click', () => switchMainTab('tasks'));
-      dayPanel.querySelector('[data-r="reopen"]').addEventListener('click', () => { dayS.state = 'active'; dayS.landing = true; daySave(); dayLightPaint(); renderTasks(); dayRender(); });
+
     }
     // ---- Settle yesterday (Land was skipped) ----
     function dayYPending() { const p = dayS.prev; if (!p || p.state !== 'active' || !p.date || p.date >= dayKey()) return new Set(); const done = new Set(dayS.settled || []); return new Set((p.slots || []).filter(Boolean).map(x => String(x.id)).filter(id => !done.has('y:' + id))); }
@@ -17244,8 +17314,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       let anim = null, timers = [], stopHum = null, holding = false, done = false;
       const start = () => {
         if (holding || done) return; holding = true; hint.hidden = true; btn.classList.add('holding');
-        anim = trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: DAY_HOLD, easing: 'linear', fill: 'forwards' });
-        stopHum = dayHeart.hum(DAY_HOLD / 1000);
+        const HOLD = dayPlanAgain ? 1000 : DAY_HOLD;   // updating today's promise is a shorter hold (Oct 27)
+        anim = trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: HOLD, easing: 'linear', fill: 'forwards' });
+        stopHum = dayHeart.hum(HOLD / 1000);
         [0, 1, 2, 3, 4].forEach(i => timers.push(setTimeout(() => { const s = segs()[i]; if (s) s.setAttribute('class', 'fg'); dayHeart.note(i % 3, 0.45); }, DAY_HOLD * (i + 1) / 5 - (i === 4 ? 30 : 0))));
         timers.push(setTimeout(() => { done = true; holding = false; if (stopHum) stopHum(); wkSeal(btn); }, DAY_HOLD));
       };
@@ -18048,6 +18119,213 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       return true;
     }
     if (!GUIDE_ITEMS.some(x => x.id === 'hfolder')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'backups'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i, 0, { id: 'hfolder', g: 'capture', t: 'Your Hodo Folder', d: 'Everything Hodo keeps lives in one folder on your computer: your tasks (TASKS.md), what Hodo knows about your work (memory) and daily Backups. Pick a place like Documents or OneDrive and Hodo makes the Hodo Folder there; put it in OneDrive or Google Drive to have it on all your computers.', how: 'Settings → Files & rhythm → Your Hodo Folder → Change. Pick the folder that holds TASKS.md, or the place that holds your Hodo Folder, and Hodo finds it.', kw: 'folder file tasks.md where saved location onedrive move computer' }); }
+    // ===== Today: Week · Plan · Day, and choosing the slot (Oct 27) =====
+    // A bar at the top of the Today page: Week (the Weekly reset, on the first three workdays) · Plan · Day. Done steps get a
+    // check, locked steps are greyed (Day until the day is started; Plan while the Weekly reset waits). After starting, Plan
+    // opens "Change today's Three": your Three in the slots (kept ones stay, marked Kept), a 1-second hold updates the promise,
+    // "Back to the day" leaves it unchanged. Land stays the end of Day. A closed day shows a setting sun / moon; Day reopens it.
+    // When all three slots are filled, adding a task asks which slot it replaces (Esc cancels).
+    var dayPlanAgain = false, dayPlanSnap = null;
+    const DS_CK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>', DS_LOCK = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="7.5" width="8" height="6" rx="1.5"/><path d="M5.8 7.5V5.6a2.2 2.2 0 0 1 4.4 0v1.9"/></svg>';
+    const DS_SUNSET = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 12.5h10M5 10.5a3 3 0 0 1 6 0M8 3.5v2M3.6 6.1l1.2 1.1M12.4 6.1l-1.2 1.1"/></svg>', DS_MOON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.5 10.6A5 5 0 0 1 5.4 4.5a5 5 0 1 0 6.1 6.1z"/></svg>';
+    const dsStarted = () => dayS.state === 'active' || dayS.state === 'closed';
+    const dsKept = i => { const x = dayS.slots[i]; return !!(x && dayDoneTask(dayFind(x.id))); };
+    function dsSteps() {
+      const r = wkRec(), st = dayS.state, started = dsStarted(), cur = wkOpen ? 'week' : (dayPlanAgain || !started) ? 'plan' : 'day', weekWaiting = wkOpen && !r, out = [];
+      if (wkEarly() || wkOpen) out.push({ k: 'week', l: 'Week', done: !!(r && r.state === 'done'), lock: false, tip: 'Weekly reset' });
+      out.push({ k: 'plan', l: 'Plan', done: started, lock: weekWaiting, tip: weekWaiting ? 'Finish or skip the week first' : started ? 'Change today’s Three' : 'Choose today’s Three' });
+      out.push({ k: 'day', l: 'Day', done: st === 'closed', lock: !started, tip: !started ? 'Start the day first' : st === 'closed' ? 'Open the day again' : 'Your day' });
+      return { cur, out };
+    }
+    function dsBar() {
+      const { cur, out } = dsSteps(), closed = dayS.state === 'closed';
+      return `<nav class="ds-bar" aria-label="Today’s steps">${out.map((x, i) => `${i ? `<i class="ds-line${out[i - 1].done || out[i - 1].k === cur ? ' on' : ''}"></i>` : ''}<button type="button" class="ds-step${x.k === cur ? ' cur' : ''}${x.done && x.k !== cur ? ' done' : ''}${x.lock ? ' lock' : ''}" data-ds="${x.k}" title="${x.tip}"${x.lock ? ' aria-disabled="true"' : ''}${x.k === cur ? ' aria-current="step"' : ''}><span class="ds-dot">${x.lock ? DS_LOCK : x.k === 'day' && closed ? (dayNight() ? DS_MOON : DS_SUNSET) : x.done && x.k !== cur ? DS_CK : i + 1}</span>${x.l}</button>`).join('')}</nav>`;
+    }
+    function dsPlanEnter() { if (!dayPlanAgain) { dayPlanSnap = JSON.stringify(dayS.slots); dayPlanAgain = true; } dayPick = null; }
+    function dsPlanLeave(keep) {
+      if (!dayPlanAgain) return; dayPlanAgain = false; dayPick = null;
+      if (!keep && dayPlanSnap) { try { dayS.slots = JSON.parse(dayPlanSnap); daySave(); } catch (e) {} }
+      dayPlanSnap = null;
+    }
+    function dsGo(k) {
+      const { out } = dsSteps(), x = out.find(o => o.k === k); if (!x) return;
+      if (x.lock) { toast(x.tip, 1800); return; }
+      if (k === 'week') { dsPlanLeave(false); wkStart(); return; }
+      if (k === 'plan') { wkOpen = false; if (dsStarted()) { if (dayS.state === 'closed') { dayS.state = 'active'; dayS.landing = false; daySave(); dayLightPaint(); } dsPlanEnter(); } dayRender(); dayPanel.scrollTop = 0; return; }
+      if (k === 'day') { wkOpen = false; dsPlanLeave(false); if (dayS.state === 'closed') { dayS.state = 'active'; dayS.landing = false; daySave(); dayLightPaint(); renderTasks(); } else if (dayS.landing) { dayS.landing = false; daySave(); } dayRender(); dayPanel.scrollTop = 0; }
+    }
+    { const _df = dayFill; dayFill = function () {   // updating: kept tasks stay in their slots
+        if (!dayPlanAgain) return _df.apply(this, arguments);
+        const keep = dayS.slots.map((x, i) => dsKept(i) ? x : null), r = _df.apply(this, arguments);
+        dayS.slots = dayS.slots.map((x, i) => keep[i] || x); return r;
+      }; }
+    { const _dp = dayPlace; dayPlace = function (id, slotIdx) { if (dayPlanAgain && slotIdx != null && dsKept(slotIdx)) { toast('That one is already kept.', 1800); return; } return _dp.apply(this, arguments); }; }
+    { const _dc = dayCommit; dayCommit = function (btn) {
+        if (!dayPlanAgain) return _dc.apply(this, arguments);
+        dayS.slots = dayS.slots.map(x => x ? { id: x.id, mine: true } : null); daySave();
+        dayWritePicks(true); markChanged(); dsPlanLeave(true);
+        try { dayHeart.chord(); } catch (e) {}
+        renderTasks(); dayRender(); dayPanel.scrollTop = 0; toast('Today’s promise is updated.', 2200);
+      }; }
+    { const _r = dayRender; dayRender = function () {
+        if (!dayPanel) return;
+        if (dayPlanAgain && !(dayS.state === 'active' && !wkOpen)) dsPlanLeave(false);
+        if (dayPlanAgain) { dayRenderLaunch(); dayTabPaint(); } else _r.apply(this, arguments);
+        try {
+          const host = dayPanel.firstElementChild; if (host && !dayPanel.querySelector('.ds-bar') && sections.length) host.insertAdjacentHTML('afterbegin', dsBar());
+          dayPanel.querySelectorAll('.ds-step').forEach(b => b.addEventListener('click', () => dsGo(b.dataset.ds)));
+          if (dayPlanAgain) {
+            const h1 = dayPanel.querySelector('h1'); if (h1) h1.textContent = 'Change today’s Three.';
+            const sub = dayPanel.querySelector('.ln-sub'); if (sub) sub.textContent = 'Your Three are in the slots. Swap what you like; tasks you’ve finished stay kept.';
+            const lb = dayPanel.querySelector('[data-act="hold"] .lbl'); if (lb) lb.textContent = 'Hold to update today’s promise';
+            const nn = dayPanel.querySelector('[data-act="notnow"]'); if (nn) { const b2 = nn.cloneNode(true); b2.textContent = 'Back to the day'; nn.replaceWith(b2); b2.addEventListener('click', () => dsGo('day')); }
+            dayPanel.querySelectorAll('.ln-slot').forEach(sl => { const i = +sl.dataset.slot; if (!dsKept(i)) return; sl.classList.add('ds-kept');
+              sl.querySelectorAll('.ln-x').forEach(x => x.remove()); const c = sl.querySelector('.ln-card'); if (c) { c.draggable = false; c.insertAdjacentHTML('afterbegin', `<span class="ds-keptl">${DS_CK}Kept</span>`); } });
+          }
+          if (dayPick != null && !dayPanel.querySelector('.ds-pickhint')) { const sl = dayPanel.querySelector('.ln-slots'); if (sl) sl.insertAdjacentHTML('beforebegin', '<div class="ds-pickhint">All three are full. <b>Click the slot it replaces</b> · Esc to cancel</div>'); }
+        } catch (e) {}
+      }; }
+    dayPanel && dayPanel.addEventListener('click', e => {   // a kept slot can't be replaced
+      const sl = e.target.closest && e.target.closest('.ln-slot.ds-kept'); if (!sl || dayPick == null) return;
+      e.stopPropagation(); e.preventDefault(); toast('That one is already kept. Pick another slot.', 2000);
+    }, true);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && dayPick != null && activeMainTab === 'day') { dayPick = null; dayRender(); } });
+    { const _sw4 = switchMainTab; switchMainTab = function (tab) { if (tab !== 'day' && dayPlanAgain) dsPlanLeave(false); return _sw4.apply(this, arguments); }; }
+    { const g = GUIDE_ITEMS.find(x => x.id === 'today'); if (g && !/Week · Plan · Day/.test(g.d)) g.d += ' The bar at the top (Week · Plan · Day) moves you between steps: after starting, Plan lets you change your Three.'; }
+    // ===== Column colours, area tabs, sub-task order, quick people entry (Oct 28) =====
+    // ---- column colours: 12 picks + Custom (any colour); Hodo makes a soft background, header edge and readable text for
+    // each theme from its hue. Not for Done columns. Saved in the heading note: "## Pending <!-- hodo: color #2f9e94 -->".
+    const CC_PRESETS = [['Amber', '#d9a13b'], ['Sand', '#b89466'], ['Coral', '#e07a5f'], ['Rose', '#d0607e'], ['Plum', '#9b5fa8'], ['Lavender', '#7c7fd0'], ['Sky', '#4a90c8'], ['Teal', '#2f9e94'], ['Sage', '#6f9a6a'], ['Olive', '#8a8d3a'], ['Slate', '#5f7187'], ['Graphite', '#6b6b6b']];
+    function ccHS(hex) {
+      const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '')); if (!m) return null;
+      const n = parseInt(m[1], 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, l = (mx + mn) / 2;
+      let h = 0; if (d) h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      return { h: Math.round((h * 60 + 360) % 360), s: d ? Math.round(d / (1 - Math.abs(2 * l - 1)) * 100) : 0 };
+    }
+    const ccKey = id => 'cc-' + String(id).replace(/[^a-z0-9]+/gi, '-');
+    function ccPaint() {
+      let st = document.getElementById('ccStyles'); if (!st) { st = document.createElement('style'); st.id = 'ccStyles'; document.head.appendChild(st); }
+      st.textContent = sections.filter(s => s.color && !s.done).map(s => { const c = ccHS(s.color); return c ? `.${ccKey(s.id)} { --cc-h: ${c.h}; --cc-s: ${Math.min(c.s, 70)}%; }` : ''; }).join('\n');
+    }
+    function ccApply() {   // board columns, List sections and groups (by their section id)
+      document.querySelectorAll('.cc-col').forEach(el => { el.classList.remove('cc-col'); [...el.classList].filter(c => c.startsWith('cc-')).forEach(c => el.classList.remove(c)); });
+      sections.forEach(s => {
+        if (!s.color || s.done || !ccHS(s.color)) return; const k = ccKey(s.id), q = CSS.escape(s.id);
+        document.querySelectorAll(`.column-title[data-section-id="${q}"]`).forEach(t => { const c = t.closest('.column'); if (c) c.classList.add('cc-col', k); });
+        document.querySelectorAll(`.list-section[data-section-id="${q}"], .lv-group[data-section-id="${q}"]`).forEach(el => el.classList.add('cc-col', k));
+      });
+    }
+    { const _pC2 = parseTaskMarkdown; parseTaskMarkdown = function (content) {
+        const col = {};
+        String(content || '').split('\n').forEach(l => { const m = /^##\s+(.*?)\s*<!--\s*hodo:\s*([^>]*?)\s*-->\s*$/.exec(l); if (!m) return; const c = /\bcolor\s+(#[0-9a-f]{6})\b/i.exec(m[2]); if (c) col[taskSectionId(m[1].replace(/^\*\*|\*\*$/g, '').trim())] = c[1].toLowerCase(); });
+        const r = _pC2.apply(this, arguments);
+        r.sections.forEach(s => { if (col[s.id]) s.color = col[s.id]; });
+        return r;
+      }; }
+    { const _mC2 = toMarkdown; toMarkdown = function () {
+        const lines = _mC2.apply(this, arguments).split('\n'), used = new Set();
+        sections.forEach(s => {
+          if (!s.color || s.done) return;
+          const i = lines.findIndex((l, k) => !used.has(k) && (l === '## ' + s.name || l.startsWith('## ' + s.name + ' <!-- hodo:'))); if (i < 0) return; used.add(i);
+          lines[i] = /<!--\s*hodo:/.test(lines[i]) ? lines[i].replace(/\s*-->\s*$/, `, color ${s.color} -->`) : lines[i] + ` <!-- hodo: color ${s.color} -->`;
+        });
+        return lines.join('\n');
+      }; }
+    { const _rT = renderTasks; renderTasks = function () { try { ccPaint(); } catch (e) {} const r = _rT.apply(this, arguments); try { ccApply(); } catch (e) {} return r; }; }
+    function ccRow(s) {
+      const sw = CC_PRESETS.map(([n, h]) => `<button type="button" class="cc-sw${s.color === h ? ' on' : ''}" data-cc="${h}" title="${n}" style="--sw:${h}"></button>`).join('');
+      const custom = s.color && !CC_PRESETS.some(([, h]) => h === s.color);
+      return `<div class="cc-row"><div class="cc-h"><b>Colour</b>${s.color ? '<button type="button" class="cc-def" data-cc="">Default</button>' : ''}</div>
+        <div class="cc-sws">${sw}<label class="cc-sw cc-cust${custom ? ' on' : ''}" title="Custom colour"${custom ? ` style="--sw:${s.color}"` : ''}><input type="color" value="${s.color || '#7c7fd0'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg></label></div></div>`;
+    }
+    { const _cpo = koiColPopOpen; koiColPopOpen = function (btn, id) {
+        const r = _cpo.apply(this, arguments);
+        const pop = koiColPop, s = sections.find(x => x.id === id); if (!pop || !s) return r;
+        const add = () => {
+          if (s.done || pop.querySelector('.cc-row')) return;
+          pop.insertAdjacentHTML('beforeend', ccRow(s));
+          const set = v => { s.color = v || ''; if (!s.color) delete s.color; markChanged(); renderTasks(); pop.querySelector('.cc-row').remove(); add(); };
+          pop.querySelectorAll('[data-cc]').forEach(b => b.addEventListener('click', () => set(b.dataset.cc)));
+          const ci = pop.querySelector('.cc-cust input'); ci.addEventListener('input', () => { s.color = ci.value.toLowerCase(); ccPaint(); ccApply(); }); ci.addEventListener('change', () => set(ci.value.toLowerCase()));
+        };
+        add();
+        new MutationObserver(() => { if (!pop.querySelector('.cc-row')) add(); }).observe(pop, { childList: true });
+        return r;
+      }; }
+    // ---- area tabs above the board: the Filter's Area choice, one click away; several at once; remembered in this browser
+    let atEl = null, atLoaded = false;
+    function atSave() { try { localStorage.setItem('koi-area-tabs', JSON.stringify([...kf.ws])); } catch (e) {} }
+    function atRender() {
+      if (!atEl) { atEl = document.createElement('div'); atEl.className = 'area-tabs'; atEl.id = 'areaTabs'; const bn = document.getElementById('kfBanner'); if (!bn) return; bn.before(atEl);
+        atEl.addEventListener('click', e => { const b = e.target.closest('[data-at]'); if (!b) return; const k = b.dataset.at;
+          if (k === '~all') kf.ws.clear(); else if (kf.ws.has(k)) kf.ws.delete(k); else kf.ws.add(k);
+          atSave(); try { kfRenderMenu(); } catch (x) {} applyFilter(); }); }
+      if (!sections.length || activeMainTab !== 'tasks') { atEl.hidden = true; return; }
+      const { ws, all } = kfOptions(), keys = Object.keys(ws).sort((a, b) => ws[b].n - ws[a].n || a.localeCompare(b));
+      const none = all.filter(({ task }) => !splitNoteCapsules(task.note || '').workstreams.length).length;
+      if (!keys.length) { atEl.hidden = true; return; }
+      atEl.hidden = false;
+      const tab = (k, label, n) => `<button type="button" class="at-tab${(k === '~all' ? !kf.ws.size : kf.ws.has(k)) ? ' on' : ''}" data-at="${escapeHtml(k)}">${escapeHtml(label)}${n != null ? `<span>${n}</span>` : ''}</button>`;
+      atEl.innerHTML = tab('~all', 'All', all.length) + keys.map(k => tab(k, ws[k].label, ws[k].n)).join('') + (none ? tab('~none', 'No area', none) : '');
+    }
+    { const _af = applyFilter; applyFilter = function () { const r = _af.apply(this, arguments); try { atRender(); } catch (e) {} return r; }; }
+    { const _rT2 = renderTasks; renderTasks = function () {
+        if (!atLoaded && sections.length) { atLoaded = true; try { const v = JSON.parse(localStorage.getItem('koi-area-tabs') || '[]'); const { ws } = kfOptions(); v.forEach(k => { if (ws[k] || k === '~none') kf.ws.add(k); }); if (kf.ws.size) setTimeout(() => { try { kfRenderMenu(); } catch (e) {} applyFilter(); }, 0); } catch (e) {} }
+        const r = _rT2.apply(this, arguments); try { atRender(); } catch (e) {} return r;
+      }; }
+    { const _sw5 = switchMainTab; switchMainTab = function () { const r = _sw5.apply(this, arguments); try { atRender(); } catch (e) {} return r; }; }
+    // ---- sub-task order: a grip on each sub-task in the details panel (drag), or Alt+↑ / Alt+↓ while editing one
+    const ST_GRIP = '<svg viewBox="0 0 10 16" aria-hidden="true"><circle cx="3" cy="4" r="1.2"/><circle cx="7" cy="4" r="1.2"/><circle cx="3" cy="8" r="1.2"/><circle cx="7" cy="8" r="1.2"/><circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/></svg>';
+    function stMove(t, from, to, focus) {
+      if (to < 0 || to >= t.subtasks.length || from === to) return;
+      const [x] = t.subtasks.splice(from, 1); t.subtasks.splice(to, 0, x); markChanged(); renderTasks(); tpRender();
+      if (focus) setTimeout(() => { const el = tpEl && tpEl.querySelector(`[data-tpsub="${to}"]`); if (el) { el.focus(); const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } }, 20);
+    }
+    { const _tpR = tpRender; tpRender = function () {
+        const r = _tpR.apply(this, arguments);
+        try {
+          const f = tpFind(); if (!f || !tpEl) return r; const t = f.task, rows = [...tpEl.querySelectorAll('.tp-subs .tp-sub')]; if (rows.length < 2) return r;
+          let from = null;
+          rows.forEach((row, i) => {
+            const g = document.createElement('span'); g.className = 'st-grip'; g.title = 'Drag to reorder (or Alt+↑ / Alt+↓ while editing)'; g.innerHTML = ST_GRIP; g.draggable = true; row.prepend(g);
+            g.addEventListener('dragstart', e => { from = i; row.classList.add('st-drag'); e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', ''); e.dataTransfer.setDragImage(row, 12, 12); } catch (x) {} });
+            g.addEventListener('dragend', () => { row.classList.remove('st-drag'); rows.forEach(x => x.classList.remove('st-over-a', 'st-over-b')); });
+            row.addEventListener('dragover', e => { if (from == null) return; e.preventDefault(); const b = row.getBoundingClientRect(), after = e.clientY > b.top + b.height / 2; rows.forEach(x => x.classList.remove('st-over-a', 'st-over-b')); row.classList.add(after ? 'st-over-b' : 'st-over-a'); });
+            row.addEventListener('drop', e => { if (from == null) return; e.preventDefault(); const b = row.getBoundingClientRect(), after = e.clientY > b.top + b.height / 2; let to = i + (after ? 1 : 0); if (to > from) to--; const fr = from; from = null; stMove(t, fr, to, false); });
+            const ed = row.querySelector('[data-tpsub]'); if (ed) ed.addEventListener('keydown', e => { if (e.altKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); stMove(t, i, i + (e.key === 'ArrowUp' ? -1 : 1), true); } });
+          });
+        } catch (e) {}
+        return r;
+      }; }
+    // ---- People: add people one after another. Tab moves along the row (Short form → Full name → Arabic full name …),
+    // Enter saves the person and opens a new one with Short form ready; Enter on an empty new row does nothing; Esc removes it.
+    { const _ppR = ppRender; ppRender = function () {
+        const r = _ppR.apply(this, arguments);
+        if (ppEl && !ppEl.__quick) {
+          ppEl.__quick = true;
+          ppEl.addEventListener('keydown', e => {
+            const inp = e.target.closest && e.target.closest('tbody tr[data-i] input'); if (!inp || e.isComposing) return;
+            const tr = inp.closest('tr'), i = +tr.dataset.i, p = koiPeople[i]; if (!p) return;
+            if (e.key === 'Enter') {
+              e.preventDefault(); e.stopImmediatePropagation();
+              if (inp.dataset.k === 'short' && !inp.value.trim()) return;   // nothing to save yet
+              inp.blur();   // saves this field
+              setTimeout(() => {
+                const q = koiPeople[i]; if (!q || !q.short) return;
+                koiPeople.push({ full: '', short: '', ar: '', arShort: '', email: '', role: '', area: '', aka: [] });
+                ppQuery = ''; ppFocus = { i: koiPeople.length - 1, col: 'short' }; ppRender();
+              }, 0);
+            } else if (e.key === 'Escape' && !p.short && !inp.value.trim()) {
+              e.preventDefault(); e.stopImmediatePropagation(); koiPeople.splice(i, 1); ppRender();
+            }
+          }, true);
+        }
+        return r;
+      }; }
+    { const g = GUIDE_ITEMS.find(x => x.id === 'you'); if (g && !/Enter saves/.test(g.d)) g.d += ' Adding several people? Tab moves to the next field; Enter saves the person and starts the next one.'; }
+    { const g = GUIDE_ITEMS.find(x => x.id === 'colset'); if (g && !/colour/.test(g.d)) { g.d += ' The same ⚙ gives any column but Done a colour: 12 to pick from, or Custom for any colour.'; g.kw = (g.kw || '') + ' colour color'; } }
+    { const g = GUIDE_ITEMS.find(x => x.id === 'step'); if (g && !/reorder/i.test(g.d)) { g.d += ' To reorder sub-tasks, drag the grip beside one in the details panel, or press Alt+↑ / Alt+↓ while editing it.'; g.kw = (g.kw || '') + ' reorder order move'; } }
+    if (!GUIDE_ITEMS.some(x => x.id === 'areatabs')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'colset'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'areatabs', g: 'moves', t: 'Area tabs', d: 'The tabs above the board show one area or several: click an area to see only its tasks, click more to add them, All to see everything. Hodo remembers your choice. It’s the same as Filter → Area.', kw: 'area filter tabs workstream' }); }
     applyWaitRail();
   </script>
 </body>
