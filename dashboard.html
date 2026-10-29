@@ -4927,6 +4927,11 @@
     .tp-sub:hover .st-grip { opacity: .8; }
     .tp-sub.st-drag { opacity: .45; }
     .tp-sub.st-over-a { box-shadow: inset 0 2px 0 var(--brand); } .tp-sub.st-over-b { box-shadow: inset 0 -2px 0 var(--brand); }
+    .lk-ext.upd small b { color: var(--brand); }
+    .lk-ext .sp-btn { flex: none; text-decoration: none; }
+    .lk-ext .sp-btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+    [data-theme="dark"] .lk-ext .sp-btn.pri { color: #22242a; }
+    .lk-link { font: inherit; font-size: inherit; color: var(--brand); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -15379,7 +15384,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       '2.2': [
         { k: 'new', t: 'Week · Plan · Day', d: 'A bar at the top of the Today page shows where you are in your day. Started the day and want to change your Three? Click <b>Plan</b>: your Three are already in the slots, finished ones stay kept, and a short hold updates today’s promise. <b>Back to the day</b> leaves it as it was. After you close the day, click <b>Day</b> to open it again.' },
         { k: 'new', t: 'Area tabs', d: 'Your areas now sit as tabs right above the board. Click one to see only its tasks, click more to see several at once, and <b>All</b> to see everything. Hodo remembers your choice.' },
-        { k: 'new', t: 'Column colours', d: 'Give any column a colour from its <b>⚙</b>: 12 to pick from, or <b>Custom</b> for any colour you like. Hodo keeps it soft and readable in both themes. Done keeps its own green.<ul><li>Use Hodo Link? Reinstall the extension from <b>Settings → Hodo Link</b> so Claude reads coloured columns correctly.</li></ul>' },
+        { k: 'new', t: 'Column colours', d: 'Give any column a colour from its <b>⚙</b>: 12 to pick from, or <b>Custom</b> for any colour you like. Hodo keeps it soft and readable in both themes. Done keeps its own green.<ul><li>Use Hodo Link? Update the extension: <b>Settings → Hodo Link → Download update</b>, then install it in Claude. It replaces the old one, so Claude reads coloured columns correctly.</li></ul>' },
         { k: 'new', t: 'Reorder sub-tasks', d: 'In a task’s details, drag a sub-task by its grip to move it, or press <b>Alt+↑ / Alt+↓</b> while editing it.' },
         { k: 'reworked', t: 'Adding people', d: 'On the People page, <b>Tab</b> moves to the next field and <b>Enter</b> saves the person and starts the next one, so you can add a whole team without touching the mouse.' },
         { k: 'reworked', t: 'Choosing a slot for today’s Three', d: 'When all three slots are full, adding a task now asks which slot it replaces, instead of quietly swapping out one of Hodo’s suggestions.' },
@@ -17689,6 +17694,15 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     const LK_RE = /^(tidied )?by Claude\b/i;
     let lk = {};   // what memory/hodo-link.json says
     const lkOn = () => !!lk.seen;
+    // The extension that ships with this Hodo, and the one Claude is running (it writes its version into hodo-link.json,
+    // from 1.2.2 on). Connected or not, the download is always one click away (Oct 29: people couldn't reinstall).
+    const LK_EXT_VERSION = '1.2.2';
+    const lkVerLt = (a, b) => { const x = String(a || '0').split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) < (y[i] || 0); } return false; };
+    const lkOutdated = () => lkOn() && lkVerLt(lk.version, LK_EXT_VERSION);
+    function lkExtRow() {
+      const old = lkOutdated();
+      return `<div class="lk-row lk-ext${old ? ' upd' : ''}"><div>The Hodo extension<small>${old ? `<b>An update is ready: ${LK_EXT_VERSION}.</b> ` : ''}${lk.version ? `Installed: ${escapeHtml(lk.version)}. ` : ''}Download it, then in Claude: Settings → Extensions → Install Extension. It replaces the old one.</small></div><a class="sp-btn${old ? ' pri' : ''}" href="Hodo.mcpb" download="Hodo.mcpb">${old ? 'Download update' : 'Download again'}</a></div>`;
+    }
     const lkAgo = ms => { const m = Math.round((Date.now() - ms) / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
     async function lkRead() {
       try { if (typeof memoryDirHandle === 'undefined' || !memoryDirHandle) return; const mem = await memoryDirHandle.getDirectoryHandle('memory'); const f = await (await mem.getFileHandle('hodo-link.json')).getFile(); lk = JSON.parse(await f.text()) || {}; } catch (e) {}
@@ -17753,7 +17767,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     let lkSec = null;
     function lkPaint() {
       if (!lkSec) return;
-      const pill = lkSec.querySelector('.sp-pill'); pill.textContent = lkOn() ? 'On' : 'Off'; pill.className = 'sp-pill' + (lkOn() ? ' ok' : '');
+      const pill = lkSec.querySelector('.sp-pill'); pill.textContent = lkOutdated() ? 'Update' : lkOn() ? 'On' : 'Off'; pill.className = 'sp-pill' + (lkOutdated() ? ' lk-newpill' : lkOn() ? ' ok' : '');
       const box = lkSec.querySelector('.lk-body');
       if (!lkOn()) {
         box.innerHTML = `<p class="lk-intro">Use Claude? Let it work on your tasks: add them from any chat, tidy your captures, keep things moving. No API key needed.</p>
@@ -17770,7 +17784,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         ${tidy === 'hourly' ? `<div class="lk-ask">Ask Claude once: <b>“Tidy my Hodo captures every hour on workdays.”</b> <button type="button" class="sp-btn" data-lk="copy">Copy</button></div>` : ''}
         <div class="lk-row"><div>Claude can add and change tasks<small>Every change shows here, marked “by Claude”</small></div><button type="button" class="lk-sw${lk.canChange === false ? ' off' : ''}" data-ls="canChange" aria-label="Claude can add and change tasks"></button></div>
         <div class="lk-row"><div>Claude can delete tasks<small>Only into the Waste Yard, where you can restore them for 30 days</small></div><button type="button" class="lk-sw${lk.canDelete === false ? ' off' : ''}" data-ls="canDelete" aria-label="Claude can delete tasks"></button></div>
-        <div class="lk-row last"><div>Disconnect<small>In Claude: Settings → Extensions → Hodo Link → Remove</small></div></div>`;
+        <div class="lk-row last"><div>Disconnect<small>In Claude: Settings → Extensions → Hodo Link → Remove. Removed it already? <button type="button" class="lk-link" data-lk="forget">Show it as disconnected</button></small></div></div>`;
+      box.querySelector('.lk-ok').insertAdjacentHTML('afterend', lkExtRow());
+      const fg = box.querySelector('[data-lk="forget"]'); if (fg) fg.addEventListener('click', async () => { await lkWrite({ seen: 0, last: null }); lkPaint(); });
       box.querySelectorAll('[data-lt]').forEach(b => b.addEventListener('click', async () => { await lkWrite({ tidy: b.dataset.lt }); lkPaint(); }));
       box.querySelectorAll('[data-ls]').forEach(b => b.addEventListener('click', async () => { const k = b.dataset.ls; await lkWrite({ [k]: lk[k] === false }); lkPaint(); }));
       const cp = box.querySelector('[data-lk="copy"]'); if (cp) cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText('Tidy my Hodo captures every hour on workdays.'); cp.textContent = 'Copied'; } catch (e) {} });
