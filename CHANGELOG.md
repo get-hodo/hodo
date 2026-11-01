@@ -1,6 +1,11 @@
 # Hodo: what changed
 
-## Hodo 2.2 · Oct 28, 2026
+## Hodo 2.3 · Nov 01, 2026
+- NEW: Your profile and photo
+- REWORKED: Area tabs, right where you need them
+- REWORKED: Planned day
+
+## Hodo 2.2 · Nov 01, 2026
 - NEW: Week · Plan · Day
 - NEW: Area tabs
 - NEW: Column colours

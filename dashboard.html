@@ -20,6 +20,7 @@
   - Waiting On rail                            "Waiting On: a slim follow-up rail"
   - Details panel                              "Task detail panel"
   - Focus                                      "FOCUS OVERLAY", "focus layout with description"
+  - Your profile and photo (Oct 31)           "Your profile and photo (Oct 31)" (me* names: pf* belongs to Performance)
   - Colours, area tabs, sub-task order, people (Oct 28) "Column colours, area tabs, sub-task order, quick people entry (Oct 28)" (cc*, at*, st*)
   - Today steps bar (Oct 27)                  "Today: Week · Plan · Day, and choosing the slot (Oct 27)" (dsBar / dsGo / dayPlanAgain)
   - Your Hodo Folder (Oct 27)                 "Your Hodo Folder (Oct 27)" (hfPick / hfOpen / hfWhere)
@@ -4916,6 +4917,17 @@
     .cc-cust input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
     .cc-cust svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(0 0 1px rgba(0,0,0,.6)); pointer-events: none; }
     .area-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: -2px 0 14px; }
+    .area-tabs.in-bar { order: 50; flex: 1 1 0; min-width: 0; margin: 0; flex-wrap: nowrap; position: relative; align-items: center; gap: 0; }
+    #pageBar .pb-sp { order: 60; flex: 0 0 0; }
+    .at-scroll { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; padding: 2px 1px; }
+    .at-scroll::-webkit-scrollbar { display: none; }
+    .at-scroll .at-tab { flex: none; white-space: nowrap; }
+    .area-tabs.fl .at-scroll { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36px); mask-image: linear-gradient(90deg, transparent 0, #000 36px); }
+    .area-tabs.fr .at-scroll { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent 100%); mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent 100%); }
+    .area-tabs.fl.fr .at-scroll { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36px, #000 calc(100% - 36px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 36px, #000 calc(100% - 36px), transparent 100%); }
+    .at-arr { display: none; flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font: inherit; font-size: 16px; line-height: 1; cursor: pointer; padding: 0 0 2px; }
+    .at-arr:hover { color: var(--text-primary); border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+    .area-tabs.fl .at-arr.l { display: block; margin-right: 4px; } .area-tabs.fr .at-arr.r { display: block; margin-left: 4px; }
     .area-tabs[hidden] { display: none; }
     .at-tab { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-card); font: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
     .at-tab span { font-size: 11.5px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
@@ -4932,6 +4944,39 @@
     .lk-ext .sp-btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
     [data-theme="dark"] .lk-ext .sp-btn.pri { color: #22242a; }
     .lk-link { font: inherit; font-size: inherit; color: var(--brand); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+    .me-av { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; background: color-mix(in srgb, var(--brand) 18%, var(--bg-card)); color: var(--brand); font-size: 11.5px; font-weight: 700; letter-spacing: .02em; }
+    .me-av svg { width: 60%; height: 60%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+    .me-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .me-av.sm { width: 22px; height: 22px; font-size: 9.5px; }
+    .me-av.hd { width: 30px; height: 30px; font-size: 12px; }
+    .me-av.lg { width: 56px; height: 56px; font-size: 19px; }
+    .me-av.xl { width: 72px; height: 72px; font-size: 24px; }
+    .me-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); display: grid; place-items: center; cursor: pointer; padding: 0; }
+    .me-btn:hover { border-color: color-mix(in srgb, var(--brand) 45%, var(--border)); }
+    .mp-row { display: flex; align-items: center; gap: 16px; padding: 14px 0 16px; }
+    .mp-row.drop { outline: 2px dashed var(--brand); outline-offset: 4px; border-radius: 12px; }
+    .mp-row-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .mp-row-t b { font-size: 15px; color: var(--text-primary); }
+    .mp-row-t > span { font-size: 12.5px; color: var(--text-secondary); }
+    .mp-row-t small { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+    .mp-row-a { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .me-link { font: inherit; font-size: 12.5px; color: var(--text-muted); background: none; border: 0; padding: 0; cursor: pointer; } .me-link:hover { color: var(--danger); }
+    #dayPanel .ln-date .me-av { margin-right: 2px; }
+    .pp tr.me-me td:first-child { display: flex; align-items: center; gap: 6px; }
+    .hw-photo { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; font-size: 13px; color: var(--text-muted); }
+    .me-crop-ov { position: fixed; inset: 0; z-index: 5200; display: grid; place-items: center; background: rgba(20, 20, 19, .45); }
+    .me-crop { width: 320px; max-width: calc(100vw - 32px); box-sizing: border-box; padding: 20px 24px 18px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 24px 60px rgba(0,0,0,.3); }
+    .me-crop-h { font-size: 15px; font-weight: 650; color: var(--text-primary); margin-bottom: 14px; }
+    .me-stage { position: relative; width: 240px; height: 240px; margin: 0 auto; overflow: hidden; border-radius: 16px; background: var(--bg-secondary); cursor: grab; touch-action: none; }
+    .me-stage.grab { cursor: grabbing; }
+    .me-stage img { position: absolute; left: 0; top: 0; max-width: none; pointer-events: none; user-select: none; }
+    .me-ring { position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 999px rgba(20, 20, 19, .5); outline: 2px solid rgba(255,255,255,.85); outline-offset: -2px; pointer-events: none; }
+    .me-zoom { display: flex; align-items: center; gap: 10px; margin: 16px 6px 0; } .me-zoom input { flex: 1; accent-color: var(--brand); }
+    .me-zoom svg { width: 16px; height: 16px; fill: none; stroke: var(--text-muted); stroke-width: 1.5; }
+    .me-crop-hint { margin-top: 6px; text-align: center; font-size: 12px; color: var(--text-muted); }
+    .me-crop-f { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+    .me-cbtn { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; }
+    .me-cbtn.pri { background: var(--brand); border-color: var(--brand); color: #fff; } [data-theme="dark"] .me-cbtn.pri { color: #22242a; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -5528,7 +5573,7 @@
         else if (diff === 1) { rel = 'Tomorrow'; cls = 'soon'; }
         else if (diff <= 7) { rel = `in ${diff} days`; }
       }
-      return `<span class="capsule date-pill ${cls}" data-field="date" title="${cls === 'clash' ? 'Planned after its deadline' : cls === 'carried' ? 'Planned for an earlier day, still open' : 'The day you’ll do it'} · click to change">${cal}${escapeHtml(label)}${rel ? `<b>${rel}</b>` : ''}</span>`;
+      return `<span class="capsule date-pill ${cls}" data-field="date" title="${cls === 'clash' ? 'Planned after its deadline' : cls === 'carried' ? 'Planned for an earlier day, still open' : 'Planned day'} · click to change">${cal}${escapeHtml(label)}${rel ? `<b>${rel}</b>` : ''}</span>`;
     }
     function capsulesHtml(info, taskDone) {
       let h = '';
@@ -5562,7 +5607,7 @@
           else if (!taskDone && diff === 1) txt = 'Tomorrow';
           else txt = short;
         }
-        P.push(`<span class="mm-i mm-date${cls}" data-field="date" title="The day you’ll do it · click to change">${escapeHtml(txt)}</span>`);
+        P.push(`<span class="mm-i mm-date${cls}" data-field="date" title="Planned day · click to change">${escapeHtml(txt)}</span>`);
       }
       if (info.deadline) {
         const ld = kDiff(info.deadline), txt = kDlText(info.deadline, taskDone);
@@ -7293,7 +7338,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.2';
+    const KOI_VERSION = '2.3';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -8618,7 +8663,7 @@
         if (mutedNow || Date.now() < koiCelebMuteUntil) { koiCelebMuteUntil = 0; return; }   // parking / resuming / deleting moved a task; nothing was finished
         let milestone = null, pageLevel = false;
         if (after.overall && !before.overall) { milestone = 'Every task is done. Beautiful work.'; pageLevel = true; }
-        else if (after.today && !before.today) milestone = 'Everything due today is done.';
+        else if (after.today && !before.today) milestone = 'Everything planned for today is done.';
         else Object.keys(after.ws).forEach(k => { if (!milestone && after.ws[k].full && before.ws[k] && !before.ws[k].full) milestone = `${after.ws[k].name} is complete.`; });
         try {
           if (pageLevel) { if (taskDone) koiSound.play('task'); koiSound.play('all', taskDone ? 1.7 : 0); }
@@ -11977,7 +12022,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       markChanged(); renderTasks();
     }
     // the Captured panel closes when you click anywhere outside it, like every other panel
-    setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .pc-ov'; }); } catch (e) {} }, 0);
+    setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .pc-ov, .me-crop-ov'; }); } catch (e) {} }, 0);
     setTimeout(() => { try { KOI_FLOATS.push({ open: () => koiTrayEl, inside: '.tray, .cq-menu, .field-pop, .fp, .fx-toast, .qc-overlay, .td-capq, [data-td="review"], #trayBtn', close: () => closeTray() }); } catch (e) {} }, 0);
     // switching places refreshes Parked's counts (kept from the Rundown's tab switch, removed Oct 24)
     { const _smR = switchMainTab; switchMainTab = function (tab) { const r = _smR.apply(this, arguments); try { if (typeof deepRefresh === 'function') deepRefresh(); } catch (e) {} return r; }; }
@@ -13101,7 +13146,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
     window.addEventListener('mousedown', e => {
       koiAwayClick = null;
       if (e.button !== 0 || !e.target || !e.target.closest) return;
-      if (e.target.closest('.fx-toast, .qc-overlay, .kd-ov, .kg-ov')) return;   // toasts, the capture bar and Hodo's questions never count as "away"
+      if (e.target.closest('.fx-toast, .qc-overlay, .kd-ov, .kg-ov, .me-crop-ov')) return;   // toasts, the capture bar and Hodo's questions never count as "away"
       const hit = KOI_FLOATS.filter(f => { try { return f.open() && !e.target.closest(f.inside); } catch (x) { return false; } });
       if (hit.length) koiAwayClick = hit;
     }, true);
@@ -13249,7 +13294,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       }
       selBarEl.innerHTML = `<span class="sb-n">${n ? `<b>${n}</b> selected` : 'Select tasks'}</span>
         <span class="sb-sep"></span>
-        <button class="sb-b" data-sb="day"${dis}>${SB_IC.day}Day${SB_IC.chev}</button>
+        <button class="sb-b" data-sb="day"${dis}>${SB_IC.day}Planned day${SB_IC.chev}</button>
         <button class="sb-b" data-sb="deadline"${dis}>${KOI_FLAG}Deadline${SB_IC.chev}</button>
         <button class="sb-b" data-sb="prio"${dis}>Priority${SB_IC.chev}</button>
         <button class="sb-b" data-sb="ws"${dis}>Area${SB_IC.chev}</button>
@@ -13282,7 +13327,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         <button class="sp-clear" data-q="clear">${kind === 'day' ? 'Remove the day' : 'Remove the deadline'}</button>`, p => {
         const apply = d => { selClosePop(); const snap = selSnap();
           const n = selEach(info => { if (kind === 'day') { if (d) { info.date = { kind: 'due', date: d }; if (tdIsToday(info.pick) && ymd(d) !== ymd(t0)) info.pick = null; } else if (info.date && info.date.kind === 'due') info.date = null; } else info.deadline = d; });
-          selDone(kind === 'day' ? (d ? `${n} planned for ${fmtDue(d)}` : `Day removed from ${n}`) : (d ? `Deadline ${fmtDue(d)} for ${n}` : `Deadline removed from ${n}`), snap, false); };
+          selDone(kind === 'day' ? (d ? `${n} planned for ${fmtDue(d)}` : `Planned day removed from ${n}`) : (d ? `Deadline ${fmtDue(d)} for ${n}` : `Deadline removed from ${n}`), snap, false); };
         p.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => apply(b.dataset.q === 'clear' ? null : q[+b.dataset.q][1])));
         const inp = p.querySelector('input'); inp.addEventListener('change', () => { const dt = koiDateFromInput(inp.value); if (dt) apply(dt); });
       });
@@ -14708,7 +14753,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'letgo', g: 'concepts', t: 'Let go', d: 'Parked items you’ve released. They’re still there if you change your mind.', kw: 'parked released restore' },
       { id: 'yard', g: 'concepts', t: 'Waste Yard', d: 'Deleted tasks wait here for 30 days before they’re erased, so a delete is never final straight away.', kw: 'deleted trash bin restore' },
       { id: 'rail', g: 'concepts', t: 'Waiting On rail', d: 'Who you’re waiting on, for how long, and when to nudge them.', kw: 'waiting blocked follow up nudge' },
-      { id: 'dates', g: 'concepts', t: 'Day and deadline', d: 'A task has the day you plan to do it, and an optional hard deadline (⚑). Only a passed deadline is late.', kw: 'due date deadline flag overdue late' },
+      { id: 'dates', g: 'concepts', t: 'Planned day and deadline', d: 'A task has a planned day, the day you plan to work on it (yours to move), and an optional hard deadline (⚑), when it must be done. Only a passed deadline is late.', kw: 'planned day due date deadline flag overdue late' },
       { id: 'carry', g: 'concepts', t: 'Carry over', d: 'When a planned day passes, the date turns amber (“from Tue”) instead of red. It isn’t late, it just carried over.', kw: 'amber overdue yesterday' },
       { id: 'areas', g: 'concepts', t: 'Areas', d: 'One coloured area per task, with its own progress in the header.', kw: 'workstream colour category tag' },
       { id: 'people', g: 'concepts', t: 'For, With and Waiting on', d: 'One person per task, with a role: you do it for them, with them, or you’re waiting on them.', kw: 'person who assign owner' },
@@ -14725,7 +14770,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'status', g: 'moves', t: 'Change status', d: 'Hover the top strip of a card and click a status icon. The card flies to that column.', kw: 'move column strip' },
       { id: 'drag', g: 'moves', t: 'Drag between columns', d: 'Drag a card to another column, or up and down to reorder.', kw: 'move reorder' },
       { id: 'step', g: 'moves', t: 'Tick a step', d: 'Click a step to tick it. Double-click to edit its text.', kw: 'subtask checklist' },
-      { id: 'setdate', g: 'moves', t: 'Set the day or deadline', d: 'Click the date pill or the ⚑ flag, on the card or in details.', kw: 'due date deadline calendar' },
+      { id: 'setdate', g: 'moves', t: 'Set the planned day or deadline', d: 'Click the date pill or the ⚑ flag, on the card or in details.', kw: 'planned day due date deadline calendar' },
       { id: 'nottoday', g: 'moves', t: 'Not today', d: 'Move a task off today: Tomorrow, Next week, Pick a date, or Park it.', kw: 'postpone snooze later reschedule' },
       { id: 'park', g: 'moves', t: 'Park a card', d: 'Click the P icon on the card’s strip, or drag the card onto the Parked button.', kw: 'later backlog' },
       { id: 'adddetails', g: 'moves', t: 'Add a task with details', d: 'In a column’s add box, press Tab instead of Enter: the task is added and its details open, ready for steps. Enter on an empty step (or Ctrl+Enter) moves on to the next new task.', keys: ['Tab', 'Ctrl+Enter'], kw: 'new create steps subtasks priority area quick' },
@@ -15381,6 +15426,11 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.3': [
+        { k: 'new', t: 'Your profile and photo', d: 'Hodo now knows it’s yours. Add a photo from <b>Your profile</b>: click your initials at the top right, or drop a picture on it, then crop it in the circle. It shows at the top of Hodo, beside the date on Today, and on your row in People. It’s kept in your Hodo Folder and never uploaded.' },
+        { k: 'reworked', t: 'Area tabs, right where you need them', d: 'The area tabs moved up next to Board · List · Calendar, so your board gets more room, and they’re now in the List and Calendar too. Lots of areas? The row scrolls sideways.' },
+        { k: 'reworked', t: 'Planned day', d: 'The day you plan to work on a task is now called the <b>Planned day</b>, so it’s never confused with a deadline. Your plan can move; a deadline is when it must be done.' }
+      ],
       '2.2': [
         { k: 'new', t: 'Week · Plan · Day', d: 'A bar at the top of the Today page shows where you are in your day. Started the day and want to change your Three? Click <b>Plan</b>: your Three are already in the slots, finished ones stay kept, and a short hold updates today’s promise. <b>Back to the day</b> leaves it as it was. After you close the day, click <b>Day</b> to open it again.' },
         { k: 'new', t: 'Area tabs', d: 'Your areas now sit as tabs right above the board. Click one to see only its tasks, click more to see several at once, and <b>All</b> to see everything. Hodo remembers your choice.' },
@@ -15981,7 +16031,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       cols: '<svg viewBox="0 0 16 16"><rect x="2" y="2.6" width="12" height="10.8" rx="1.6"/><path d="M6 2.6v10.8M10 2.6v10.8M2 6.2h12"/></svg>',
       chev: '<svg class="cp-chev" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5"/></svg>'
     };
-    const CP_FIELDS = ['Title', 'Status', 'Priority', 'Area', 'Who', 'Due', 'Deadline', 'Progress', 'Description', 'Sub-tasks'];
+    const CP_FIELDS = ['Title', 'Status', 'Priority', 'Area', 'Who', 'Planned day', 'Deadline', 'Progress', 'Description', 'Sub-tasks'];
     let cpHeaders = false; try { cpHeaders = localStorage.getItem('koi-copy-headers') === '1'; } catch (e) {}
     function cpList(ids) {
       const want = new Set(ids.map(String)), out = [];
@@ -16008,7 +16058,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     function cpExcel(list, dir, headers) {
       const ds = list.map(cpData);
       const cell = (d, f) => f === 'Title' ? d.title : f === 'Status' ? d.status : f === 'Priority' ? d.priority : f === 'Area' ? d.area : f === 'Who' ? d.who
-        : f === 'Due' ? cpIso(d.due) : f === 'Deadline' ? cpIso(d.deadline) : f === 'Progress' ? d.progress : f === 'Description' ? d.desc
+        : f === 'Planned day' ? cpIso(d.due) : f === 'Deadline' ? cpIso(d.deadline) : f === 'Progress' ? d.progress : f === 'Description' ? d.desc
         : d.subs.map(s => '- ' + (s.checked ? '✓ ' : '') + s.text.trim()).join('\n');   // Oct 20: each sub-task starts with "- "
       let grid = dir === 'rows' ? ds.map(d => CP_FIELDS.map(f => cell(d, f))) : CP_FIELDS.map(f => ds.map(d => cell(d, f)));
       if (headers) grid = dir === 'rows' ? [CP_FIELDS.slice(), ...grid] : grid.map((r, i) => [CP_FIELDS[i], ...r]);
@@ -16017,7 +16067,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const isHead = (i, j) => headers && (dir === 'rows' ? i === 0 : j === 0);
       const html = '<meta charset="utf-8"><table>' + grid.map((r, i) => '<tr>' + r.map((v, j) => {
         const h = isHead(i, j), tag = h ? 'th' : 'td';
-        const txt = !h && !/^(Due|Deadline|Progress)$/.test(dir === 'rows' ? CP_FIELDS[j] : CP_FIELDS[i]);   // text cells stay text (a leading "- " is not a formula)
+        const txt = !h && !/^(Planned day|Deadline|Progress)$/.test(dir === 'rows' ? CP_FIELDS[j] : CP_FIELDS[i]);   // text cells stay text (a leading "- " is not a formula)
         return `<${tag} style="vertical-align:top;text-align:left${h ? ';font-weight:bold' : ''}${txt ? ";mso-number-format:'\\@'" : ''}">${cpEsc(v).replace(/\n/g, '<br style="mso-data-placement:same-cell">')}</${tag}>`;
       }).join('') + '</tr>').join('') + '</table>';
       return { text, html };
@@ -16040,8 +16090,8 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         const m = [];
         if (d.priority) m.push(['Priority', d.priority, CP_PRIO_C[d.priority]]);
         m.push(['Status', d.status, CP_ST_C[d.stKey]]);
-        if (d.due) m.push([d.dueKind === 'done' ? 'Completed' : 'Due', cpNice(d.due)]);
-        else if (d.dueKind === 'none') m.push(['Due', 'No date']);
+        if (d.due) m.push([d.dueKind === 'done' ? 'Completed' : 'Planned day', cpNice(d.due)]);
+        else if (d.dueKind === 'none') m.push(['Planned day', 'No date']);
         if (d.deadline) m.push(['Deadline', cpNice(d.deadline), late(d) ? '#e06666' : '']);
         if (d.who) { const mm = /^(Waiting on|With|For) (.+)$/.exec(d.who); if (mm) m.push([mm[1], mm[2]]); }
         if (d.area) m.push(['Area', d.area]);
@@ -18271,18 +18321,32 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // ---- area tabs above the board: the Filter's Area choice, one click away; several at once; remembered in this browser
     let atEl = null, atLoaded = false;
     function atSave() { try { localStorage.setItem('koi-area-tabs', JSON.stringify([...kf.ws])); } catch (e) {} }
+    // Oct 31: the tabs sit in the page bar, right after Board · List · Calendar, using the empty space there, so the
+    // board moves up. They show in every view. Too many to fit: the row scrolls sideways (wheel, drag or the ‹ › arrows),
+    // with soft fades at the edges, and the tab you click scrolls into view.
+    function atEdges() { if (!atEl) return; const sc = atEl.querySelector('.at-scroll'); if (!sc) return; const l = sc.scrollLeft > 2, r = sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 2; atEl.classList.toggle('fl', l); atEl.classList.toggle('fr', r); }
     function atRender() {
-      if (!atEl) { atEl = document.createElement('div'); atEl.className = 'area-tabs'; atEl.id = 'areaTabs'; const bn = document.getElementById('kfBanner'); if (!bn) return; bn.before(atEl);
-        atEl.addEventListener('click', e => { const b = e.target.closest('[data-at]'); if (!b) return; const k = b.dataset.at;
+      if (!atEl) {
+        const bar = document.getElementById('pageBar'); if (!bar) return;
+        atEl = document.createElement('div'); atEl.className = 'area-tabs in-bar'; atEl.id = 'areaTabs'; bar.appendChild(atEl);
+        atEl.addEventListener('click', e => {
+          const ar = e.target.closest('[data-atgo]'); if (ar) { const sc = atEl.querySelector('.at-scroll'); sc.scrollBy({ left: (+ar.dataset.atgo) * sc.clientWidth * 0.7, behavior: 'smooth' }); return; }
+          const b = e.target.closest('[data-at]'); if (!b) return; const k = b.dataset.at;
           if (k === '~all') kf.ws.clear(); else if (kf.ws.has(k)) kf.ws.delete(k); else kf.ws.add(k);
-          atSave(); try { kfRenderMenu(); } catch (x) {} applyFilter(); }); }
+          atSave(); try { kfRenderMenu(); } catch (x) {} const sl = atEl.querySelector('.at-scroll').scrollLeft; applyFilter(); const sc = atEl.querySelector('.at-scroll'); if (sc) sc.scrollLeft = sl;
+          const nb = atEl.querySelector(`[data-at="${CSS.escape(k)}"]`); if (nb) nb.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' }); });
+        atEl.addEventListener('wheel', e => { const sc = atEl.querySelector('.at-scroll'); if (!sc || sc.scrollWidth <= sc.clientWidth || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; e.preventDefault(); sc.scrollLeft += e.deltaY; }, { passive: false });
+        window.addEventListener('resize', atEdges);
+      }
       if (!sections.length || activeMainTab !== 'tasks') { atEl.hidden = true; return; }
       const { ws, all } = kfOptions(), keys = Object.keys(ws).sort((a, b) => ws[b].n - ws[a].n || a.localeCompare(b));
       const none = all.filter(({ task }) => !splitNoteCapsules(task.note || '').workstreams.length).length;
       if (!keys.length) { atEl.hidden = true; return; }
       atEl.hidden = false;
+      const prev = atEl.querySelector('.at-scroll'), keep = prev ? prev.scrollLeft : 0;
       const tab = (k, label, n) => `<button type="button" class="at-tab${(k === '~all' ? !kf.ws.size : kf.ws.has(k)) ? ' on' : ''}" data-at="${escapeHtml(k)}">${escapeHtml(label)}${n != null ? `<span>${n}</span>` : ''}</button>`;
-      atEl.innerHTML = tab('~all', 'All', all.length) + keys.map(k => tab(k, ws[k].label, ws[k].n)).join('') + (none ? tab('~none', 'No area', none) : '');
+      atEl.innerHTML = `<button type="button" class="at-arr l" data-atgo="-1" aria-label="More areas to the left">‹</button><div class="at-scroll">` + tab('~all', 'All', all.length) + keys.map(k => tab(k, ws[k].label, ws[k].n)).join('') + (none ? tab('~none', 'No area', none) : '') + `</div><button type="button" class="at-arr r" data-atgo="1" aria-label="More areas to the right">›</button>`;
+      const sc = atEl.querySelector('.at-scroll'); sc.scrollLeft = keep; sc.addEventListener('scroll', atEdges, { passive: true }); requestAnimationFrame(atEdges);
     }
     { const _af = applyFilter; applyFilter = function () { const r = _af.apply(this, arguments); try { atRender(); } catch (e) {} return r; }; }
     { const _rT2 = renderTasks; renderTasks = function () {
@@ -18342,6 +18406,107 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     { const g = GUIDE_ITEMS.find(x => x.id === 'colset'); if (g && !/colour/.test(g.d)) { g.d += ' The same ⚙ gives any column but Done a colour: 12 to pick from, or Custom for any colour.'; g.kw = (g.kw || '') + ' colour color'; } }
     { const g = GUIDE_ITEMS.find(x => x.id === 'step'); if (g && !/reorder/i.test(g.d)) { g.d += ' To reorder sub-tasks, drag the grip beside one in the details panel, or press Alt+↑ / Alt+↓ while editing it.'; g.kw = (g.kw || '') + ' reorder order move'; } }
     if (!GUIDE_ITEMS.some(x => x.id === 'areatabs')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'colset'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'areatabs', g: 'moves', t: 'Area tabs', d: 'The tabs above the board show one area or several: click an area to see only its tasks, click more to add them, All to see everything. Hodo remembers your choice. It’s the same as Filter → Area.', kw: 'area filter tabs workstream' }); }
+    // ===== Your profile and photo (Oct 31) =====
+    // Settings → You becomes "Your profile", with a photo on top: choose or drop an image, crop it in a circle (drag to
+    // place, slide to zoom), Save. Kept as memory/profile-photo.jpg in your Hodo Folder (and cached in this browser), never
+    // uploaded. No photo: your initials in a coloured circle. Shown in the header (opens your profile), beside the date on
+    // the Today page, on your own row in People, and offered (optional) in the welcome's About you.
+    let mePhoto = ''; try { mePhoto = localStorage.getItem('koi-photo') || ''; } catch (e) {}
+    const meInitials = () => { const n = (koiMe().name || koiMe().short || '').trim().split(/\s+/).filter(Boolean); return n.length ? (n[0][0] + (n.length > 1 ? n[n.length - 1][0] : '')).toUpperCase() : ''; };
+    const ME_USER = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 19.5c1.2-3.6 4-5.2 7-5.2s5.8 1.6 7 5.2"/></svg>';
+    function meAvatar(cls) { return mePhoto ? `<span class="me-av ${cls || ''} img"><img src="${mePhoto}" alt=""></span>` : `<span class="me-av ${cls || ''}">${escapeHtml(meInitials()) || ME_USER}</span>`; }
+    async function meDir() { if (typeof memoryDirHandle === 'undefined' || !memoryDirHandle) return null; try { return await memoryDirHandle.getDirectoryHandle('memory', { create: true }); } catch (e) { return null; } }
+    function meRefresh() {
+      try { localStorage.setItem('koi-photo', mePhoto); if (!mePhoto) localStorage.removeItem('koi-photo'); } catch (e) {}
+      document.querySelectorAll('[data-me-av]').forEach(el => { el.innerHTML = meAvatar(el.dataset.meAv); });
+      mePaintSettings(); meHeader();
+      try { if (activeMainTab === 'day') dayRender(); } catch (e) {}
+      try { if (ppEl) ppRender(); } catch (e) {}
+    }
+    async function meSet(url) {
+      mePhoto = url || ''; meRefresh();
+      const dir = await meDir();
+      try {
+        if (!dir) { showStatus(mePhoto ? 'Photo saved in this browser. Open your Hodo Folder to keep it with your files.' : 'Photo removed'); return; }
+        if (mePhoto) { const blob = await (await fetch(mePhoto)).blob(); const w = await (await dir.getFileHandle('profile-photo.jpg', { create: true })).createWritable(); await w.write(blob); await w.close(); showStatus('Photo saved in your Hodo Folder'); }
+        else { try { await dir.removeEntry('profile-photo.jpg'); } catch (e) {} showStatus('Photo removed'); }
+      } catch (e) { showStatus('Couldn’t save the photo: ' + e.message); }
+    }
+    async function meLoad() {
+      const dir = await meDir(); if (!dir) return;
+      try { const f = await (await dir.getFileHandle('profile-photo.jpg')).getFile(); const url = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); }); if (url !== mePhoto) { mePhoto = url; meRefresh(); } } catch (e) {}
+    }
+    { const _lmh = loadMemoryHandle; loadMemoryHandle = async function () { const r = await _lmh.apply(this, arguments); try { await meLoad(); } catch (e) {} return r; }; }
+    // ---- the crop window: a circle, drag to place, slide to zoom ----
+    function meCrop(src) {
+      const img = new Image(); img.onload = () => {
+        const S = 240, ov = document.createElement('div'); ov.className = 'me-crop-ov';
+        ov.innerHTML = `<div class="me-crop" role="dialog" aria-label="Your photo"><div class="me-crop-h">Your photo</div>
+          <div class="me-stage"><img alt="" draggable="false"><span class="me-ring"></span></div>
+          <div class="me-zoom"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg><input type="range" min="1" max="4" step="0.01" value="1" aria-label="Zoom"></div>
+          <div class="me-crop-hint">Drag to place it. Slide to zoom.</div>
+          <div class="me-crop-f"><button type="button" class="me-cbtn" data-pc="cancel">Cancel</button><button type="button" class="me-cbtn pri" data-pc="save">Save photo</button></div></div>`;
+        document.body.appendChild(ov);
+        const el = ov.querySelector('.me-stage img'), zoom = ov.querySelector('input'), base = Math.max(S / img.width, S / img.height);
+        let z = 1, x = 0, y = 0; el.src = src;
+        const clamp = () => { const w = img.width * base * z, h = img.height * base * z; x = Math.min(0, Math.max(S - w, x)); y = Math.min(0, Math.max(S - h, y)); };
+        const paint = () => { clamp(); el.style.width = img.width * base * z + 'px'; el.style.height = img.height * base * z + 'px'; el.style.transform = `translate(${x}px, ${y}px)`; };
+        x = (S - img.width * base) / 2; y = (S - img.height * base) / 2; paint();
+        zoom.addEventListener('input', () => { const c = S / 2, k = +zoom.value / z; x = c - (c - x) * k; y = c - (c - y) * k; z = +zoom.value; paint(); });
+        const st = ov.querySelector('.me-stage'); let drag = null;
+        st.addEventListener('pointerdown', e => { drag = { x: e.clientX - x, y: e.clientY - y }; st.setPointerCapture(e.pointerId); st.classList.add('grab'); });
+        st.addEventListener('pointermove', e => { if (!drag) return; x = e.clientX - drag.x; y = e.clientY - drag.y; paint(); });
+        st.addEventListener('pointerup', () => { drag = null; st.classList.remove('grab'); });
+        st.addEventListener('wheel', e => { e.preventDefault(); zoom.value = Math.min(4, Math.max(1, z * (e.deltaY < 0 ? 1.06 : 1 / 1.06))); zoom.dispatchEvent(new Event('input')); }, { passive: false });
+        const close = () => { ov.remove(); document.removeEventListener('keydown', key, true); };
+        const key = e => { if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); close(); } };
+        document.addEventListener('keydown', key, true);
+        ov.addEventListener('click', e => { if (e.target === ov) close(); });
+        ov.querySelector('[data-pc="cancel"]').addEventListener('click', close);
+        ov.querySelector('[data-pc="save"]').addEventListener('click', () => {
+          const c = document.createElement('canvas'); c.width = c.height = 320; const g = c.getContext('2d'), k = 320 / S;
+          g.fillStyle = '#fff'; g.fillRect(0, 0, 320, 320); g.drawImage(img, x * k, y * k, img.width * base * z * k, img.height * base * z * k);
+          close(); meSet(c.toDataURL('image/jpeg', 0.86));
+        });
+      };
+      img.src = src;
+    }
+    function mePick(file) {
+      if (file) { if (!/^image\//.test(file.type)) { showStatus('That isn’t a picture'); return; } const fr = new FileReader(); fr.onload = () => meCrop(fr.result); fr.readAsDataURL(file); return; }
+      const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.onchange = () => { if (inp.files[0]) mePick(inp.files[0]); }; inp.click();
+    }
+    // ---- Settings → Your profile ----
+    function mePaintSettings() {
+      const sec = document.getElementById('spProfile'); if (!sec) return;
+      const h = sec.querySelector('.sp-gh'); if (h && h.textContent !== 'Your profile') h.textContent = 'Your profile';
+      let row = sec.querySelector('.mp-row'); if (!row) { row = document.createElement('div'); row.className = 'sp-row mp-row'; h.after(row); }
+      row.innerHTML = `${meAvatar('xl')}<div class="mp-row-t"><b>${escapeHtml(koiMe().name || 'Your name')}</b><span>${escapeHtml([koiMe().role, koiMe().company].filter(Boolean).join(' · ') || 'Add a photo so Hodo feels like yours.')}</span>
+        <div class="mp-row-a"><button type="button" class="sp-btn" data-me="pick">${mePhoto ? 'Change photo' : 'Add a photo'}</button>${mePhoto ? '<button type="button" class="sp-btn quiet" data-me="adj">Adjust</button><button type="button" class="me-link" data-me="del">Remove</button>' : ''}</div>
+        <small>Kept in your Hodo Folder. Never uploaded. You can also drop a picture here.</small></div>`;
+      row.querySelector('[data-me="pick"]').onclick = () => mePick();
+      const a = row.querySelector('[data-me="adj"]'); if (a) a.onclick = () => meCrop(mePhoto);
+      const d = row.querySelector('[data-me="del"]'); if (d) d.onclick = () => meSet('');
+      if (!row.__drop) { row.__drop = true; row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('drop'); }); row.addEventListener('dragleave', () => row.classList.remove('drop')); row.addEventListener('drop', e => { e.preventDefault(); row.classList.remove('drop'); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) mePick(f); }); }
+      const hint = [...sec.querySelectorAll('.sp-hint')].find(x => /Hodo AI reads this/.test(x.textContent)); if (hint) hint.textContent = 'Your team, your clients, words you use. Helps Hodo (and Claude, with Hodo Link) understand your work.';
+    }
+    function meOpen() { setTimeout(() => { const sp = document.getElementById('settingsPanel'), b = document.getElementById('settingsBtn'); if (sp && sp.hidden) b.click(); setTimeout(() => { const n = document.querySelector('#spNav [data-go="you"]'); if (n) n.click(); mePaintSettings(); }, 40); }, 0); }   // deferred: the outside-click rule would close it again
+    // ---- the header ----
+    function meHeader() {
+      let b = document.getElementById('meBtn');
+      const sw = document.querySelector('header .buttons .settings-wrap'); if (!sw) return;
+      if (!b) { b = document.createElement('button'); b.id = 'meBtn'; b.type = 'button'; b.className = 'me-btn'; b.title = 'Your profile'; b.setAttribute('aria-label', 'Your profile'); sw.before(b); b.addEventListener('click', e => { e.stopPropagation(); meOpen(); }); }
+      b.innerHTML = meAvatar('hd');
+    }
+    setTimeout(meHeader, 0);
+    document.getElementById('settingsBtn').addEventListener('click', () => setTimeout(mePaintSettings, 0));
+    document.addEventListener('change', e => { if (e.target.closest && e.target.closest('#spProfile [data-pf-k]')) setTimeout(() => { mePaintSettings(); meHeader(); }, 50); });
+    // ---- Today: beside the date ----
+    { const _rP = dayRender; dayRender = function () { const r = _rP.apply(this, arguments); try { const d = dayPanel.querySelector('.ln-date'); if (d && !d.querySelector('.me-av')) d.insertAdjacentHTML('afterbegin', meAvatar('sm')); } catch (e) {} return r; }; }
+    // ---- People: your own row ----
+    { const _ppP = ppRender; ppRender = function () { const r = _ppP.apply(this, arguments); try { if (ppEl) ppEl.querySelectorAll('tbody tr[data-i]').forEach(tr => { const p = koiPeople[+tr.dataset.i]; if (p && ppSelf(p) && !tr.querySelector('.me-av')) { const c = tr.querySelector('td'); if (c) c.insertAdjacentHTML('afterbegin', meAvatar('sm')); tr.classList.add('me-me'); } }); } catch (e) {} return r; }; }
+    // ---- the welcome's About you: optional ----
+    { const _ha = hwAbout; hwAbout = function () { const r = _ha.apply(this, arguments); try { const l = hwEl.querySelector('.hw-l'); if (l && !hwEl.querySelector('.hw-photo')) { l.insertAdjacentHTML('beforebegin', `<div class="hw-photo"><span data-me-av="lg">${meAvatar('lg')}</span><button type="button" class="hw-link" data-hw="photo">${mePhoto ? 'Change your photo' : 'Add a photo'}</button><span>Optional</span></div>`); hwEl.querySelector('[data-hw="photo"]').addEventListener('click', () => mePick()); } } catch (e) {} return r; }; }
+    if (!GUIDE_ITEMS.some(x => x.id === 'profile')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'you'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'profile', g: 'capture', t: 'Your profile and photo', d: 'Click your picture (or initials) at the top right to open your profile: your name, work, work week and photo. Add a photo there or drop one on it; crop it in the circle. It’s kept in your Hodo Folder and never uploaded.', kw: 'photo picture avatar profile me name' }); }
     applyWaitRail();
   </script>
 </body>
