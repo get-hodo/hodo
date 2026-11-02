@@ -8,6 +8,11 @@
   CSS (style block)                            search for
   - Themes, colour tokens                      "/* ===== THEMES"
   - Board, cards, columns                      "/* ===== TASKS STYLES", "v3: board card", "Card views", "Compact density"
+  - Renaming an area keeps its filter        "Renaming an area keeps its filter (Nov 1)"
+  - Welcome back (reconnect the folder)      "Welcome back: reconnect the Hodo Folder (Nov 1)"
+  - Fix an area from the card's area list   "Fix an area from the card's area list (Nov 1)"
+  - Your photo is the Settings button        "Your photo is the Settings button (Nov 2)"
+  - The Day page comes alive (statuses)      "The Day page comes alive: statuses on Today (Nov 2)"
   - Quick-action strip (board / list / cal)    "Quick-action strip inside board cards", "Quick-action strip in List view"
   - Two dates, capsules, field editors         "Two dates (Oct 3)", "CAPSULES", "FIELD EDITOR POPOVER"
   - Calendar                                   "/* ===== CALENDAR VIEW", "CALENDAR TASK CARD", "Calendar row: everything eases"
@@ -4977,6 +4982,110 @@
     .me-crop-f { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
     .me-cbtn { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; }
     .me-cbtn.pri { background: var(--brand); border-color: var(--brand); color: #fff; } [data-theme="dark"] .me-cbtn.pri { color: #22242a; }
+    /* ===== Welcome back: reconnect the Hodo Folder (Nov 1) ===== */
+    body.wb-on .tab-panel, body.wb-on #dayPanel { display: none !important; }
+    .wb-wrap { padding: 64px 16px 40px; }
+    .wb-wrap.wb-out { opacity: 0; transform: scale(.97); transition: opacity .32s ease, transform .32s ease; }
+    .wb { max-width: 520px; margin: 0 auto; padding: 34px 36px 26px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 18px; box-shadow: 0 18px 50px -24px rgba(60,30,10,.35); text-align: center; animation: wbIn .4s ease both; }
+    @keyframes wbIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .wb-ic { width: 54px; height: 54px; margin: 0 auto 16px; border-radius: 16px; display: grid; place-items: center; background: var(--accent-soft, rgba(196,98,62,.12)); color: var(--brand); }
+    .wb-ic svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .wb h2 { margin: 0 0 8px; font-size: 22px; font-weight: 700; color: var(--text-primary); }
+    .wb .wb-lead { margin: 0 auto 22px; max-width: 400px; font-size: 14px; line-height: 1.5; color: var(--text-secondary); }
+    .wb .wb-lead b { color: var(--text-primary); }
+    .wb-go { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 0; border-radius: 12px; background: var(--brand); color: var(--accent-contrast, #fff); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 6px 16px -8px var(--brand); }
+    .wb-go:hover { filter: brightness(1.05); } .wb-go[disabled] { opacity: .7; cursor: default; }
+    .wb-go svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .wb-msg { margin: 12px auto 0; font-size: 13px; color: var(--text-secondary); }
+    .wb-tip { margin: 20px auto 0; padding: 12px 14px; max-width: 420px; display: flex; gap: 10px; align-items: flex-start; text-align: left; font-size: 12.5px; line-height: 1.5; color: var(--text-secondary); background: var(--bg-secondary); border-radius: 10px; }
+    .wb-tip b { color: var(--text-primary); }
+    .wb-tip .wb-k { flex: none; width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center; background: var(--bg-card); color: var(--brand); font-weight: 700; font-size: 11px; border: 1px solid var(--border-light); }
+    .wb-chrome { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .wb-chrome span { padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 11px; color: var(--text-muted); background: var(--bg-card); }
+    .wb-chrome span.on { border-color: var(--brand); color: var(--brand); font-weight: 600; }
+    .wb-alt { margin-top: 18px; font-size: 12.5px; color: var(--text-muted); }
+    .wb-alt button { border: 0; background: none; padding: 0; font: inherit; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+    .wb-app { margin: 26px auto 0; max-width: 520px; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px dashed var(--border); border-radius: 12px; font-size: 12.5px; color: var(--text-secondary); text-align: left; animation: wbIn .4s .1s ease both; }
+    .wb-app b { color: var(--text-primary); }
+    .wb-app .wb-ai { flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--bg-secondary); display: grid; place-items: center; color: var(--brand); }
+    .wb-app .wb-ai svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+    .wb-app [data-wb="install"] { margin-left: auto; flex: none; padding: 7px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .wb-app [data-wb="noapp"] { flex: none; border: 0; background: none; padding: 4px 6px; color: var(--text-muted); cursor: pointer; font-size: 13px; }
+    body.wb-back .tab-panel.active, body.wb-back #dayPanel.active { animation: wbIn .45s ease both; }
+    @media (max-width: 560px) { .wb { padding: 28px 20px 22px; } .wb-app { flex-wrap: wrap; } }
+    @media (prefers-reduced-motion: reduce) { .wb, .wb-app, body.wb-back .tab-panel.active, body.wb-back #dayPanel.active { animation: none; } .wb-wrap.wb-out { transition: none; } }
+    /* Hodo Link setup steps and nudge (Nov 1) */
+    .lk-fn { color: var(--text-primary); }
+    .lk-copy { margin-left: 6px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font: inherit; font-size: 11.5px; cursor: pointer; vertical-align: 1px; }
+    .lk-copy:hover { color: var(--text-primary); border-color: var(--text-muted); }
+    .lk-step.lk-key { padding: 10px 12px 12px; border-radius: 12px; background: var(--accent-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 35%, transparent); }
+    .lk-step.lk-key i { background: var(--brand); color: var(--accent-contrast, #fff); }
+    .lk-nudge { display: flex; gap: 10px; align-items: flex-start; margin: 2px 0 14px; padding: 11px 13px; border-radius: 11px; background: color-mix(in srgb, #e0a13a 14%, var(--bg-card)); border: 1px solid color-mix(in srgb, #e0a13a 45%, transparent); font-size: 13px; color: var(--text-primary); }
+    .lk-nudge > div > span { display: block; color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+    .lk-nd-ic { flex: none; width: 20px; height: 20px; border-radius: 50%; background: #e0a13a; color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 12px; }
+    /* Fix an area from the card's area list (Nov 1) */
+    .field-pop .fp-item { position: relative; }
+    .fp-edit { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: none; gap: 2px; }
+    .field-pop .fp-item:hover .fp-edit, .field-pop .fp-item:focus-within .fp-edit { display: flex; }
+    .field-pop .fp-item:hover .tick { visibility: hidden; }
+    .fp-edit span { width: 24px; height: 24px; border-radius: 6px; color: var(--text-muted); display: grid; place-items: center; cursor: pointer; }
+    .fp-edit span:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .fp-edit span[data-ae="del"]:hover { color: #c0392b; }
+    .fp-edit svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .fp-ren { width: 100%; font: inherit; font-size: 13px; padding: 5px 8px; border-radius: 7px; border: 1px solid var(--brand); background: var(--bg-card); color: var(--text-primary); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+    /* Nov 2: your photo is the Settings button (rounded square, like the other header buttons) */
+    .me-av { border-radius: 26% !important; }
+    .me-ring { border-radius: 26% !important; }
+    #settingsBtn.me-gear { position: relative; padding: 0; }
+    #settingsBtn.me-gear .me-av.hd { width: 100%; height: 100%; border-radius: inherit !important; font-size: 13px; }
+    #settingsBtn.me-gear .me-badge { position: absolute; right: -5px; bottom: -5px; width: 17px; height: 17px; border-radius: 5px; display: grid; place-items: center; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); opacity: 0; transform: scale(.8); transition: opacity .15s ease, transform .15s ease; pointer-events: none; }
+    #settingsBtn.me-gear .me-badge svg { width: 11px; height: 11px; color: inherit; stroke-width: 2; }
+    #settingsBtn.me-gear:hover .me-badge, #settingsBtn.me-gear:focus-visible .me-badge, #settingsBtn.me-gear.active .me-badge { opacity: 1; transform: none; }
+    /* ===== The Day page comes alive: statuses on Today (Nov 2) ===== */
+    .dy-card { --ds-c: var(--brand); }
+    .dy-card.ds-pending { --ds-c: var(--st-pending-edge); }
+    .dy-card.ds-progress { --ds-c: var(--st-progress-edge); }
+    .dy-card.ds-wait { --ds-c: var(--brand); }
+    .dy-card.ds-pending, .dy-card.ds-progress, .dy-card.ds-wait { cursor: grab; }
+    .dy-card.ds-pending { border-color: color-mix(in srgb, var(--st-pending-edge) 45%, var(--border)); }
+    .dy-card.ds-pending .n { color: var(--st-pending-edge); border-color: color-mix(in srgb, var(--st-pending-edge) 60%, transparent); background: color-mix(in srgb, var(--st-pending-edge) 10%, var(--bg-card)); }
+    .dy-card.ds-progress { border-color: var(--st-progress-edge); padding: 20px 18px 18px 20px; animation: dsBreathe 3.6s ease-in-out infinite; }
+    .dy-card.ds-progress .n { color: #fff; background: var(--st-progress-edge); border-color: var(--st-progress-edge); }
+    .dy-card.ds-progress .t { font-size: 18px; }
+    @keyframes dsBreathe { 0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--st-progress-edge) 12%, transparent), 0 14px 30px -18px color-mix(in srgb, var(--st-progress-edge) 60%, transparent); } 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--st-progress-edge) 20%, transparent), 0 18px 36px -16px color-mix(in srgb, var(--st-progress-edge) 75%, transparent); } }
+    .dy-card.ds-wait { margin-left: 34px; opacity: .8; border-style: dashed; border-color: color-mix(in srgb, var(--brand) 45%, var(--border)); background: color-mix(in srgb, var(--bg-card) 72%, transparent); box-shadow: none; }
+    .dy-card.ds-wait .n { background: transparent; }
+    .dy-card.ds-wait:hover { opacity: 1; }
+    .ds-pill { display: inline-flex; align-items: center; gap: 5px; height: 22px; margin-top: 6px; padding: 0 9px 0 7px; border-radius: 999px; font-size: 11.5px; font-weight: 650; white-space: nowrap; }
+    .ds-pill svg, .ds-strip svg, .ds-drops svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .ds-pill svg .f, .ds-strip svg .f, .ds-drops svg .f { fill: currentColor; stroke: none; }
+    .ds-pill.pending { color: var(--st-pending-text); background: var(--st-pending-bg); }
+    .ds-pill.progress { color: var(--st-progress-text); background: var(--st-progress-bg); }
+    .ds-pill.wait { color: var(--brand); background: color-mix(in srgb, var(--brand) 14%, var(--bg-card)); }
+    .ds-strip { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--bg-secondary); }
+    .ds-strip button { width: 28px; height: 26px; border: 0; border-radius: 7px; background: none; display: grid; place-items: center; cursor: pointer; color: var(--c); opacity: .75; padding: 0; }
+    .ds-strip button:hover { opacity: 1; background: color-mix(in srgb, var(--c) 12%, transparent); }
+    .ds-strip button.on { opacity: 1; background: var(--bg-card); box-shadow: 0 1px 2px rgba(0,0,0,.1); cursor: default; }
+    .ds-strip svg { width: 15px; height: 15px; }
+    .dy-card .acts { flex-wrap: wrap; justify-content: flex-end; max-width: 300px; }
+    .ds-subs { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; max-width: 520px; }
+    .ds-sub { display: flex; align-items: center; gap: 9px; padding: 3px 4px; border: 0; background: none; font: inherit; font-size: 13.5px; color: var(--text-secondary); text-align: left; cursor: pointer; border-radius: 6px; }
+    .ds-sub:hover { background: var(--bg-secondary); }
+    .ds-sub i { width: 15px; height: 15px; flex: none; border-radius: 4px; border: 1.5px solid var(--border); display: grid; place-items: center; }
+    .ds-sub.ok { color: var(--text-muted); text-decoration: line-through; }
+    .ds-sub.ok i { background: var(--st-progress-edge); border-color: var(--st-progress-edge); }
+    .ds-sub.ok i::after { content: ''; width: 7px; height: 4px; border: solid #fff; border-width: 0 0 1.6px 1.6px; transform: rotate(-45deg) translate(1px, -1px); }
+    .ds-bar { margin-top: 10px; height: 4px; max-width: 520px; border-radius: 3px; background: var(--bg-secondary); overflow: hidden; }
+    .ds-bar b { display: block; height: 100%; border-radius: 3px; background: var(--ds-c); transition: width .4s ease; }
+    .ds-drops { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; overflow: hidden; height: 0; margin-top: 0; transition: height .22s ease, margin .22s ease; }
+    .ds-drops.in { height: 52px; margin-top: 18px; }
+    .ds-drops > div { display: flex; align-items: center; justify-content: center; gap: 7px; border-radius: 12px; border: 1.5px dashed var(--border); font-size: 13px; font-weight: 650; color: var(--c); background: color-mix(in srgb, var(--bg-card) 75%, transparent); transition: transform .15s ease, background .15s ease, box-shadow .15s ease; }
+    .ds-drops > div.hot { border-style: solid; border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, var(--bg-card)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 16%, transparent); transform: scale(1.03); }
+    .ds-drops > div.here { opacity: .45; }
+    .dy-card.ds-ghost { opacity: .35; border-style: dashed; animation: none; }
+    .ds-lift { position: fixed; z-index: 6000; pointer-events: none; margin: 0 !important; transform: rotate(-1.5deg); box-shadow: 0 26px 50px -16px rgba(0,0,0,.35) !important; opacity: .97; animation: none !important; }
+    .dy-ring circle.ds-seg { stroke-width: 4; }
+    @media (prefers-reduced-motion: reduce) { .dy-card.ds-progress { animation: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--st-progress-edge) 16%, transparent); } .ds-drops { transition: none; } }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7338,7 +7447,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.3';
+    const KOI_VERSION = '2.4';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -12171,14 +12280,15 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       window.addEventListener('mouseup', e => { if (!drag) return; drag = false; if (cur) cur.classList.remove('sb-drag'); set(find(e.target, e.clientX, e.clientY)); });
       document.documentElement.addEventListener('mouseleave', () => { if (!drag) set(null); });
     })();
-    // Fresh open → Rundown. Reload → stay on the page you were on (remembered for this browser tab only).
+    // Nov 1: a fresh open always lands on Tasks, in the view used last (Board, List or Calendar, kept in pd-view); never on
+    // Today by itself. Reload → stay on the page you were on (remembered for this browser tab only).
     { const _smt = switchMainTab; switchMainTab = function (tab) { const r = _smt.apply(this, arguments); try { sessionStorage.setItem('koi-tab', tab); } catch (e) {} return r; }; }
     (function () {
-      let tab = 'today';
+      let tab = 'tasks';
       try {
         const nav = (performance.getEntriesByType('navigation')[0] || {}).type;
         const kept = sessionStorage.getItem('koi-tab');
-        if ((nav === 'reload' || nav === 'back_forward') && ['today', 'tasks', 'memory'].includes(kept)) tab = kept;
+        if ((nav === 'reload' || nav === 'back_forward') && ['tasks', 'memory', 'day'].includes(kept)) tab = kept;
       } catch (e) {}
       switchMainTab(tab);
     })();
@@ -13773,7 +13883,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
           q.push(task); clearTimeout(q.t);
           q.t = setTimeout(() => {
             const l = q.splice(0); if (l.length !== 1) return;
-            const card = board.querySelector(`.task-card[data-id="${l[0].id}"]`); if (!card) return;
+            const card = (activeMainTab === 'day' && dayPanel && dayPanel.querySelector(`.dy-card[data-id="${l[0].id}"] .ds-pill`)) || board.querySelector(`.task-card[data-id="${l[0].id}"]`); if (!card) return;   // Nov 2: from Today, ask beside the Today card
             openFieldPop(l[0], 'who', card.querySelector('.wr-who') || card, { mode: 'wait', ask: true });
           }, 380);
         }
@@ -13783,7 +13893,8 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
     { const _rtw = renderTasks; renderTasks = function () { const r = _rtw.apply(this, arguments); try { applyWaitRail(); } catch (e) {} return r; }; }
     // ===== Quick-action strip inside board cards (Oct 7, round 2) =====
     // Every board card has a strip in its top padding. At rest it shows only the current status, as a button.
-    // On hover: all statuses as icons (current one filled) on the left; Focus, Park, Details and ⋯ (Card view, Duplicate, Delete) on the right.
+    // On hover: all statuses as icons (current one filled) on the left; Focus, Park and ⋯ (Card view, Duplicate, Delete) on the right.
+    // Nov 1: no Details button on cards (board and the Calendar pop-up): a click on the card opens the details. The List keeps it.
     // Clicking a status sends the card flying to its new column; anything that belongs to arrival waits until it lands.
     (function () {
       const hideCss = document.createElement('style'); document.head.appendChild(hideCss);
@@ -13811,7 +13922,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         const f = findTaskById(task.id); const here = f ? f.sectionId : task.section;
         const st = sections.map(s => `<button type="button" class="qa-s${s.id === here ? ' on' : ''}" data-st="${s.id}" style="--c:${colorOf(s.id)}" title="${s.id === here ? nice(s.name) + ' (now)' : 'Move to ' + escapeHtml(nice(s.name))}" aria-label="${escapeHtml(nice(s.name))}">${ICON[kindOf(s.id)]}</button>`).join('');
         // all actions sit in the strip; only the narrow Waiting On rail folds Card view, Duplicate and Delete under ⋯
-        const act = [['focus', 'Focus on this'], ['sink', 'Park it: important, but not for now'], ['details', 'Open details'], ['view', 'Expand or collapse this card'], ['copy', 'Copy out: for Docs or Excel'], ['dup', 'Duplicate (Ctrl+D)'], ['delete', 'Delete task']]
+        const act = [['focus', 'Focus on this'], ['sink', 'Park it: important, but not for now'], ['view', 'Expand or collapse this card'], ['copy', 'Copy out: for Docs or Excel'], ['dup', 'Duplicate (Ctrl+D)'], ['delete', 'Delete task']]
           .map(([a, t]) => `<button type="button" class="qa-a" data-qa="${a}" title="${t}" aria-label="${t}">${ICON[a]}</button>`).join('');
         return `<div class="qa-st">${st}</div><div class="qa-act">${act}<button type="button" class="qa-a" data-qa="more" title="More" aria-label="More">${ICON.more}</button></div>`;
       }
@@ -14840,7 +14951,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'yarddrawer', g: 'views', t: 'Waste Yard drawer', d: 'Days left per task, with Restore, Erase and Empty now.', kw: 'deleted bin' },
       { id: 'perfview', g: 'views', t: 'Performance view', d: 'Opens from the progress pie. Shows 7, 30 or 90 days.', kw: 'stats' },
       { id: 'focusview', g: 'views', t: 'Focus screen', d: 'A timer, one task at a time, and a music chip.', kw: 'timer' },
-      { id: 'settings', g: 'views', t: 'Settings', d: 'You, Appearance, Feedback, Focus, People, Hodo AI, Files and rhythm, and Keyboard.', kw: 'preferences options' },
+      { id: 'settings', g: 'views', t: 'Settings', d: 'Click your picture (or initials) at the top right. Inside: You, Appearance, Feedback, Focus, People, Hodo AI, Files and rhythm, and Keyboard.', kw: 'preferences options gear photo picture' },
 
       // Capture, AI and settings
       { id: 'capbar', g: 'capture', t: 'Capture bar', d: 'Click ⚡ or press C: one quiet bar. Enter catches it and closes.', keys: ['C'], kw: 'capture inbox' },
@@ -15426,6 +15537,17 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.4': [
+        { k: 'new', t: 'Run your day from Today', d: 'Once your day is started, each of your Three shows its status: <b>Pending</b>, <b>In Progress</b>, <b>Waiting On</b> or <b>Done</b>. Change it with the status icons on the card, or pick the card up and drop it on a status.<ul><li><b>In Progress</b> rises to the top, with how long you’ve been on it and its sub-tasks to tick.</li><li><b>Waiting On</b> steps aside, with Nudge.</li><li><b>Done</b> folds away.</li></ul>The ring shows where each one is.' },
+        { k: 'new', t: 'Welcome back', d: 'When your browser needs a click before Hodo can open your Hodo Folder again, Hodo now says so. <b>Reconnect</b> brings everything back at once. Choose <b>Allow on every visit</b> when your browser offers it, so you won’t be asked again.' },
+        { k: 'new', t: 'Fix or remove an area', d: 'Made a typo in a new area? Click <b>Undo</b> right after adding it. Or open a card’s area list and hover an area:<ul><li><b>✎</b> renames it on every task.</li><li><b>🗑</b> removes it from the list and its tasks, with Undo.</li></ul>' },
+        { k: 'reworked', t: 'Hodo opens on Tasks', d: 'Hodo now always opens on Tasks, in the view you used last: Board, List or Calendar. Today is one click away whenever you want it.' },
+        { k: 'reworked', t: 'Your photo is the Settings button', d: 'Your photo, or your initials, now opens Settings, and the separate gear button is gone. Photos are a rounded square, like the buttons beside them. You place your photo in a rounded square too.' },
+        { k: 'reworked', t: 'Setting up Hodo Link', d: 'The steps now match what Claude shows: Install, check the folder (usually filled in already), and <b>switch it on</b>. Downloaded it but nothing happened? Hodo reminds you to switch it on.<ul><li>Already use Hodo Link? Update it: <b>Settings → Hodo Link → Download update</b>, then install it in Claude.</li></ul>' },
+        { k: 'reworked', t: 'Promise to this week', d: 'The button has a new icon: a card moving above the This week line.' },
+        { k: 'reworked', t: 'Open a card with a click', d: 'Cards no longer have a separate Details button. Click anywhere on a card to open it. The List keeps its button.' },
+        { k: 'solved', t: 'Renaming an area hides its tasks behind the filter', d: 'Now, if you rename an area while it’s chosen as a filter, the filter follows the new name, so your tasks stay in view.' }
+      ],
       '2.3': [
         { k: 'new', t: 'Your profile and photo', d: 'Hodo now knows it’s yours. Add a photo from <b>Your profile</b>: click your initials at the top right, or drop a picture on it, then crop it in the circle. It shows at the top of Hodo, beside the date on Today, and on your row in People. It’s kept in your Hodo Folder and never uploaded.' },
         { k: 'reworked', t: 'Area tabs, right where you need them', d: 'The area tabs moved up next to Board · List · Calendar, so your board gets more room, and they’re now in the List and Calendar too. Lots of areas? The row scrolls sideways.' },
@@ -16424,7 +16546,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const row = document.querySelector('#listView .lv-row:hover') || null; const item = row && row.closest('.lv-item'); const f = item && findTaskById(parseFloat(item.dataset.taskId));
       if (!f || f.sectionId !== hzPendingId()) return;
       const z = hzZone(f.task), b = document.createElement('button'); b.type = 'button'; b.dataset.hzmenu = z === 'cu' ? 'week' : 'cu';
-      b.innerHTML = (z === 'cu' ? '<svg viewBox="0 0 16 16"><path d="M8 12.5V3.5M4 7.5l4-4 4 4"/></svg><span>Promise to this week</span>' : '<svg viewBox="0 0 16 16"><path d="M8 3.5v9M4 8.5l4 4 4-4"/></svg><span>Move to Coming up</span>');
+      b.innerHTML = (z === 'cu' ? '<svg viewBox="0 0 16 16"><rect x="3.2" y="1.9" width="9.6" height="4" rx="1.2" style="fill:currentColor"/><path d="M1.4 8h13.2"/><rect x="3.2" y="10.1" width="9.6" height="4" rx="1.2"/></svg><span>Promise to this week</span>' : '<svg viewBox="0 0 16 16"><path d="M8 3.5v9M4 8.5l4 4 4-4"/></svg><span>Move to Coming up</span>');
       const hr = menu.querySelector('hr'); if (hr) hr.after(b); else menu.appendChild(b);
       b.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); document.querySelector('.lv-ctx') && document.querySelector('.lv-ctx').remove(); hzMove(f.task, b.dataset.hzmenu); }, true);
     }, 0));
@@ -16499,8 +16621,8 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // (pre-filled with Hodo's suggestion, each with its reason), give each a finish line and a part of the day, then hold
     // "Start the day" for 2 seconds: the three heartbeat tones seal the slots one by one and a wave crosses the page.
     // During the day (The Day): the promise ring, the Three with Focus / Done / Swap, "Next up", Also today, Waiting on.
-    // The tab rests (a dot on a workday before planning), shows a three-part ring while a day is running, and Hodo opens
-    // on Today each workday until the day is started or put off. The Three are marked on the board and in the List.
+    // The tab rests (a dot on a workday before planning) and shows a three-part ring while a day is running. (Until Nov 1
+    // Hodo opened on Today each workday; now it always lands on Tasks.) The Three are marked on the board and in the List.
     // Saved: the Three as "today's #n (Oct 21)" in their task lines (on commit); the rest of the day lives in this browser.
     // ---- sounds: low, muffled "heartbeat" tones (nothing sharp) ----
     const dayHeart = (() => {
@@ -17006,14 +17128,11 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     dayLightPaint();
     setInterval(() => { dayLightPaint(); dayTabPaint(); if (dayS.date !== dayKey()) { dayS = dayLoad(); if (activeMainTab === 'day') dayRender(); } }, 60000);
     new MutationObserver(dayLightPaint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    // ---- Hodo opens on Today each workday until the day is started or put off ----
-    (function dayAutoOpen() {
+    // ---- Nov 1: Hodo no longer opens on Today by itself (it lands on Tasks); the Today tab still shows its dot / ring ----
+    (function dayTabReady() {
       let tries = 0; const go = () => {
         if (!sections.length) { if (++tries < 40) setTimeout(go, 250); return; }
-        let auto = true; try { auto = localStorage.getItem('koi-day-auto') !== '0'; } catch (e) {}
-        const ph = dayPhase();
         dayTabPaint();
-        if (auto && dayS.state === 'plan' && (ph === 'before' || ph === 'work' || ph === 'last') && activeMainTab === 'tasks') switchMainTab('day');
       }; setTimeout(go, 300);
     })();
     // keep the page fresh when tasks change elsewhere
@@ -17746,7 +17865,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     const lkOn = () => !!lk.seen;
     // The extension that ships with this Hodo, and the one Claude is running (it writes its version into hodo-link.json,
     // from 1.2.2 on). Connected or not, the download is always one click away (Oct 29: people couldn't reinstall).
-    const LK_EXT_VERSION = '1.2.2';
+    const LK_EXT_VERSION = '1.2.3';
     const lkVerLt = (a, b) => { const x = String(a || '0').split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) < (y[i] || 0); } return false; };
     const lkOutdated = () => lkOn() && lkVerLt(lk.version, LK_EXT_VERSION);
     function lkExtRow() {
@@ -17813,6 +17932,22 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         } catch (e) {}
         return r;
       }; }
+    // ---- Nov 1: setup steps that match Claude (Install · the folder, by name · Switch it on), and the 3-minute nudge ----
+    // A web page only knows the folder's name, not its path, so step 3 names it (Copy name) and Hodo Link 1.2.3 fills in
+    // Documents\Hodo Folder and finds a Hodo Folder inside the folder picked. Clicking Download notes the time; if Hodo Link
+    // hasn't been heard from 3 minutes later, "Downloaded, but not connected yet?" shows above the steps until it connects.
+    const LK_NUDGE_MS = 3 * 60 * 1000;
+    function lkFolderName() { return (typeof memoryDirHandle !== 'undefined' && memoryDirHandle && memoryDirHandle.name) || 'Hodo Folder'; }
+    function lkNudgeDue() { if (lkOn()) return false; let t = 0; try { t = +localStorage.getItem('koi-lk-dl') || 0; } catch (e) {} return !!t && Date.now() - t >= LK_NUDGE_MS; }
+    let lkNudgeT = null;
+    function lkOffWire(box) {
+      if (lkNudgeDue()) box.insertAdjacentHTML('afterbegin', '<div class="lk-nudge" role="status"><span class="lk-nd-ic" aria-hidden="true">!</span><div><b>Downloaded, but not connected yet?</b><span>In Claude, open Settings → Extensions → Hodo Link and switch it on.</span></div></div>');
+      const dl = box.querySelector('.lk-btn'); if (dl) dl.addEventListener('click', () => {
+        try { localStorage.setItem('koi-lk-dl', String(Date.now())); } catch (e) {}
+        clearTimeout(lkNudgeT); lkNudgeT = setTimeout(() => lkRead().then(lkPaint), LK_NUDGE_MS + 500);
+      });
+      const cp = box.querySelector('[data-lk="copyname"]'); if (cp) cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText(lkFolderName()); cp.textContent = 'Copied'; setTimeout(() => { cp.textContent = 'Copy name'; }, 1600); } catch (e) {} });
+    }
     // ---- Settings → Hodo Link ----
     let lkSec = null;
     function lkPaint() {
@@ -17822,12 +17957,15 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       if (!lkOn()) {
         box.innerHTML = `<p class="lk-intro">Use Claude? Let it work on your tasks: add them from any chat, tidy your captures, keep things moving. No API key needed.</p>
           <div class="lk-steps"><div class="lk-step"><i>1</i><div>Download the Hodo extension<span>One small file, Hodo.mcpb.</span></div></div>
-          <div class="lk-step"><i>2</i><div>Add it to the Claude desktop app<span>Drag the file onto the Claude window, or in Claude: Settings → Extensions → Advanced settings → Install Extension.</span></div></div>
-          <div class="lk-step"><i>3</i><div>Choose your Hodo Folder<span>The same folder Hodo uses${typeof memoryDirHandle !== 'undefined' && memoryDirHandle ? ` (“${escapeHtml(memoryDirHandle.name)}”)` : ''}. That’s it.</span></div></div></div>
-          <a class="lk-btn" href="Hodo.mcpb" download="Hodo.mcpb"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7l3.2 3.2L11.2 7M3 12.8h10"/></svg>Download the Hodo extension</a>
+          <div class="lk-step"><i>2</i><div>Drag it onto the Claude desktop app, then click Install<span>Or in Claude: Settings → Extensions → Advanced settings → Install Extension.</span></div></div>
+          <div class="lk-step"><i>3</i><div>Check the folder says <b class="lk-fn">${escapeHtml(lkFolderName())}</b> <button type="button" class="lk-copy" data-lk="copyname">Copy name</button><span>It’s usually filled in already. If not, click Browse and pick it, or the folder it’s in.</span></div></div>
+          <div class="lk-step lk-key"><i>4</i><div>Switch it on<span>In Claude’s Extensions, make sure <b>Enabled</b> is on next to Hodo Link. Without it, Claude can’t reach Hodo.</span></div></div></div>
+          <a class="lk-btn" href="Hodo.mcpb" download="Hodo.mcpb"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7l3.2 3.2L11.2 7M3 12.8h10"/></svg>${lkNudgeDue() ? 'Download again' : 'Download the Hodo extension'}</a>
           <div class="lk-note">Needs the Claude desktop app on this computer. Tidying on a schedule needs a paid Claude plan. Hodo works fully without any of this.</div>`;
+        lkOffWire(box);
         return;
       }
+      try { localStorage.removeItem('koi-lk-dl'); } catch (e) {}
       const tidy = lk.tidy === 'hourly' ? 'hourly' : 'ask';
       box.innerHTML = `<div class="lk-ok"><span class="lk-dot"></span><div><b>Connected to Claude</b><span>${lk.last ? `Last change by Claude ${lkAgo(lk.last.at)} · ${escapeHtml(lk.last.what || '')}` : `Seen ${lkAgo(lk.seen)}`}</span></div></div>
         <div class="lk-row"><div>Tidy my captures<small>Claude turns captures into proper tasks for you to review</small></div><span class="lk-seg"><button type="button" data-lt="ask" class="${tidy === 'ask' ? 'on' : ''}">When I ask</button><button type="button" data-lt="hourly" class="${tidy === 'hourly' ? 'on' : ''}">Hourly on workdays</button></span></div>
@@ -17878,7 +18016,8 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // ===== Promise to this week (Oct 24): a quick action on Coming up tasks =====
     // A Pending task below the This week line (Coming up, or carried from last week) gets one more button in its quick
     // actions, on the board and in the List: "Promise to this week". One click moves it above the line (the tag in its line).
-    const HZ_WEEK_IC = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.8 3.2h10.4M8 13.2V6.6M5.2 9.3 8 6.5l2.8 2.8"/></svg>';
+    // Nov 2: a solid card above the This week line, an empty one below it (was an arrow up to a line, which read as Upload)
+    const HZ_WEEK_IC = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.2" y="1.9" width="9.6" height="4" rx="1.2" style="fill:currentColor"/><path d="M1.4 8h13.2"/><rect x="3.2" y="10.1" width="9.6" height="4" rx="1.2"/></svg>';
     function hzWeekBtn(t) {
       try { const f = findTaskById(t.id); if (!f || f.sectionId !== hzPendingId() || t.checked || hzZone(t) === 'week') return null; } catch (e) { return null; }
       const b = document.createElement('button'); b.type = 'button'; b.className = 'qa-a qa-week'; b.dataset.qa = 'week'; b.title = b.ariaLabel = 'Promise to this week'; b.innerHTML = HZ_WEEK_IC;
@@ -17979,11 +18118,11 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         { id: 'doneeq', g: 'concepts', t: 'Done = …', d: 'A task’s finish line: one sentence that says what finished looks like. Hodo asks for it when you move a task to In Progress or choose today’s Three.', kw: 'finish line definition done criteria' }
       ].reverse().forEach(it => { if (!GUIDE_ITEMS.some(x => x.id === it.id)) GUIDE_ITEMS.splice(Math.max(0, first), 0, it); });
       const rv = GUIDE_ITEMS.find(x => x.id === 'review'); if (rv) { rv.t = 'Parked review'; rv.d = 'Parked’s own review: three items to keep, start or let go, once a week. It also comes up inside the Weekly reset.'; }
-      put('status', [{ id: 'promise', g: 'moves', t: 'Promise to this week', d: 'On a Coming up card (or List row), the arrow-up button in its strip moves it above the This week line.', kw: 'week commit coming up line' }]);
+      put('status', [{ id: 'promise', g: 'moves', t: 'Promise to this week', d: 'On a Coming up card (or List row), the This week button in its strip (a card above a line) moves it above the This week line.', kw: 'week commit coming up line' }]);
       put('caldl', [{ id: 'daypeek', g: 'mouse', t: 'Quick look on Today', d: 'On the Today page, click a task’s title to see its description, Done =, dates and sub-tasks. Tick sub-tasks right there, or open the details.', kw: 'peek preview title today look' }]);
       put('you', [
         { id: 'hours', g: 'capture', t: 'Working hours', d: 'The hours you want your work to fit in. Today uses them to offer Land at the end, and the page’s light drifts from morning to evening across them. Settings → You.', kw: 'hours day start end light' },
-        { id: 'link', g: 'capture', t: 'Hodo Link', d: 'Let Claude work on your tasks: add and change them from any chat, and tidy your captures for you to review. Changes are marked “by Claude”. No API key.', how: 'Settings → Hodo Link → download the Hodo extension, drag it onto the Claude desktop app (or Settings → Extensions → Install Extension in Claude), and choose your Hodo folder.', kw: 'claude ai extension mcp connect assistant' },
+        { id: 'link', g: 'capture', t: 'Hodo Link', d: 'Let Claude work on your tasks: add and change them from any chat, and tidy your captures for you to review. Changes are marked “by Claude”. No API key.', how: 'Settings → Hodo Link → download the Hodo extension, drag it onto the Claude desktop app and click Install (or Settings → Extensions → Install Extension in Claude), check the folder says Hodo Folder (usually filled in already), and make sure Enabled is on next to Hodo Link. Downloaded but nothing happens? Hodo reminds you to switch it on.', kw: 'claude ai extension mcp connect assistant enable enabled switch on folder' },
         { id: 'tour', g: 'capture', t: 'The welcome tour', d: 'Five small steps through the essentials, with practice tasks. Settings → The welcome tour.', kw: 'tour help start learn onboard' }
       ]);
     })();
@@ -18506,7 +18645,305 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     { const _ppP = ppRender; ppRender = function () { const r = _ppP.apply(this, arguments); try { if (ppEl) ppEl.querySelectorAll('tbody tr[data-i]').forEach(tr => { const p = koiPeople[+tr.dataset.i]; if (p && ppSelf(p) && !tr.querySelector('.me-av')) { const c = tr.querySelector('td'); if (c) c.insertAdjacentHTML('afterbegin', meAvatar('sm')); tr.classList.add('me-me'); } }); } catch (e) {} return r; }; }
     // ---- the welcome's About you: optional ----
     { const _ha = hwAbout; hwAbout = function () { const r = _ha.apply(this, arguments); try { const l = hwEl.querySelector('.hw-l'); if (l && !hwEl.querySelector('.hw-photo')) { l.insertAdjacentHTML('beforebegin', `<div class="hw-photo"><span data-me-av="lg">${meAvatar('lg')}</span><button type="button" class="hw-link" data-hw="photo">${mePhoto ? 'Change your photo' : 'Add a photo'}</button><span>Optional</span></div>`); hwEl.querySelector('[data-hw="photo"]').addEventListener('click', () => mePick()); } } catch (e) {} return r; }; }
-    if (!GUIDE_ITEMS.some(x => x.id === 'profile')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'you'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'profile', g: 'capture', t: 'Your profile and photo', d: 'Click your picture (or initials) at the top right to open your profile: your name, work, work week and photo. Add a photo there or drop one on it; crop it in the circle. It’s kept in your Hodo Folder and never uploaded.', kw: 'photo picture avatar profile me name' }); }
+    if (!GUIDE_ITEMS.some(x => x.id === 'profile')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'you'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'profile', g: 'capture', t: 'Your profile and photo', d: 'Your picture (or initials) at the top right opens Settings; Your profile is there: your name, work, work week and photo. Add a photo there or drop one on it, then place it in the rounded square. It’s kept in your Hodo Folder and never uploaded.', kw: 'photo picture avatar profile me name' }); }
+    // ===== Renaming an area keeps its filter (Nov 1) =====
+    // If an area is renamed in Settings while it is chosen in the Filter or the area tabs, the choice follows the new name,
+    // so the tasks don't vanish behind a filter on the old name.
+    { const _arT = areaRenameInTasks;
+      areaRenameInTasks = function (from, to) {
+        const n = _arT.apply(this, arguments);
+        try {
+          const f = String(from || '').toLowerCase(), t = String(to || '').toLowerCase();
+          if (f && t && f !== t && kf.ws.has(f)) { kf.ws.delete(f); kf.ws.add(t); atSave(); try { kfRenderMenu(); } catch (e) {} applyFilter(); }
+        } catch (e) {}
+        return n;
+      }; }
+    // ===== Welcome back: reconnect the Hodo Folder (Nov 1) =====
+    // Browsers ask for one click before a site may open a saved folder again. When Hodo comes back to a saved folder (or
+    // task file) it can't open yet, a "Welcome back" card stands in for the page (Today, Tasks, Memory alike), with:
+    // Reconnect (the browser's own OK, no picker), a tip to choose "Allow on every visit" when the browser offers it, and
+    // "Use a different folder". Any way the folder opens (here, Settings, the old buttons) closes the card: it fades out,
+    // the page fades in, a soft tone and a toast. Under it, an "Install Hodo as an app" tip, only when the browser offers
+    // to install Hodo (so never inside the app, nor when it is already installed); ✕ hides it for good in this browser.
+    let wbEl = null, wbBusy = false;
+    function wbLabel(name) { return String(name || '').trim() || 'your folder'; }
+    function wbAppOk() {
+      let off = false; try { off = localStorage.getItem('koi-wb-app') === 'x'; } catch (e) {}
+      let app = false; try { app = matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: window-controls-overlay)').matches; } catch (e) {}
+      return !!koiInstallEvt && !app && !off;
+    }
+    function wbAppPaint() {
+      if (!wbEl) return; const old = wbEl.querySelector('.wb-app'); if (old) old.remove();
+      if (!wbAppOk()) return;
+      const d = document.createElement('div'); d.className = 'wb-app';
+      d.innerHTML = '<span class="wb-ai"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5"/><path d="M8 5.5v5M5.5 8h5"/></svg></span><div><b>Install Hodo as an app.</b> It opens in its own window, and coming back is smoother.</div><button type="button" data-wb="install">Install</button><button type="button" data-wb="noapp" title="Not now" aria-label="Don’t show this again">✕</button>';
+      d.querySelector('[data-wb="install"]').addEventListener('click', async () => { const e = koiInstallEvt; if (!e) return; e.prompt(); try { await e.userChoice; } catch (x) {} koiInstallEvt = null; try { koiInstallPaint(); } catch (x) {} wbAppPaint(); });
+      d.querySelector('[data-wb="noapp"]').addEventListener('click', () => { try { localStorage.setItem('koi-wb-app', 'x'); } catch (e) {} d.remove(); });
+      wbEl.appendChild(d);
+    }
+    function wbShow(o) {
+      if (wbEl) return; const name = wbLabel(o && o.label), isHF = HF_RE.test(name);
+      wbEl = document.createElement('div'); wbEl.className = 'wb-wrap';
+      wbEl.innerHTML = `<div class="wb" role="dialog" aria-label="Welcome back">
+        <div class="wb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2.2h7a2 2 0 0 1 2 2v7.8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M9.5 13.4l2 2 3.6-3.8"/></svg></div>
+        <h2>Welcome back</h2>
+        <p class="wb-lead">Your tasks are safe in ${isHF ? 'your ' : ''}<b>${escapeHtml(name)}</b>. Your browser just needs one click to let Hodo back in.</p>
+        <button type="button" class="wb-go" data-wb="go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7"/></svg>Reconnect ${escapeHtml(name)}</button>
+        <div class="wb-msg" hidden></div>
+        <div class="wb-tip"><span class="wb-k">i</span><div>When your browser asks, choose <b>Allow on every visit</b> if it’s offered, so this step doesn’t come back.<div class="wb-chrome" aria-hidden="true"><span class="on">Allow on every visit</span><span>Allow this time</span><span>Don’t allow</span></div></div></div>
+        <div class="wb-alt">Not this folder? <button type="button" data-wb="other">Use a different folder</button></div>
+      </div>`;
+      const msg = wbEl.querySelector('.wb-msg'), say = t => { msg.textContent = t; msg.hidden = !t; };
+      wbEl.querySelector('[data-wb="go"]').addEventListener('click', async e => {
+        if (wbBusy) return; wbBusy = true; const b = e.currentTarget; b.disabled = true; say('');
+        let ok = false; try { ok = await window.koiReopenSaved(); } catch (x) {}
+        wbBusy = false; if (!wbEl) return; b.disabled = false;
+        if (ok || memoryDirHandle || taskFileHandle) wbDone(); else say('Hodo needs your OK to open the folder. Try again when you’re ready.');
+      });
+      wbEl.querySelector('[data-wb="other"]').addEventListener('click', async () => {
+        say(''); try { await hfOpen('open'); } catch (x) { if (x && x.name !== 'AbortError') showStatus('Error: ' + x.message); }
+        if (memoryDirHandle || taskFileHandle) wbDone();
+      });
+      tasksPanel.before(wbEl); document.body.classList.add('wb-on');
+      wbAppPaint();
+    }
+    function wbDone() {
+      if (!wbEl) return; const el = wbEl; wbEl = null;
+      const fin = () => { el.remove(); document.body.classList.remove('wb-on'); document.body.classList.add('wb-back'); setTimeout(() => document.body.classList.remove('wb-back'), 600); };
+      if (reduceMotion) fin(); else { el.classList.add('wb-out'); setTimeout(fin, 320); }
+      try { if (koiSound.on) dayHeart.note(1, 0.8); } catch (e) {}
+      setTimeout(() => showStatus(memoryDirHandle ? (HF_RE.test(memoryDirHandle.name) ? 'Connected to your ' : 'Connected to ') + memoryDirHandle.name : 'Connected to your tasks'), 340);
+    }
+    // any way the folder or task file opens closes the card
+    { const _wbM = loadMemoryHandle; loadMemoryHandle = async function () { const r = await _wbM.apply(this, arguments); if (wbEl && memoryDirHandle) wbDone(); return r; }; }
+    { const _wbT = loadTaskHandle; loadTaskHandle = async function () { const r = await _wbT.apply(this, arguments); if (wbEl && taskFileHandle) wbDone(); return r; }; }
+    window.addEventListener('beforeinstallprompt', () => setTimeout(wbAppPaint, 0));
+    window.addEventListener('appinstalled', () => setTimeout(wbAppPaint, 0));
+    (async function wbCheck() {
+      try {
+        if (!window.indexedDB || !window.showOpenFilePicker) return;
+        const th = await koiIdbGet('tasks'), mh = await koiIdbGet('memory'); if (!th && !mh) return;
+        const okT = await koiPermitted(th, false), okM = await koiPermitted(mh, false);
+        if ((mh && !okM) || (th && !okT && !mh)) { if (!memoryDirHandle && !taskFileHandle) wbShow({ label: mh ? mh.name : th.name }); }
+      } catch (e) {}
+    })();
+    if (!GUIDE_ITEMS.some(x => x.id === 'welcomeback')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'hfolder'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'welcomeback', g: 'capture', t: 'Coming back to Hodo', d: 'Browsers ask for one click before Hodo may open your Hodo Folder again. If it shows Welcome back, click Reconnect and choose Allow on every visit when your browser offers it, so it doesn’t ask again. Not the right folder? Use a different folder. Installing Hodo as an app makes coming back smoother.', kw: 'reconnect folder permission allow every visit welcome back install app lost connection' }); }
+    if (!GUIDE_ITEMS.some(x => x.id === 'areafix')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'areas'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'areafix', g: 'concepts', t: 'Fix or remove an area', d: 'Made a typo in a new area? Click Undo right after adding it. Or open a card’s area list and hover an area: ✎ renames it on every task, 🗑 removes it from the list and its tasks (with Undo). Settings → Areas has the full list.', kw: 'area typo rename remove delete wrong mistake edit' }); }
+    // ===== Fix an area from the card's area list (Nov 1) =====
+    // A typo in a new area is easy to undo: adding one shows "New area “…” added · Undo" (takes the area away and puts the
+    // task's old area back). Hovering any area in the list shows ✎ (rename it right there: Enter or clicking away saves,
+    // Esc cancels; renamed on every task, a chosen filter follows) and 🗑 (removes the area and takes it off every task and
+    // Parked item, with Undo).
+    const AE_PEN = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.8 2.8l2.4 2.4-7.4 7.4-3 .6.6-3z"/></svg>';
+    const AE_BIN = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.8 4.4h10.4M6.3 4.4V3a.8.8 0 0 1 .8-.8h1.8a.8.8 0 0 1 .8.8v1.4M4.2 4.4l.6 8.4a1.2 1.2 0 0 0 1.2 1.1h4a1.2 1.2 0 0 0 1.2-1.1l.6-8.4"/></svg>';
+    function aeSnap() {
+      const notes = new Map(); allTasksFlat().forEach(x => notes.set(x.task, x.task.note));
+      const deepM = []; try { (deep.items || []).forEach(t => deepM.push([t, JSON.stringify(deepMeta(t).rest || [])])); } catch (e) {}
+      return { areas: JSON.parse(JSON.stringify(koiAreas)), notes, deepM, ws: [...kf.ws] };
+    }
+    function aeRestore(sn) {
+      koiAreas = sn.areas; areasSave();
+      sn.notes.forEach((n, t) => { t.note = n; });
+      try { sn.deepM.forEach(([t, r]) => { const m = deepMeta(t); m.rest = JSON.parse(r); deepSetMeta(t, m); }); } catch (e) {}
+      kf.ws = new Set(sn.ws); try { atSave(); kfRenderMenu(); } catch (e) {}
+      markChanged(); renderTasks(); try { applyFilter(); } catch (e) {}
+    }
+    function aeRemove(name) {
+      const fl = name.toLowerCase(), sn = aeSnap();
+      koiAreas = koiAreas.filter(a => a.name.toLowerCase() !== fl); areasSave();
+      allTasksFlat().forEach(x => { const i = splitNoteCapsules(x.task.note || ''); if (i.workstreams.some(w => w.toLowerCase() === fl)) { i.workstreams = i.workstreams.filter(w => w.toLowerCase() !== fl); x.task.note = composeNote(i, x.task.checked); } });
+      try { (deep.items || []).forEach(t => { const m = deepMeta(t), r = (m.rest || []).filter(x => x.toLowerCase() !== fl); if (r.length !== (m.rest || []).length) { m.rest = r; deepSetMeta(t, m); } }); } catch (e) {}
+      if (kf.ws.delete(fl)) { try { atSave(); kfRenderMenu(); } catch (e) {} }
+      markChanged(); renderTasks(); try { applyFilter(); } catch (e) {}
+      tdUndoToast(`Area “${name}” removed`, () => aeRestore(sn));
+    }
+    function aeRename(from, to) {
+      to = String(to || '').trim(); if (!to || to === from) return false;
+      const a = koiAreas.find(x => x.name.toLowerCase() === from.toLowerCase()); if (!a) return false;
+      if (to.toLowerCase() !== from.toLowerCase() && koiAreas.some(x => x !== a && x.name.toLowerCase() === to.toLowerCase())) { showStatus(`There’s already an area called ${to}`); return false; }
+      a.name = to; areaRenameInTasks(from, to); areasSave(); renderTasks();
+      return true;
+    }
+    { const _ofp = openFieldPop;
+      openFieldPop = function (task, field, anchor) {
+        const r = _ofp.apply(this, arguments);
+        if (field !== 'workstream') return r;
+        try {
+          const pops = document.querySelectorAll('.field-pop'), pop = pops[pops.length - 1]; if (!pop) return r;
+          const reopen = () => { const a2 = document.querySelector(`.task-card[data-id="${task.id}"] [data-field="workstream"]`) || (anchor && anchor.isConnected ? anchor : null); if (a2) openFieldPop(task, 'workstream', a2); else closeFieldPop(); };
+          pop.querySelectorAll('.fp-list .fp-item').forEach(row => {
+            const cap = row.querySelector('.capsule'); if (!cap) return; const name = cap.textContent;
+            const ed = document.createElement('span'); ed.className = 'fp-edit';
+            ed.innerHTML = `<span data-ae="ren" title="Rename" role="button" aria-label="Rename ${escapeHtml(name)}">${AE_PEN}</span><span data-ae="del" title="Remove this area" role="button" aria-label="Remove ${escapeHtml(name)}">${AE_BIN}</span>`;
+            row.appendChild(ed);
+            ed.querySelector('[data-ae="del"]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); closeFieldPop(); aeRemove(name); });
+            ed.querySelector('[data-ae="ren"]').addEventListener('click', e => {
+              e.stopPropagation(); e.preventDefault();
+              const box = document.createElement('div'); box.className = 'fp-item fp-renrow';
+              box.innerHTML = `<input class="fp-ren" value="${escapeHtml(name)}" aria-label="New name for ${escapeHtml(name)}" dir="auto">`;
+              row.replaceWith(box); const inp = box.querySelector('input'); inp.focus(); inp.select();
+              let done = false; const fin = save => { if (done) return; done = true; if (save && aeRename(name, inp.value)) { reopen(); showStatus(`Renamed to ${inp.value.trim()}`); } else reopen(); };
+              inp.addEventListener('keydown', ev => { ev.stopPropagation(); if (ev.key === 'Enter') { ev.preventDefault(); fin(true); } else if (ev.key === 'Escape') { ev.preventDefault(); fin(false); } });
+              inp.addEventListener('blur', () => setTimeout(() => fin(true), 0));
+            });
+          });
+          // a brand-new area gets an Undo
+          const inp = pop.querySelector('.fp-row .fp-input.grow');
+          if (inp && inp.onkeydown) { const orig = inp.onkeydown;
+            inp.onkeydown = e => {
+              const n = inp.value.trim(), isNew = e.key === 'Enter' && n && !allWorkstreams().some(w => w.toLowerCase() === n.toLowerCase());
+              const before = task.note, areas = isNew ? JSON.parse(JSON.stringify(koiAreas)) : null;
+              const res = orig.call(inp, e);
+              if (isNew) tdUndoToast(`New area “${n}” added`, () => { koiAreas = areas; areasSave(); task.note = before; markChanged(); renderTasks(); });
+              return res;
+            }; }
+        } catch (e) {}
+        return r;
+      }; }
+    // ===== Your photo is the Settings button (Nov 2) =====
+    // The gear button is gone: your photo (or initials) fills the Settings button edge to edge, a rounded square like the
+    // other header buttons, and opens Settings at the top. A small gear shows on its corner on hover; the tooltip says
+    // "Settings and profile". The crop window and your photo everywhere else are rounded squares too.
+    const ME_GEAR = (() => { const g = document.querySelector('#settingsBtn svg'); return g ? g.outerHTML : ''; })();
+    meHeader = function () {
+      const old = document.getElementById('meBtn'); if (old) old.remove();
+      const sb = document.getElementById('settingsBtn'); if (!sb) return;
+      sb.classList.add('me-gear'); sb.title = 'Settings and profile'; sb.setAttribute('aria-label', 'Settings and profile');
+      sb.innerHTML = meAvatar('hd') + `<span class="me-badge" aria-hidden="true">${ME_GEAR}</span>`;
+    };
+    meHeader(); setTimeout(meHeader, 0);   // also after the first paint, which still held the old one
+    // ===== The Day page comes alive: statuses on Today (Nov 2) =====
+    // On the Day page each of the Three shows and changes its status with Hodo's own words (Pending, In Progress,
+    // Waiting On, Done), and its look and place follow it: In Progress rises to the top, opens up (its sub-tasks to tick,
+    // a progress bar) and breathes, with "In Progress · since 10:42 · 1h 20m"; Pending is calm; Waiting On steps aside,
+    // dimmed, with who, since when and Nudge; Done folds into a slim row ("Done · 11:58"). The board's four status icons sit
+    // on each card; or pick a card up and drop it on a status (the four appear above the cards while you drag). Cards glide
+    // to their new places. The ring has one part per task, coloured by its status (In Progress fills with its sub-tasks).
+    const DS_RANK = { progress: 0, pending: 1, wait: 2, done: 3 };
+    const DS_NAME = { pending: 'Pending', progress: 'In Progress', wait: 'Waiting On', done: 'Done' };
+    const DS_ICK = { pending: 'pending', progress: 'progress', wait: 'wait', done: 'done' };
+    function dsIcon(k) { try { return window.koiQA.ICON[DS_ICK[k]]; } catch (e) { return ''; } }
+    function dsKind(f) { if (!f) return 'pending'; if (dayDoneTask(f)) return 'done'; if (isWaitSection(f.sectionId)) return 'wait'; const k = statusKey(f.sectionId); return k === 'progress' ? 'progress' : 'pending'; }
+    function dsSection(k) {
+      if (k === 'done') return koiDoneTarget();
+      if (k === 'wait') return sections.find(s => isWaitSection(s.id)) || null;
+      if (k === 'progress') return sections.find(s => statusKey(s.id) === 'progress' && !isWaitSection(s.id)) || null;
+      const pid = hzPendingId(); return sections.find(s => s.id === pid) || sections.find(s => statusKey(s.id) === 'pending') || null;
+    }
+    const dsColor = k => k === 'pending' ? 'var(--st-pending-edge)' : k === 'progress' ? 'var(--st-progress-edge)' : k === 'done' ? 'var(--st-done-edge)' : 'var(--brand)';
+    function dsSinceGet() { try { return JSON.parse(localStorage.getItem('koi-ip-since') || '{}') || {}; } catch (e) { return {}; } }
+    function dsSinceSet(o) { try { localStorage.setItem('koi-ip-since', JSON.stringify(o)); } catch (e) {} }
+    { const _ascD = applyStatusChange; applyStatusChange = function (task, fromId, toId) {
+        const r = _ascD.apply(this, arguments);
+        try { const into = statusKey(toId) === 'progress' && !isWaitSection(toId), was = statusKey(fromId) === 'progress' && !isWaitSection(fromId);
+          if (into !== was) { const o = dsSinceGet(), k = koiTaskKey(task); if (into) o[k] = Date.now(); else delete o[k]; dsSinceSet(o); } } catch (e) {}
+        return r;
+      }; }
+    const dsTime = ms => new Date(ms).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    function dsFor(ms) { const m = Math.max(0, Math.round((Date.now() - ms) / 60000)); return m < 1 ? 'just now' : m < 60 ? m + 'm' : Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + (m % 60) + 'm' : ''); }
+    function dsSubFrac(t) { const n = (t.subtasks || []).length; return n ? t.subtasks.filter(x => x.checked).length / n : null; }
+    function dsRing(n) {
+      const size = 46, r = size / 2 - 3, c = 2 * Math.PI * r, seg = n ? c / n : c, gap = n > 1 ? 4 : 0, len = Math.max(0, seg - gap);
+      let arcs = '', k = 0;
+      dayS.slots.filter(Boolean).forEach((x, i) => {
+        const f = dayFind(x.id), kind = dsKind(f); if (kind === 'done') k++;
+        const fr = kind === 'done' ? 1 : kind === 'progress' ? Math.max(0.35, dsSubFrac(f.task) || 0) : kind === 'wait' ? 0.2 : 0;
+        arcs += `<circle class="bg" cx="${size / 2}" cy="${size / 2}" r="${r}" stroke-dasharray="${len} ${c}" stroke-dashoffset="${-i * seg}"/>`;
+        if (fr) arcs += `<circle class="ds-seg" cx="${size / 2}" cy="${size / 2}" r="${r}" style="stroke:${dsColor(kind)}" stroke-dasharray="${len * fr} ${c}" stroke-dashoffset="${-i * seg}"/>`;
+      });
+      return `<svg class="dy-ring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${arcs}<text x="${size / 2}" y="${size / 2 + 4}" text-anchor="middle">${k}/${n}</text></svg>`;
+    }
+    function dsSet(id, k, el) {
+      const f = dayFind(id); if (!f || dsKind(f) === k) return;
+      const i = daySlotOf(f.task.id);
+      if (k === 'done') { dayFinish(f, el); return; }
+      const sec = dsSection(k); if (!sec) { showStatus(`There’s no ${DS_NAME[k]} column`); return; }
+      if (f.task.checked) f.task.checked = false;
+      moveTask(f.task.id, sec.id, 0);
+      try { if (k === 'progress') dayHeart.note(i < 0 ? 0 : i, 0.55); else dayHeart.low(); } catch (e) {}
+      if (activeMainTab === 'day') dayRender();
+    }
+    function dsDecorate(before) {
+      const three = dayPanel && dayPanel.querySelector('.dy-three'); if (!three) return;
+      const n = dayS.slots.filter(Boolean).length, ring = dayPanel.querySelector('.dy-top .dy-ring'); if (ring) ring.outerHTML = dsRing(n);
+      const cards = [...three.querySelectorAll(':scope > .dy-card')], since = dsSinceGet();
+      cards.forEach(c => {
+        const f = dayFind(c.dataset.id); if (!f) return; const t = f.task, k = dsKind(f); c.classList.add('ds-' + k); c.dataset.st = k;
+        if (k === 'done') { const l = c.querySelector('.dy-kept-l'); if (l) l.textContent = l.textContent.replace(/^Kept/, 'Done'); return; }
+        const nu = c.querySelector('.dy-nextup'); if (nu && k !== 'pending') nu.remove();
+        const meta = c.querySelector('.meta'); let pill = '';
+        if (k === 'progress') { const s0 = since[koiTaskKey(t)]; pill = `In Progress${s0 ? ` · since ${dsTime(s0)} · ${dsFor(s0)}` : ''}`; }
+        else if (k === 'wait') { const info = splitNoteCapsules(t.note || ''), who = whoShort(waitWho(info)); let sn = ''; try { const rec = waitSync()[wKey(t)]; if (rec && rec.since) sn = new Date(wNum(rec.since)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); } catch (e) {} pill = ['Waiting On', who, sn && 'since ' + sn].filter(Boolean).join(' · '); }
+        else pill = 'Pending';
+        if (meta) meta.insertAdjacentHTML('afterbegin', `<span class="ds-pill ${k}">${dsIcon(k)}${escapeHtml(pill)}</span>`);
+        const body = c.querySelector('.body'), fr = dsSubFrac(t);
+        if (k === 'progress' && t.subtasks && t.subtasks.length) {
+          body.insertAdjacentHTML('beforeend', `<div class="ds-subs">${t.subtasks.map((st, j) => `<button type="button" class="ds-sub${st.checked ? ' ok' : ''}" data-dss="${j}"><i></i><span>${dayEsc(st.text)}</span></button>`).join('')}</div>`);
+        }
+        if (fr != null) body.insertAdjacentHTML('beforeend', `<div class="ds-bar"><b style="width:${Math.round(fr * 100)}%"></b></div>`);
+        const acts = c.querySelector('.acts');
+        if (acts) {
+          acts.insertAdjacentHTML('afterbegin', `<div class="ds-strip">${['pending', 'progress', 'wait', 'done'].filter(x => x === 'done' || dsSection(x)).map(x => `<button type="button" class="${x === k ? 'on' : ''}" data-dst="${x}" style="--c:${dsColor(x)}" title="${x === k ? DS_NAME[x] + ' (now)' : 'Move to ' + DS_NAME[x]}" aria-label="${DS_NAME[x]}">${dsIcon(x)}</button>`).join('')}</div>`);
+          if (k === 'wait') acts.insertAdjacentHTML('beforeend', `<button type="button" class="dy-btn" data-dsnudge="1">Nudge</button>`);
+        }
+      });
+      // order: In Progress, Pending, Waiting On, Done (the slot order inside each)
+      cards.map((c, i) => ({ c, i })).sort((a, b) => (DS_RANK[a.c.dataset.st] ?? 1) - (DS_RANK[b.c.dataset.st] ?? 1) || a.i - b.i).forEach(({ c }) => three.appendChild(c));
+      // glide from where they were
+      if (before && !reduceMotion) three.querySelectorAll(':scope > .dy-card').forEach(c => { const b = before[c.dataset.id]; if (!b) return; const a = c.getBoundingClientRect(), dy = b.top - a.top, sc = b.height && a.height ? b.height / a.height : 1;
+        if (Math.abs(dy) > 2 || Math.abs(sc - 1) > .04) c.animate([{ transform: `translateY(${dy}px)`, transformOrigin: 'top' }, { transform: 'none', transformOrigin: 'top' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
+      // wiring
+      three.querySelectorAll('[data-dst]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); dsSet(b.closest('.dy-card').dataset.id, b.dataset.dst, b); }));
+      three.querySelectorAll('[data-dss]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const f = dayFind(b.closest('.dy-card').dataset.id); if (!f) return; const st = f.task.subtasks[+b.dataset.dss]; if (!st) return; st.checked = !st.checked; markChanged(); try { if (st.checked) koiSound.play('sub'); } catch (x) {} renderTasks(); if (activeMainTab === 'day') dayRender(); }));
+      three.querySelectorAll('[data-dsnudge]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const f = dayFind(b.closest('.dy-card').dataset.id); if (f) { try { waitNudge(f.task); } catch (x) {} setTimeout(dayRender, 60); } }));
+      dsDragWire(three);
+    }
+    { const _rdS = dayRenderDay; dayRenderDay = function () {
+        const before = {}; try { dayPanel.querySelectorAll('.dy-three > .dy-card').forEach(c => { before[c.dataset.id] = c.getBoundingClientRect(); }); } catch (e) {}
+        const r = _rdS.apply(this, arguments);
+        try { dsDecorate(before); } catch (e) {}
+        return r;
+      }; }
+    // ---- pick a card up and drop it on a status ----
+    let dsDrag = null;
+    function dsDragWire(three) {
+      three.addEventListener('pointerdown', e => {
+        const c = e.target.closest('.dy-card'); if (!c || e.button !== 0 || dsDrag) return;
+        if (e.target.closest('button, input, label, a, textarea, .ds-subs')) return;
+        dsDrag = { c, id: c.dataset.id, x0: e.clientX, y0: e.clientY, on: false };
+      });
+    }
+    function dsDragEnd(drop) {
+      const d = dsDrag; dsDrag = null; if (!d) return;
+      if (d.on) {
+        const hot = d.bar && d.bar.querySelector('.hot'), k = hot && hot.dataset.k;
+        d.lift.remove(); d.c.classList.remove('ds-ghost');
+        if (d.bar) { d.bar.classList.remove('in'); setTimeout(() => d.bar.remove(), 230); }
+        document.addEventListener('click', ev => { ev.stopPropagation(); ev.preventDefault(); }, { capture: true, once: true });
+        setTimeout(() => { if (drop && k) dsSet(d.id, k, d.c); }, 120);
+      }
+    }
+    document.addEventListener('pointermove', e => {
+      const d = dsDrag; if (!d) return;
+      if (!d.on) {
+        if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 7) return;
+        d.on = true; const r = d.c.getBoundingClientRect(); d.dx = e.clientX - r.left; d.dy = e.clientY - r.top;
+        d.lift = d.c.cloneNode(true); d.lift.classList.add('ds-lift'); d.lift.style.width = r.width + 'px'; document.body.appendChild(d.lift);
+        d.c.classList.add('ds-ghost'); window.getSelection && window.getSelection().removeAllRanges();
+        const cur = d.c.dataset.st, three = d.c.closest('.dy-three');
+        d.bar = document.createElement('div'); d.bar.className = 'ds-drops';
+        d.bar.innerHTML = ['pending', 'progress', 'wait', 'done'].filter(x => x === 'done' || dsSection(x)).map(x => `<div data-k="${x}" class="${x === cur ? 'here' : ''}" style="--c:${dsColor(x)}">${dsIcon(x)}${DS_NAME[x]}</div>`).join('');
+        three.before(d.bar); requestAnimationFrame(() => d.bar.classList.add('in'));
+      }
+      d.lift.style.left = (e.clientX - d.dx) + 'px'; d.lift.style.top = (e.clientY - d.dy) + 'px';
+      const el = document.elementFromPoint(e.clientX, e.clientY), t = el && el.closest && el.closest('.ds-drops > div');
+      d.bar.querySelectorAll(':scope > div').forEach(x => x.classList.toggle('hot', x === t && !x.classList.contains('here')));
+    });
+    document.addEventListener('pointerup', () => dsDragEnd(true));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && dsDrag && dsDrag.on) { e.stopPropagation(); if (dsDrag.bar) dsDrag.bar.querySelectorAll('.hot').forEach(x => x.classList.remove('hot')); dsDragEnd(false); } }, true);
+    // the ring outside the Day page (Land, the Weekly reset) keeps its own drawing; the In Progress time ticks once a minute
+    setInterval(() => { try { if (activeMainTab === 'day' && dayS.state === 'active' && dayPanel && !dsDrag && !dayPanel.querySelector('input:focus') && dayPanel.querySelector('.ds-progress')) dayRender(); } catch (e) {} }, 60000);
+    if (!GUIDE_ITEMS.some(x => x.id === 'daystatus')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'promise'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'daystatus', g: 'moves', t: 'Run your day from Today', d: 'Once the day is started, each of your Three shows its status: click Pending, In Progress, Waiting On or Done on the card, or pick the card up and drop it on a status. In Progress rises to the top with its sub-tasks to tick, Waiting On steps aside with Nudge, Done folds away. The ring shows where each one is.', kw: 'today day status in progress waiting done drag three promise' }); }
     applyWaitRail();
   </script>
 </body>

@@ -1,5 +1,16 @@
 # Hodo: what changed
 
+## Hodo 2.4 · Nov 02, 2026
+- NEW: Run your day from Today
+- NEW: Welcome back
+- NEW: Fix or remove an area
+- REWORKED: Hodo opens on Tasks
+- REWORKED: Your photo is the Settings button
+- REWORKED: Setting up Hodo Link
+- REWORKED: Promise to this week
+- REWORKED: Open a card with a click
+- SOLVED: Renaming an area hides its tasks behind the filter
+
 ## Hodo 2.3 · Nov 01, 2026
 - NEW: Your profile and photo
 - REWORKED: Area tabs, right where you need them
