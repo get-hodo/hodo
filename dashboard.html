@@ -5075,8 +5075,8 @@
     .ds-sub.ok { color: var(--text-muted); text-decoration: line-through; }
     .ds-sub.ok i { background: var(--st-progress-edge); border-color: var(--st-progress-edge); }
     .ds-sub.ok i::after { content: ''; width: 7px; height: 4px; border: solid #fff; border-width: 0 0 1.6px 1.6px; transform: rotate(-45deg) translate(1px, -1px); }
-    .ds-bar { margin-top: 10px; height: 4px; max-width: 520px; border-radius: 3px; background: var(--bg-secondary); overflow: hidden; }
-    .ds-bar b { display: block; height: 100%; border-radius: 3px; background: var(--ds-c); transition: width .4s ease; }
+    .ds-prog { margin-top: 10px; height: 4px; max-width: 520px; border-radius: 3px; background: var(--bg-secondary); overflow: hidden; }
+    .ds-prog b { display: block; height: 100%; border-radius: 3px; background: var(--ds-c); transition: width .4s ease; }
     .ds-drops { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; overflow: hidden; height: 0; margin-top: 0; transition: height .22s ease, margin .22s ease; }
     .ds-drops.in { height: 52px; margin-top: 18px; }
     .ds-drops > div { display: flex; align-items: center; justify-content: center; gap: 7px; border-radius: 12px; border: 1.5px dashed var(--border); font-size: 13px; font-weight: 650; color: var(--c); background: color-mix(in srgb, var(--bg-card) 75%, transparent); transition: transform .15s ease, background .15s ease, box-shadow .15s ease; }
@@ -5086,6 +5086,10 @@
     .ds-lift { position: fixed; z-index: 6000; pointer-events: none; margin: 0 !important; transform: rotate(-1.5deg); box-shadow: 0 26px 50px -16px rgba(0,0,0,.35) !important; opacity: .97; animation: none !important; }
     .dy-ring circle.ds-seg { stroke-width: 4; }
     @media (prefers-reduced-motion: reduce) { .dy-card.ds-progress { animation: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--st-progress-edge) 16%, transparent); } .ds-drops { transition: none; } }
+    /* Nov 2 (2.4.1): status icons and swap sit top-right, level with the title; no Done button (the ✓ does it); click opens details */
+    .dy-card.ds-pending .acts, .dy-card.ds-progress .acts, .dy-card.ds-wait .acts { align-self: flex-start; flex-wrap: nowrap; max-width: none; }
+    .dy-card.ds-pending, .dy-card.ds-progress, .dy-card.ds-wait, .dy-card.kept { cursor: pointer; }
+    .dy-card.ds-pending:active, .dy-card.ds-progress:active, .dy-card.ds-wait:active { cursor: grabbing; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7447,7 +7451,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.4';
+    const KOI_VERSION = '2.4.1';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -7586,18 +7590,18 @@
     // reports "0002-10-30", and new Date(2, …) means 1902, so the box closed with a date a century off. Years 1900–2200 only.
     function koiDateFromInput(v) {
       const m = /^(\d{4,})-(\d{2})-(\d{2})$/.exec(String(v || '')); if (!m) return null;
-      const y = +m[1]; if (y < 1900 || y > 2200) return null;
+      const y = +m[1]; if (y < 2000 || y > 2200) return null;   // Nov 2: 2000–2200 only
       return new Date(y, +m[2] - 1, +m[3]);
     }
     function parseDateText(txt) {
       const t = txt.replace(new RegExp('^' + WD_RE, 'i'), '').trim();
       let m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+      if (m) return (+m[1] < 2000 || +m[1] > 2200) ? null : new Date(+m[1], +m[2] - 1, +m[3]);   // Nov 2: an impossible year is no date at all
       m = t.match(/^([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(\d{4}))?$/);
       if (!m) return null;
       const mi = MONTHS.findIndex(x => m[1].toLowerCase().startsWith(x.toLowerCase()));
       if (mi < 0) return null;
-      const y = m[3] ? +m[3] : koiNearestYear(mi, +m[2]);
+      const y = m[3] ? +m[3] : koiNearestYear(mi, +m[2]); if (y < 2000 || y > 2200) return null;   // Nov 2: e.g. a 1902 left by the old year-typing bug
       const d = new Date(y, mi, +m[2]);
       return isNaN(d) ? null : d;
     }
@@ -15537,6 +15541,11 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.4.1': [
+        { k: 'reworked', t: 'Your Three, simpler to use', d: 'Click a task on Today to open its details, like on the board. The status icons and Swap now sit at the top right, and the ✓ marks a task done.' },
+        { k: 'solved', t: 'Week · Plan · Day bar missing on Today', d: 'Now the bar is back at the top of the Today page.' },
+        { k: 'solved', t: 'Strange “Carried” counts from a wrong year', d: 'Now a date with an impossible year (like 1902) is ignored, so it can’t show as carried for thousands of days.' }
+      ],
       '2.4': [
         { k: 'new', t: 'Run your day from Today', d: 'Once your day is started, each of your Three shows its status: <b>Pending</b>, <b>In Progress</b>, <b>Waiting On</b> or <b>Done</b>. Change it with the status icons on the card, or pick the card up and drop it on a status.<ul><li><b>In Progress</b> rises to the top, with how long you’ve been on it and its sub-tasks to tick.</li><li><b>Waiting On</b> steps aside, with Nudge.</li><li><b>Done</b> folds away.</li></ul>The ring shows where each one is.' },
         { k: 'new', t: 'Welcome back', d: 'When your browser needs a click before Hodo can open your Hodo Folder again, Hodo now says so. <b>Reconnect</b> brings everything back at once. Choose <b>Allow on every visit</b> when your browser offers it, so you won’t be asked again.' },
@@ -18880,9 +18889,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         if (k === 'progress' && t.subtasks && t.subtasks.length) {
           body.insertAdjacentHTML('beforeend', `<div class="ds-subs">${t.subtasks.map((st, j) => `<button type="button" class="ds-sub${st.checked ? ' ok' : ''}" data-dss="${j}"><i></i><span>${dayEsc(st.text)}</span></button>`).join('')}</div>`);
         }
-        if (fr != null) body.insertAdjacentHTML('beforeend', `<div class="ds-bar"><b style="width:${Math.round(fr * 100)}%"></b></div>`);
+        if (fr != null) body.insertAdjacentHTML('beforeend', `<div class="ds-prog"><b style="width:${Math.round(fr * 100)}%"></b></div>`);
         const acts = c.querySelector('.acts');
-        if (acts) {
+        if (acts) { const db = acts.querySelector('[data-dy="done"]'); if (db) db.remove();
           acts.insertAdjacentHTML('afterbegin', `<div class="ds-strip">${['pending', 'progress', 'wait', 'done'].filter(x => x === 'done' || dsSection(x)).map(x => `<button type="button" class="${x === k ? 'on' : ''}" data-dst="${x}" style="--c:${dsColor(x)}" title="${x === k ? DS_NAME[x] + ' (now)' : 'Move to ' + DS_NAME[x]}" aria-label="${DS_NAME[x]}">${dsIcon(x)}</button>`).join('')}</div>`);
           if (k === 'wait') acts.insertAdjacentHTML('beforeend', `<button type="button" class="dy-btn" data-dsnudge="1">Nudge</button>`);
         }
@@ -18892,6 +18901,15 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       // glide from where they were
       if (before && !reduceMotion) three.querySelectorAll(':scope > .dy-card').forEach(c => { const b = before[c.dataset.id]; if (!b) return; const a = c.getBoundingClientRect(), dy = b.top - a.top, sc = b.height && a.height ? b.height / a.height : 1;
         if (Math.abs(dy) > 2 || Math.abs(sc - 1) > .04) c.animate([{ transform: `translateY(${dy}px)`, transformOrigin: 'top' }, { transform: 'none', transformOrigin: 'top' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
+      // a click on a card opens its details, like on the board (again closes); the title's small preview is not used here
+      three.querySelectorAll(':scope > .dy-card').forEach(c => {
+        c.querySelectorAll('[data-peek]').forEach(x => x.removeAttribute('data-peek'));
+        c.addEventListener('click', e => {
+          if (e.target.closest('button, input, label, a, textarea, .ds-subs, .ds-strip, .acts')) return;
+          const f = dayFind(c.dataset.id); if (!f) return;
+          if (tpEl && tpTask && String(tpTask.id) === String(f.task.id)) closeTaskPanel(); else openTaskPanel(f.task);
+        });
+      });
       // wiring
       three.querySelectorAll('[data-dst]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); dsSet(b.closest('.dy-card').dataset.id, b.dataset.dst, b); }));
       three.querySelectorAll('[data-dss]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const f = dayFind(b.closest('.dy-card').dataset.id); if (!f) return; const st = f.task.subtasks[+b.dataset.dss]; if (!st) return; st.checked = !st.checked; markChanged(); try { if (st.checked) koiSound.play('sub'); } catch (x) {} renderTasks(); if (activeMainTab === 'day') dayRender(); }));

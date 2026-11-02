@@ -1,5 +1,10 @@
 # Hodo: what changed
 
+## Hodo 2.4.1 · Nov 02, 2026
+- REWORKED: Your Three, simpler to use
+- SOLVED: Week · Plan · Day bar missing on Today
+- SOLVED: Strange “Carried” counts from a wrong year
+
 ## Hodo 2.4 · Nov 02, 2026
 - NEW: Run your day from Today
 - NEW: Welcome back
