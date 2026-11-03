@@ -1,5 +1,11 @@
 # Hodo: what changed
 
+## Hodo 2.6 · Nov 03, 2026
+- NEW: Watch your workday pass, at a glance
+- REWORKED: Settings, with room to breathe
+- SHELVED: Daylight drift
+- SHELVED: Stoic Winner
+
 ## Hodo 2.5 · Nov 03, 2026
 - NEW: Projects: big goals, finally in one place
 - NEW: Hand Claude your plan, get a project back

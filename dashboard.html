@@ -15,6 +15,8 @@
   - The Day page comes alive (statuses)      "The Day page comes alive: statuses on Today (Nov 2)"
   - Projects (tab, chip, page, panel)        "Projects (Nov 3)"
   - Hodo Link 1.3.0 in Hodo (update, undo)  "Hodo Link 1.3.0 in Hodo (Nov 3)"
+  - Time passing: the header line           "Time passing: the header line (Nov 3)"
+  - Settings, centred (Nov 3)                "===== Settings, centred (Nov 3)", "SETTINGS, CENTRED"
   - Quick-action strip (board / list / cal)    "Quick-action strip inside board cards", "Quick-action strip in List view"
   - Two dates, capsules, field editors         "Two dates (Oct 3)", "CAPSULES", "FIELD EDITOR POPOVER"
   - Calendar                                   "/* ===== CALENDAR VIEW", "CALENDAR TASK CARD", "Calendar row: everything eases"
@@ -47,7 +49,7 @@
   - Card style, two dates, field editors       "CARD STYLE:", "// ===== Two dates", "FIELD EDITORS"
   - Duplicate                                  "// ===== Duplicate (Oct 3)"
   - Files (remember handles), memory folder    "Remember opened files", "MEMORY FUNCTIONALITY"
-  - Themes + auto switch + drift               "// ===== THEMES", "Early Bird & Night Owl: automatic switching"
+  - Themes + auto switch                       "// ===== THEMES", "Early Bird & Night Owl: automatic switching"
   - Calendar                                   "// ===== CALENDAR VIEW", "CALENDAR TASK CARD (full board card"
   - Celebrations                               "// ===== CELEBRATIONS" (queueCelebrationCheck, toast)
   - Focus                                      "FOCUS MODE"
@@ -2879,7 +2881,6 @@
     .sp-seg button + button { border-left: 1px solid var(--border); }
     .sp-seg button.on { background: color-mix(in srgb, var(--brand) 16%, var(--bg-card)); color: var(--text-primary); font-weight: 650; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 45%, transparent); }
     .sp-dim { opacity: .8; margin-top: 8px; }
-    #dayTint { position: fixed; inset: 0; pointer-events: none; z-index: 2147483000; mix-blend-mode: multiply; opacity: 0; transition: opacity 50s linear, background-color 50s linear; }
     .sp-select { font: inherit; font-size: 12px; padding: 4px 6px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); }
     .sp-note { font-size: 11.5px; color: var(--text-muted); margin: 4px 2px 0; line-height: 1.4; }
     /* narrow windows: labels fold into icons, Soundtrack first, Capture last */
@@ -3331,8 +3332,8 @@
     .sp-rt { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 550; color: var(--text-primary); }
     .sp-hint, #settingsPanel .sp-note { font-size: 11.5px; color: var(--text-muted); line-height: 1.4; margin: 0; }
     .sp-rl .sp-hint { overflow: hidden; text-overflow: ellipsis; }
-    /* Location only matters for "With the sun" and Daylight drift */
-    #settingsPanel:not(:has(#themeAutoMode [data-am="sun"].on)):not(:has(#driftToggle:checked)) .sp-loc { display: none; }
+    /* Location only matters for "With the sun" */
+    #settingsPanel:not(:has(#themeAutoMode [data-am="sun"].on)) .sp-loc { display: none; }
     /* preview cards (style + theme) */
     #settingsPanel .sp-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 12px; background: none; padding: 0; border: 0; }
     #settingsPanel .sp-card { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 7px 7px 9px; font: inherit; text-align: left; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg-primary); color: var(--text-primary); cursor: pointer; box-shadow: none; transition: border-color .15s, box-shadow .15s; }
@@ -3391,21 +3392,6 @@
     .sp-step input { width: 38px; padding: 4px 0; border: 0; background: transparent; text-align: center; font: inherit; font-size: 13.5px; font-weight: 650; color: var(--text-primary); -moz-appearance: textfield; }
     .sp-step input::-webkit-outer-spin-button, .sp-step input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .sp-step span { margin-right: 4px; }
-    /* Hodo AI */
-    #settingsPanel .sp-ai { display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; }
-    #settingsPanel .sp-ai input, #settingsPanel .sp-ai select { width: 100%; box-sizing: border-box; font: inherit; font-size: 12.5px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg-primary); color: var(--text-primary); }
-    #settingsPanel .sp-ai input:focus, #settingsPanel .sp-ai select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
-    .sp-key { position: relative; }
-    #settingsPanel .sp-key input { padding-right: 38px; }
-    .sp-key button { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 30px; height: 28px; padding: 0; border: 0; background: transparent; border-radius: 7px; cursor: pointer; color: var(--text-muted); }
-    .sp-key button:hover, .sp-key button.on { color: var(--text-primary); background: var(--bg-secondary); }
-    .sp-key svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
-    #settingsPanel .sp-ai-row { display: flex; gap: 6px; }
-    #settingsPanel .sp-ai-row select { flex: 1; width: auto; }
-    #settingsPanel .sp-ai-row button { flex: none; font: inherit; font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-primary); cursor: pointer; }
-    #settingsPanel .sp-ai-row button:hover { border-color: var(--accent); color: var(--accent); }
-    #settingsPanel .ai-status { font-size: 11.5px; line-height: 1.4; }
-    #settingsPanel .ai-status:empty { display: none; }
     .sp-pill { margin-left: auto; font-size: 11px; font-weight: 650; padding: 2px 9px; border-radius: 999px; background: var(--bg-secondary); color: var(--text-muted); }
     .sp-pill.ok { background: color-mix(in srgb, #2f855a 14%, transparent); color: #2f855a; }
     [data-theme="dark"] .sp-pill.ok { color: #7fbf97; background: color-mix(in srgb, #7fbf97 14%, transparent); }
@@ -5192,6 +5178,134 @@
     .ns-shout { display: inline-flex; align-items: center; gap: 7px; margin: 12px 8px 0 0; padding: 6px 12px; border-radius: 999px; font-size: 13px; color: var(--text-secondary); background: color-mix(in srgb, var(--brand) 9%, var(--bg-card)); border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent); }
     .ns-shout b { color: var(--text-primary); font-weight: 650; }
     .ns-shout.you { background: color-mix(in srgb, #e0a13a 12%, var(--bg-card)); border-color: color-mix(in srgb, #e0a13a 35%, transparent); }
+    /* ===== Time passing: the header line (Nov 3) ===== */
+    .day-light { display: none !important; }
+    header { position: relative; }
+    .tl { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; pointer-events: none; z-index: 2; }
+    .tl[hidden] { display: none; }
+    .tl .tl-hit { position: absolute; left: 0; right: 0; top: -6px; height: 14px; pointer-events: auto; cursor: default; }
+    .tl b { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 25%, transparent), color-mix(in srgb, var(--brand) 70%, transparent)); transition: width 1.2s ease; }
+    .tl.late b { background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 25%, transparent), #e0912f); }
+    .tl i { position: absolute; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent); transition: left 1.2s ease; }
+    .tl.late i { background: #e0912f; box-shadow: 0 0 0 3px rgba(224, 145, 47, .22); }
+    .tl.ink b { background: var(--ink); opacity: .85; height: 1.6px; top: .2px; bottom: auto; border-radius: 1px; }
+    .tl .nib { position: absolute; top: -12px; width: 14px; height: 14px; margin-left: -1px; display: block; line-height: 0; transition: left 1.2s ease; }
+    .tl .nib svg { display: block; width: 14px; height: 14px; overflow: visible; }
+    .tl .nib path { fill: var(--ink); } .tl .nib .cut { fill: none; stroke: var(--bg-primary); stroke-width: .8; stroke-linecap: round; } .tl .nib .hole { fill: var(--bg-primary); }
+    .tl-tip { position: absolute; top: 12px; transform: translateX(-50%); white-space: nowrap; padding: 6px 10px; border-radius: 8px; background: #2b2622; color: #fff; font-size: 12px; font-weight: 500; pointer-events: none; z-index: 60; }
+    @media (prefers-reduced-motion: reduce) { .tl b, .tl i, .tl .nib { transition: none; } }
+    /* ===== SETTINGS, CENTRED (Nov 3): a centred window with a side menu, one section at a time, search, previews on hover ===== */
+    .so-scrim { position: fixed; inset: 0; z-index: 2419; background: color-mix(in srgb, #1d1a16 30%, transparent); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); display: none; }
+    body:has(#settingsPanel.so:not([hidden])) .so-scrim { display: block; }
+    [data-theme="dark"] .so-scrim { background: rgba(6, 8, 14, .55); }
+    #settingsPanel.settings-panel.so {
+      inset: 0; margin: auto; width: min(940px, calc(100vw - 48px)); height: min(720px, calc(100vh - 48px)); border: 1px solid var(--border);
+      border-radius: 20px; box-shadow: 0 30px 80px rgba(0, 0, 0, .22), 0 4px 14px rgba(0, 0, 0, .08); flex-direction: row; background: var(--bg-primary);
+      transition: transform .25s cubic-bezier(.3, .8, .3, 1), opacity .2s;
+    }
+    @starting-style { #settingsPanel.settings-panel.so:not([hidden]) { transform: scale(.97) translateY(6px); opacity: 0; } }
+    #settingsPanel.so > .sp-head, #settingsPanel.so > #spNav { display: none; }
+    .so-side { flex: none; width: 232px; display: flex; flex-direction: column; gap: 14px; padding: 22px 14px 16px; background: var(--bg-secondary); border-right: 1px solid var(--border-light, var(--border)); }
+    .so-side .sp-h1 { padding: 0 8px; }
+    .so-find { position: relative; }
+    .so-find svg { position: absolute; left: 10px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); fill: none; stroke: var(--text-muted); stroke-width: 1.8; stroke-linecap: round; pointer-events: none; }
+    .so-find input { width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; padding: 8px 10px 8px 32px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); }
+    .so-find input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+    .so-nav { display: flex; flex-direction: column; gap: 2px; }
+    .so-nav button { display: flex; align-items: center; gap: 10px; font: inherit; font-size: 13.5px; font-weight: 550; text-align: left; padding: 8px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--text-secondary); cursor: pointer; }
+    .so-nav button svg { width: 17px; height: 17px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+    .so-nav button:hover { background: color-mix(in srgb, var(--text-primary) 6%, transparent); color: var(--text-primary); }
+    .so-nav button.on { background: var(--bg-card); color: var(--accent); box-shadow: 0 1px 3px var(--shadow); }
+    .so-nav button.on svg { opacity: 1; }
+    .so-searching .so-nav button.on { background: transparent; color: var(--text-secondary); box-shadow: none; }
+    .so-foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding: 0 8px; }
+    .so-foot .sp-saved { flex: none; padding: 0; }
+    .so-main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; }
+    .so-top { display: flex; align-items: flex-start; gap: 12px; padding: 24px 22px 14px 34px; }
+    .so-top h2 { margin: 0; font-size: 21px; font-weight: 700; color: var(--text-primary); letter-spacing: -.01em; }
+    .so-top p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
+    .so-top > div { flex: 1; min-width: 0; }
+    #settingsPanel.so .sp-body { padding: 4px 34px 34px; gap: 14px; }
+    #settingsPanel.so .sp-body > .sp-group { max-width: 640px; width: 100%; box-sizing: border-box; }
+    #settingsPanel.so .sp-body > .sp-group:not(.so-on) { display: none; }
+    #settingsPanel.so .sp-body > .sp-group.so-old { display: none !important; }
+    #settingsPanel.so .sp-group.so-sec > .sp-gh { display: none; }
+    #settingsPanel.so .sp-group.so-sec { padding: 6px 18px 8px; }
+    #settingsPanel.so .sp-group.so-sec > .sp-row:first-of-type, #settingsPanel.so .sp-group.so-sec > :first-child + .sp-row { border-top: 0; }
+    #settingsPanel.so .so-sec .sp-label { margin-top: 14px; }
+    #settingsPanel.so .so-sec .sp-themes { max-width: 420px; }
+    #settingsPanel.so .so-sec .lk-body { padding-top: 10px; }
+    #settingsPanel.so .so-sec .sp-kgrid { padding-top: 8px; }
+    #settingsPanel.so .so-sec .sp-gb { grid-template-rows: 1fr; }   /* Hodo Link never folds here */
+    .so-nav .sp-pill { margin-left: auto; font-size: 10.5px; padding: 1px 7px; }
+    .so-sub { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 16px 0 4px; }
+    /* search: every section shows, only matching rows, each with its section name */
+    #settingsPanel.so.so-searching .sp-body > .sp-group.so-sec.so-hit { display: block; }
+    #settingsPanel.so.so-searching .sp-body > .sp-group.so-sec > .sp-gh { display: flex; font-size: 12px; color: var(--text-muted); margin: 8px 0 2px; }
+    #settingsPanel.so.so-searching .so-sec > :not(.sp-gh):not(.so-match) { display: none !important; }
+    #settingsPanel.so.so-searching .so-sec > .so-match { border-top: 0; }
+    .so-none { display: none; font-size: 13px; color: var(--text-muted); padding: 30px 0; }
+    .so-searching.so-empty .so-none { display: block; }
+    .so-flash { animation: soFlash 1.4s ease; border-radius: 8px; }
+    @keyframes soFlash { 0%, 30% { background: color-mix(in srgb, var(--accent) 12%, transparent); } 100% { background: transparent; } }
+    /* rows with a preview show a small eye; the preview opens on hover (or keyboard focus) */
+    .so-eye { width: 14px; height: 14px; fill: none; stroke: var(--text-muted); stroke-width: 1.6; opacity: .7; }
+    .so-pv { position: fixed; z-index: 2430; width: 250px; padding: 10px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 18px 44px var(--shadow-hover), 0 2px 6px var(--shadow); pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity .15s, transform .15s; }
+    .so-pv.show { opacity: 1; transform: none; }
+    .so-pv-cap { font-size: 11.5px; color: var(--text-muted); margin-top: 8px; line-height: 1.4; }
+    .so-pv-stage { position: relative; height: 92px; border-radius: 9px; overflow: hidden; background: var(--bg-primary); box-shadow: inset 0 0 0 1px var(--border-light, var(--border)); }
+    /* Workday line preview */
+    .so-pv-hd { position: absolute; left: 0; right: 0; top: 0; height: 34px; display: flex; align-items: center; gap: 6px; padding: 0 10px; border-bottom: 1px solid var(--border-light, var(--border)); }
+    .so-pv-hd i { display: block; height: 7px; border-radius: 4px; background: var(--text-muted); opacity: .35; }
+    .so-pv-hd i:first-child { width: 26px; height: 9px; background: var(--brand); opacity: .9; }
+    .so-pv-line { position: absolute; left: 0; right: 0; top: 33px; height: 2px; }
+    .so-pv-line b { position: absolute; left: 0; top: 0; height: 2px; border-radius: 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 25%, transparent), color-mix(in srgb, var(--brand) 70%, transparent)); }
+    .so-pv-line i { position: absolute; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent); }
+    .so-pv-line.ink b { background: var(--ink); opacity: .85; height: 1.6px; }
+    .so-pv-line .nib { position: absolute; top: -12px; width: 14px; height: 14px; margin-left: -1px; line-height: 0; }
+    .so-pv-line .nib svg { display: block; width: 14px; height: 14px; overflow: visible; }
+    .so-pv-line .nib path { fill: var(--ink); } .so-pv-line .nib .cut { fill: none; stroke: var(--bg-primary); stroke-width: .8; } .so-pv-line .nib .hole { fill: var(--bg-primary); }
+    .so-pv-cards { position: absolute; left: 10px; right: 10px; top: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .so-pv-cards i { display: block; height: 34px; border-radius: 6px; background: var(--bg-card); box-shadow: inset 0 0 0 1px var(--border-light, var(--border)); }
+    .so-pv-off .so-pv-line { display: none; }
+    /* Celebrations preview */
+    .so-pv-task { position: absolute; left: 22px; right: 22px; top: 28px; height: 36px; display: flex; align-items: center; gap: 9px; padding: 0 11px; border-radius: 9px; background: var(--bg-card); box-shadow: 0 1px 3px var(--shadow), inset 0 0 0 1px var(--border-light, var(--border)); font-size: 12px; color: var(--text-primary); }
+    .so-pv-box { width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid var(--text-muted); flex: none; position: relative; animation: soBox 2.6s infinite; }
+    .so-pv-box::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) scale(0); animation: soTick 2.6s infinite; }
+    @keyframes soBox { 0%, 22% { background: transparent; border-color: var(--text-muted); } 28%, 100% { background: var(--accent); border-color: var(--accent); } }
+    @keyframes soTick { 0%, 24% { transform: rotate(45deg) scale(0); } 32%, 100% { transform: rotate(45deg) scale(1); } }
+    .so-pv-task span { animation: soDone 2.6s infinite; }
+    @keyframes soDone { 0%, 26% { color: var(--text-primary); text-decoration: none; } 34%, 100% { color: var(--text-muted); text-decoration: line-through; } }
+    .so-pv-ink { position: absolute; left: 30px; top: 46px; width: 0; height: 0; }
+    .so-pv-ink i { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); opacity: 0; animation: soInk 2.6s infinite; }
+    @keyframes soInk { 0%, 28% { opacity: 0; transform: translate(0, 0) scale(.4); } 36% { opacity: .85; } 70%, 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(1); } }
+    .so-pv-star { position: absolute; width: 46px; height: 2px; left: 40px; top: 18px; border-radius: 2px; background: linear-gradient(90deg, transparent, #f4dc9c); opacity: 0; transform: rotate(-18deg); animation: soStar 2.6s infinite; }
+    .so-pv-star.b { top: 74px; left: 120px; width: 34px; animation-delay: .18s; }
+    @keyframes soStar { 0%, 30% { opacity: 0; translate: 0 0; } 40% { opacity: 1; } 75%, 100% { opacity: 0; translate: 70px 22px; } }
+    .so-pv-quiet .so-pv-ink, .so-pv-quiet .so-pv-star { display: none; }
+    /* Switch automatically preview: today as a strip */
+    .so-pv-day { position: absolute; left: 12px; right: 12px; top: 30px; height: 26px; border-radius: 7px; overflow: hidden; background: #262a36; }
+    .so-pv-day b { position: absolute; top: 0; bottom: 0; background: linear-gradient(180deg, #fff6ea, #f4efe4); }
+    .so-pv-day u { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--accent); text-decoration: none; }
+    .so-pv-hrs { position: absolute; left: 12px; right: 12px; top: 62px; display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .so-pv-lbl { position: absolute; left: 12px; top: 10px; font-size: 10.5px; font-weight: 650; color: var(--text-secondary); }
+    @media (prefers-reduced-motion: reduce) { .so-pv-box, .so-pv-box::after, .so-pv-task span, .so-pv-ink i, .so-pv-star { animation-iteration-count: 1; animation-duration: .01s; animation-fill-mode: forwards; } }
+    /* Minimalist */
+    html.cs-min #settingsPanel.so { border-radius: 12px; }
+    html.cs-min .so-nav button.on { color: var(--text-primary); box-shadow: inset 0 0 0 1px var(--border); }
+    html.cs-min #settingsPanel.so .sp-group.so-sec { padding: 0; border: 0; }
+    /* small screens: the window fills the screen, the menu runs across the top */
+    @media (max-width: 720px) {
+      #settingsPanel.settings-panel.so { width: 100vw; height: 100dvh; border-radius: 0; border: 0; flex-direction: column; }
+      .so-side { width: auto; padding: 14px 14px 8px; gap: 10px; border-right: 0; border-bottom: 1px solid var(--border-light, var(--border)); }
+      .so-nav { flex-direction: row; overflow-x: auto; scrollbar-width: none; }
+      .so-nav button { flex: none; padding: 6px 10px; } .so-nav button svg { display: none; }
+      .so-foot { display: none; }
+      .so-top { padding: 14px 16px 8px; } .so-side .sp-h1 { padding-right: 44px; }
+      #settingsPanel.so .so-top .sp-close { position: fixed; top: 12px; right: 12px; } #settingsPanel.so .sp-body { padding: 4px 16px 28px; }
+      .so-pv { display: none; }
+    }
+    #settingsPanel.so .mp-row { justify-content: flex-start; gap: 18px; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -5227,7 +5341,6 @@
 </head>
 <body>
   <div id="skyFx" aria-hidden="true"></div>
-  <div id="dayTint" aria-hidden="true"></div>
   <header>
     <div class="header-left">
       <div>
@@ -5266,7 +5379,7 @@
             <button class="sp-close" id="spClose" aria-label="Close settings" title="Close · Esc">&times;</button>
           </div>
           <nav class="sp-nav" id="spNav">
-            <button data-go="you" class="on">You</button><button data-go="look">Appearance</button><button data-go="feel">Feedback</button><button data-go="focus">Focus</button><button data-go="people">People</button><button data-go="ai">Hodo AI</button><button data-go="files">Files</button>
+            <button data-go="you" class="on">You</button><button data-go="look">Appearance</button><button data-go="feel">Feedback</button><button data-go="focus">Focus</button><button data-go="people">People</button><button data-go="files">Files</button>
           </nav>
           <div class="sp-body" id="spBody">
 
@@ -5295,10 +5408,6 @@
                 <div class="sp-rl"><span class="sp-rt">Switch automatically</span></div>
                 <div class="sp-seg" id="themeAutoMode"><button data-am="off">Off</button><button data-am="fixed">6 am · 6 pm</button><button data-am="sun">With the sun</button></div>
                 <div class="sp-hint" id="themeAutoNote"></div>
-              </div>
-              <div class="sp-row">
-                <div class="sp-rl"><span class="sp-rt">Daylight drift</span><span class="sp-hint">Early Bird only: cool morning light, warmer toward sunset</span></div>
-                <label class="sp-switch"><input type="checkbox" id="driftToggle" aria-label="Daylight drift"><span class="sw-track"><span class="sw-knob"></span></span></label>
               </div>
               <div class="sp-row sp-loc">
                 <div class="sp-rl"><span class="sp-rt">Location</span><span class="sp-hint">For sunrise and sunset times</span></div>
@@ -5340,18 +5449,6 @@
               </div>
             </section>
 
-            <section class="sp-group sp-col" data-g="ai">
-              <h3 class="sp-gh"><button class="sp-toggle" type="button" aria-expanded="false"><svg class="sp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="sp-gt">Hodo AI</span><span class="sp-pill" id="aiPill">Off</span></button></h3>
-              <div class="sp-gb"><div class="sp-gbi">
-              <div class="sp-ai">
-                <div class="sp-key"><input type="password" id="aiKey" placeholder="Anthropic API key  (sk-ant-…)" autocomplete="off" spellcheck="false"><button id="aiKeyEye" type="button" aria-label="Show key" title="Show key"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg></button></div>
-                <input id="aiWs" placeholder="Workspace ID, only if your key needs one" autocomplete="off" spellcheck="false">
-                <div class="sp-ai-row"><select id="aiModel" aria-label="Model"></select><button id="aiTest">Test</button></div>
-                <div class="ai-status" id="aiStatus"></div>
-                <details class="sp-info"><summary>How your key is used</summary><div>The key stays in this browser. When you press Task it, that text is sent to Anthropic's API to be read. Nothing else leaves your computer.</div></details>
-              </div>
-              </div></div>
-            </section>
 
             <section class="sp-group sp-col" data-g="files">
               <h3 class="sp-gh"><button class="sp-toggle" type="button" aria-expanded="false"><svg class="sp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="sp-gt">Files &amp; rhythm</span></button></h3>
@@ -5359,10 +5456,6 @@
               <div class="sp-row">
                 <div class="sp-rl"><span class="sp-rt">Your Hodo Folder</span><span class="sp-hint" id="spFileName">Not connected</span></div>
                 <button class="sp-btn" id="spFileBtn">Change</button>
-              </div>
-              <div class="sp-row">
-                <div class="sp-rl"><span class="sp-rt">Memory</span><span class="sp-hint">What Hodo knows about your work</span></div>
-                <button class="sp-btn" id="spMemoryBtn">Open</button>
               </div>
               <div class="sp-row">
                 <div class="sp-rl"><span class="sp-rt">Weekly review <span class="sp-kbd">P</span></span><span class="sp-hint">The day Parked asks you to review</span></div>
@@ -7553,7 +7646,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.5';
+    const KOI_VERSION = '2.6';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -12266,22 +12359,12 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         const inp = document.getElementById(b.dataset.for); const v = (parseInt(inp.value, 10) || 0) + parseInt(b.dataset.step, 10);
         inp.value = Math.min(+inp.max, Math.max(+inp.min, v)); inp.dispatchEvent(new Event('change'));
       }));
-      const key = document.getElementById('aiKey'), eye = document.getElementById('aiKeyEye');
-      eye.addEventListener('click', () => { const show = key.type === 'password'; key.type = show ? 'text' : 'password'; eye.classList.toggle('on', show); eye.title = eye.ariaLabel = show ? 'Hide key' : 'Show key'; });
-      const pill = document.getElementById('aiPill'), st = document.getElementById('aiStatus');
-      const pillSync = () => {
-        const has = !!(key.value.trim() || (typeof koiAiSettings === 'function' && koiAiSettings().key)), warn = st.classList.contains('warn');
-        pill.textContent = !has ? 'Off' : warn ? 'Check key' : 'On'; pill.className = 'sp-pill' + (!has ? '' : warn ? ' warn' : ' ok');
-        if (!warn && (/^Ready\./.test(st.textContent) || /^Off\. Paste/.test(st.textContent) || (has ? /^Paste a key/ : /^Test checks/).test(st.textContent))) st.textContent = has ? 'Test checks that the key works.' : 'Paste a key to turn on Task it.';
-      };
-      new MutationObserver(pillSync).observe(st, { attributes: true, childList: true, characterData: true, subtree: true });
-      key.addEventListener('input', pillSync); pillSync();
       const setOpen = (sec, on) => { sec.classList.toggle('open', on); const t = sec.querySelector('.sp-toggle'); if (t) t.setAttribute('aria-expanded', on ? 'true' : 'false'); };
       panel.querySelectorAll('.sp-col').forEach(sec => sec.querySelector('.sp-toggle').addEventListener('click', () => setOpen(sec, !sec.classList.contains('open'))));
       // jumping to a collapsed group opens it
       nav.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => { const sec = body.querySelector(`.sp-col[data-g="${b.dataset.go}"]`); if (sec && !sec.classList.contains('open')) { sec.classList.add('sp-instant'); setOpen(sec, true); void sec.offsetHeight; requestAnimationFrame(() => sec.classList.remove('sp-instant')); } }, true));
       gear.addEventListener('click', () => { if (!panel.hidden) panel.querySelectorAll('.sp-col').forEach(sec => setOpen(sec, false)); });
-      gear.addEventListener('click', () => { if (!panel.hidden) { pillSync(); navOn('look'); body.scrollTop = 0; } });
+      gear.addEventListener('click', () => { if (!panel.hidden) { navOn('look'); body.scrollTop = 0; } });
     })();
     // Details panel: clicking beside a step's text still edits it (the text itself is inline so its strike-through hugs the words)
     document.addEventListener('click', e => {
@@ -12990,7 +13073,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
     }
     function muPlay(id) {
       if (id && id !== mu.cur) { muSavePos(); muFileStop(0); if (muGen.live) muGen.live.stop(0.8); muGen.on = false; mu.cur = id; muLS.set('koi-mu-cur', id); }
-      if (!muTrack()) { mu.cur = MU[1].id; muLS.set('koi-mu-cur', mu.cur); }
+      if (!muTrack()) { mu.cur = MU[0].id; muLS.set('koi-mu-cur', mu.cur); }
       const t = muTrack();
       if (t.file) muFilePlay(t); else muGenPlay();
     }
@@ -13068,7 +13151,6 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       const pop = document.getElementById('muPop'); if (!pop || pop.hidden) return;
       pop.innerHTML = `<div class="mu-h">Music</div><div class="mu-list">${MU.map(x => `<button class="mu-card${x.id === mu.cur ? ' on' : ''}" data-mu="pick" data-id="${x.id}"><span class="mu-dot" style="--mu-c:${x.c}">${x.id === mu.cur && mu.playing ? PAUSE_SVG : PLAY_SVG}</span><span class="mu-t"><b>${x.name}</b><span>${x.vibe}</span></span>${x.id === mu.cur ? `<span class="mu-state">${mu.playing ? 'Playing' : 'Paused'}</span>` : ''}</button>`).join('')}</div>
         <div class="mu-row"><span>Volume</span><input type="range" min="0" max="100" step="1" value="${mu.vol}" data-mu="vol"><span>${mu.vol}%</span></div>
-        <div class="mu-row"><label><input type="checkbox" data-mu="auto" ${mu.auto ? 'checked' : ''}> Start with each Focus session</label></div>
         <div class="mu-msg">${escapeHtml(mu.msg)}</div>
         <div class="mu-foot"><span>B to play / pause</span></div>`;
     }
@@ -13753,7 +13835,6 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       const fileName = document.getElementById('spFileName'), panel = document.getElementById('settingsPanel');
       document.getElementById('settingsBtn').addEventListener('click', () => { fileName.textContent = memoryDirHandle ? memoryDirHandle.name + ' › TASKS.md' : taskFileHandle ? (taskFileName || 'TASKS.md') : 'Not connected'; document.getElementById('spFileBtn').textContent = taskFileHandle ? 'Change' : 'Connect'; koiThemeAuto.sync(); });
       document.getElementById('spFileBtn').addEventListener('click', () => { panel.hidden = true; if (window.showDirectoryPicker) hfOpen('open'); else openTaskBtn.click(); });
-      document.getElementById('spMemoryBtn').addEventListener('click', () => { panel.hidden = true; document.getElementById('settingsBtn').classList.remove('active'); switchMainTab('memory'); });
       document.getElementById('saveState').addEventListener('click', e => { if (e.currentTarget.classList.contains('error')) { hasChanges = true; autoSave(); } });
     })();
     // ===== Early Bird & Night Owl: automatic switching (fixed hours or the real sunrise/sunset where you are) and daylight drift =====
@@ -13825,12 +13906,11 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       const sync = () => {
         document.querySelectorAll('#themeAutoMode [data-am]').forEach(b => b.classList.toggle('on', b.dataset.am === mode));
         document.querySelectorAll('.sp-themes [data-th]').forEach(b => b.classList.toggle('on', b.dataset.th === currentTheme()));
-        const dt = document.getElementById('driftToggle'); if (dt) dt.checked = koiDrift.on;
         note();
       };
       document.querySelectorAll('#themeAutoMode [data-am]').forEach(b => b.addEventListener('click', () => {
         mode = b.dataset.am; hold(0); try { localStorage.setItem('koi-theme-auto-mode', mode); localStorage.removeItem('koi-theme-auto'); } catch (x) {}
-        sync(); tick(); koiDrift.update();
+        sync(); tick();
       }));
       document.querySelectorAll('.sp-themes [data-th]').forEach(b => b.addEventListener('click', () => {
         if (b.dataset.th === currentTheme()) return;
@@ -13839,31 +13919,6 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       }));
       new MutationObserver(() => sync()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
       return { get on() { return mode !== 'off'; }, get mode() { return mode; }, manual() { if (mode !== 'off') hold(nextChange()); }, sync, want };
-    })();
-    // Daylight drift: a faint multiply wash over Early Bird that follows the sun where you are, cool → neutral → warm
-    window.koiDrift = (function () {
-      let on = false; try { on = localStorage.getItem('koi-drift') === '1'; } catch (e) {}
-      const el = document.getElementById('dayTint');
-      const tintFor = (now) => {
-        const t = koiSunTimes(now, KOI_LAT, KOI_LNG), a = t.sunrise.getTime(), b = t.sunset.getTime(), x = now.getTime();
-        if (x < a || x >= b) return null;
-        const f = (x - a) / (b - a);
-        if (f < .25) { const k = 1 - f / .25; return { rgb: [150, 180, 235], o: .10 * k }; }        // cool morning, fading by mid-morning
-        if (f < .5) return { rgb: [255, 255, 255], o: 0 };                                           // neutral midday
-        const k = (f - .5) / .5, mix = (p, q) => Math.round(p + (q - p) * k);
-        return { rgb: [255, mix(214, 168), mix(150, 98)], o: .16 * Math.pow(k, 1.25) };              // warmer and warmer toward sunset
-      };
-      const update = (at) => {
-        if (!el) return;
-        const tint = on && currentTheme() === 'default' ? tintFor(at || new Date()) : null;
-        if (!tint || tint.o <= 0.002) { el.style.opacity = 0; return; }
-        el.style.background = `rgb(${tint.rgb.join(',')})`; el.style.opacity = tint.o.toFixed(3);
-      };
-      setInterval(() => update(), 60000); setTimeout(() => update(), 0);
-      new MutationObserver(() => update()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-      const dt = document.getElementById('driftToggle');
-      if (dt) { dt.checked = on; dt.addEventListener('change', () => { on = dt.checked; try { localStorage.setItem('koi-drift', on ? '1' : '0'); } catch (x) {} update(); }); }
-      return { get on() { return on; }, update, preview: (d) => { const keep = on; on = true; update(d); on = keep; } };
     })();
     (function () {
       const sel = document.getElementById('koiCitySel'); if (!sel) return;
@@ -13875,7 +13930,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       sel.addEventListener('change', () => {
         const k = koiCityFind(sel.value); if (!k) return;
         sel.value = k; if (k === KOI_CITY) return;
-        KOI_CITY = k; [KOI_LAT, KOI_LNG] = KOI_CITIES[k]; try { localStorage.setItem('koi-city', k); } catch (e) {} koiThemeAuto.sync(); koiDrift.update();
+        KOI_CITY = k; [KOI_LAT, KOI_LNG] = KOI_CITIES[k]; try { localStorage.setItem('koi-city', k); } catch (e) {} koiThemeAuto.sync();
       });
     })();
     koiThemeAuto.sync();
@@ -14696,7 +14751,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       }
       const n = GS_ITEMS.filter(x => gs.done[x.k]).length, all = GS_ITEMS.length;
       gsEl.classList.toggle('min', !!gs.min);
-      const head = `<div class="gs-h"><button class="gs-ht" data-gs="min" aria-expanded="${!gs.min}"><span class="gs-mark">${GS_IC.bars}</span><b>Getting started</b><span class="gs-n">${n} of ${all}</span><svg class="gs-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button class="gs-x" data-gs="x" title="Hide (Settings → Keyboard brings it back)" aria-label="Hide">×</button></div>
+      const head = `<div class="gs-h"><button class="gs-ht" data-gs="min" aria-expanded="${!gs.min}"><span class="gs-mark">${GS_IC.bars}</span><b>Getting started</b><span class="gs-n">${n} of ${all}</span><svg class="gs-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button class="gs-x" data-gs="x" title="Hide (Settings → Help brings it back)" aria-label="Hide">×</button></div>
         <div class="gs-bar"><i style="width:${(n / all * 100).toFixed(0)}%"></i></div>`;
       const next = (GS_ITEMS.find(x => !gs.done[x.k]) || {}).k;   // only the next one shows its how-to, so the list stays short
       const list = GS_ITEMS.map(it => {
@@ -15057,7 +15112,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'yarddrawer', g: 'views', t: 'Waste Yard drawer', d: 'Days left per task, with Restore, Erase and Empty now.', kw: 'deleted bin' },
       { id: 'perfview', g: 'views', t: 'Performance view', d: 'Opens from the progress pie. Shows 7, 30 or 90 days.', kw: 'stats' },
       { id: 'focusview', g: 'views', t: 'Focus screen', d: 'A timer, one task at a time, and a music chip.', kw: 'timer' },
-      { id: 'settings', g: 'views', t: 'Settings', d: 'Click your picture (or initials) at the top right. Inside: You, Appearance, Feedback, Focus, People, Hodo AI, Files and rhythm, and Keyboard.', kw: 'preferences options gear photo picture' },
+      { id: 'settings', g: 'views', t: 'Settings', d: 'Click your picture (or initials) at the top right. Settings opens in the middle of the screen with six sections: You, Your week, Look & feel, Areas & people, Hodo Link and Help. Changes save on their own.', how: 'Type in Search settings to find any setting by name or by an everyday word (dark, file, shortcuts). Settings with a small eye show a live preview when you point at them.', kw: 'preferences options gear photo picture search find preview' },
 
       // Capture, AI and settings
       { id: 'capbar', g: 'capture', t: 'Capture bar', d: 'Click ⚡ or press C: one quiet bar. Enter catches it and closes.', keys: ['C'], kw: 'capture inbox' },
@@ -15070,9 +15125,9 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'aikey', g: 'capture', t: 'Hodo AI key', d: 'Settings → Hodo AI. The key stays in this browser.', kw: 'api key ai' },
       { id: 'you', g: 'capture', t: 'You, People and Areas', d: 'Your profile, the people you work with, and the colours of your areas, all in Settings.', kw: 'profile people areas' },
       { id: 'auto', g: 'capture', t: 'Switch automatically', d: 'The theme can follow the clock, or the real sunrise and sunset for your city.', kw: 'theme schedule sun' },
-      { id: 'sounds', g: 'capture', t: 'Sounds and celebrations', d: 'On or off, volume, and a preview, in Settings → Feedback.', keys: ['M'], kw: 'audio mute' },
+      { id: 'sounds', g: 'capture', t: 'Sounds and celebrations', d: 'On or off, volume, and a preview, in Settings → Look & feel.', keys: ['M'], kw: 'audio mute' },
       { id: 'music', g: 'capture', t: 'Music', d: 'Three moods to work to: Stoic Winner, Quiet Grinder and Cyber Rebel.', keys: ['B'], kw: 'soundtrack' },
-      { id: 'revday', g: 'capture', t: 'Weekly review day', d: 'The day Parked’s review comes due. Settings → Files & rhythm.', kw: 'parked review day' },
+      { id: 'revday', g: 'capture', t: 'Weekly review day', d: 'The day Parked’s review comes due. Settings → Your week.', kw: 'parked review day' },
       { id: 'backups', g: 'capture', t: 'Backups folder', d: 'A daily copy of your tasks, kept for 30 days.', kw: 'backup safety' },
       { id: 'welcome', g: 'capture', t: 'Show the welcome again', d: 'Replays the welcome and the Getting started list. Settings → Keyboard.', kw: 'welcome start tour first run' },
     ];
@@ -15476,7 +15531,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
 ## Captured
 `;   // Oct 24: a clean start; the welcome tour brings its own practice tasks and clears them after
     const KOI_STARTER_AREAS = `# Areas
-The areas your tasks belong to (Settings → You → Areas). "Suggest when text mentions" = words that make Hodo suggest this area for a new task.
+The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest when text mentions" = words that make Hodo suggest this area for a new task.
 
 | Area | Colour | Suggest when text mentions |
 |---|---|---|
@@ -15643,6 +15698,12 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.6': [
+        { k: 'new', t: 'Watch your workday pass, at a glance', d: 'The thin line under the header now fills up across your working hours. In Early Bird, a pen draws it in ink. In Night Owl, a small star travels along it. Point at it to see what’s left, like <i>“About 2 h 15 min left in your workday”</i>. It replaces the light that used to shift across the page, so the page stays calm all day. Don’t want it? Switch it off in <b>Settings → Your week</b>.' },
+        { k: 'reworked', t: 'Settings, with room to breathe', d: 'Settings now opens in the middle of the screen, in six clear sections: <b>You</b>, <b>Your week</b>, <b>Look &amp; feel</b>, <b>Areas &amp; people</b>, <b>Hodo Link</b> and <b>Help</b>. Each one says in a line what it’s for. You can also search for any setting, even with everyday words like “dark” or “shortcuts”. Settings with a small eye show a live preview when you point at them, so you see the change before you make it.' },
+        { k: 'shelved', t: 'Daylight drift', d: 'The tint that warmed Early Bird toward sunset is gone. The new workday line keeps time instead.', inspired: 'You5ef' },
+        { k: 'shelved', t: 'Stoic Winner', d: 'We’ve taken Stoic Winner out of the music for now. Quiet Grinder is still there to work to.' }
+      ],
       '2.5': [
         { k: 'new', t: 'Projects: big goals, finally in one place', d: 'Give a goal a home: its deadline, why it matters, and every task that gets you there. Each task shows how far the project has come (“2/5”); hover it to see the goal at a glance. When the last task is done, you get to close the project for good. Find it all in the new <b>Projects</b> tab.', forYou: 'You5ef' },
         { k: 'new', t: 'Hand Claude your plan, get a project back', d: 'Tell Claude <i>“here’s my plan for the launch”</i> and it lands in Hodo as a project: one task for each day of work, each planned for its day. Claude can also re-sort your areas or change many tasks at once, and it refuses plans that don’t add up, like a task planned after its own deadline. New in Claude’s prompt menu: <b>Plan my day</b>, <b>Land the day</b> and more.' },
@@ -18101,13 +18162,13 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const cp = box.querySelector('[data-lk="copy"]'); if (cp) cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText('Tidy my Hodo captures every hour on workdays.'); cp.textContent = 'Copied'; } catch (e) {} });
     }
     (function lkSettings() {
-      const ai = document.querySelector('#settingsPanel .sp-group[data-g="ai"]'); if (!ai) return;
+      const ai = document.querySelector('#settingsPanel .sp-group[data-g="people"]'); if (!ai) return;   // was after Hodo AI (removed Nov 3)
       lkSec = document.createElement('section'); lkSec.className = 'sp-group sp-col'; lkSec.dataset.g = 'link';
       lkSec.innerHTML = `<h3 class="sp-gh"><button class="sp-toggle" type="button" aria-expanded="false"><svg class="sp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="sp-gt">Hodo Link</span><span class="sp-pill">Off</span></button></h3><div class="sp-gb"><div class="sp-gbi"><div class="lk-body"></div></div></div>`;
       ai.after(lkSec);
       const setOpen = on => { lkSec.classList.toggle('open', on); lkSec.querySelector('.sp-toggle').setAttribute('aria-expanded', on ? 'true' : 'false'); };
       lkSec.querySelector('.sp-toggle').addEventListener('click', async () => { const on = !lkSec.classList.contains('open'); setOpen(on); if (on) { await lkRead(); lkPaint(); } });
-      const nav = document.getElementById('spNav'), aiNav = nav && nav.querySelector('[data-go="ai"]');
+      const nav = document.getElementById('spNav'), aiNav = nav && nav.querySelector('[data-go="people"]');
       if (aiNav) { const b = document.createElement('button'); b.dataset.go = 'link'; b.textContent = 'Hodo Link'; aiNav.after(b);
         b.addEventListener('click', async () => { const body = document.getElementById('spBody'); setOpen(true); await lkRead(); lkPaint(); body.scrollTo({ top: lkSec.offsetTop - body.offsetTop - 10, behavior: 'smooth' }); nav.querySelectorAll('[data-go]').forEach(x => x.classList.toggle('on', x === b)); }); }
       document.getElementById('settingsBtn').addEventListener('click', () => { if (lkSec.classList.contains('open')) setOpen(false); lkRead().then(lkPaint); });
@@ -18242,7 +18303,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       put('status', [{ id: 'promise', g: 'moves', t: 'Promise to this week', d: 'On a Coming up card (or List row), the This week button in its strip (a card above a line) moves it above the This week line.', kw: 'week commit coming up line' }]);
       put('caldl', [{ id: 'daypeek', g: 'mouse', t: 'Quick look on Today', d: 'On the Today page, click a task’s title to see its description, Done =, dates and sub-tasks. Tick sub-tasks right there, or open the details.', kw: 'peek preview title today look' }]);
       put('you', [
-        { id: 'hours', g: 'capture', t: 'Working hours', d: 'The hours you want your work to fit in. Today uses them to offer Land at the end, and the page’s light drifts from morning to evening across them. Settings → You.', kw: 'hours day start end light' },
+        { id: 'hours', g: 'capture', t: 'Working hours', d: 'The hours you want your work to fit in. Today uses them to offer Land at the end, and the thin line under the header fills across them (a line of ink in Early Bird, a small star in Night Owl); hover it to see how much of your workday is left. Settings → You (switch the line off there with Workday line).', kw: 'hours day start end light' },
         { id: 'link', g: 'capture', t: 'Hodo Link', d: 'Let Claude work on your tasks: add and change them from any chat, and tidy your captures for you to review. Changes are marked “by Claude”. No API key.', how: 'Settings → Hodo Link → download the Hodo extension. In Claude: Settings → Desktop app → Extensions (at the bottom) → Manage; drag the file onto that page, click Install twice, choose your Hodo Folder (Browse, Save, Save), and turn Hodo Link to Enabled (it arrives switched off). Downloaded but nothing happens? Hodo reminds you to switch it on. Claude can then add a whole plan as a project (one task per day of work), change many tasks or your areas in one go, and Hodo offers Undo for any big change. From 1.3.0, Hodo Link keeps itself up to date.', kw: 'claude ai extension mcp connect assistant enable enabled switch on folder' },
         { id: 'tour', g: 'capture', t: 'The welcome tour', d: 'Five small steps through the essentials, with practice tasks. Settings → The welcome tour.', kw: 'tour help start learn onboard' }
       ]);
@@ -18444,7 +18505,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       showStatus(`Your tasks live in ${hfWhere} › TASKS.md`);
       return true;
     }
-    if (!GUIDE_ITEMS.some(x => x.id === 'hfolder')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'backups'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i, 0, { id: 'hfolder', g: 'capture', t: 'Your Hodo Folder', d: 'Everything Hodo keeps lives in one folder on your computer: your tasks (TASKS.md), what Hodo knows about your work (memory) and daily Backups. Pick a place like Documents or OneDrive and Hodo makes the Hodo Folder there; put it in OneDrive or Google Drive to have it on all your computers.', how: 'Settings → Files & rhythm → Your Hodo Folder → Change. Pick the folder that holds TASKS.md, or the place that holds your Hodo Folder, and Hodo finds it.', kw: 'folder file tasks.md where saved location onedrive move computer' }); }
+    if (!GUIDE_ITEMS.some(x => x.id === 'hfolder')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'backups'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i, 0, { id: 'hfolder', g: 'capture', t: 'Your Hodo Folder', d: 'Everything Hodo keeps lives in one folder on your computer: your tasks (TASKS.md), what Hodo knows about your work (memory) and daily Backups. Pick a place like Documents or OneDrive and Hodo makes the Hodo Folder there; put it in OneDrive or Google Drive to have it on all your computers.', how: 'Settings → You → Your Hodo Folder → Change. Pick the folder that holds TASKS.md, or the place that holds your Hodo Folder, and Hodo finds it.', kw: 'folder file tasks.md where saved location onedrive move computer' }); }
     // ===== Today: Week · Plan · Day, and choosing the slot (Oct 27) =====
     // A bar at the top of the Today page: Week (the Weekly reset, on the first three workdays) · Plan · Day. Done steps get a
     // check, locked steps are greyed (Day until the day is started; Plan while the Weekly reset waits). After starting, Plan
@@ -18849,7 +18910,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       } catch (e) {}
     })();
     if (!GUIDE_ITEMS.some(x => x.id === 'welcomeback')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'hfolder'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'welcomeback', g: 'capture', t: 'Coming back to Hodo', d: 'Browsers ask for one click before Hodo may open your Hodo Folder again. If it shows Welcome back, click Reconnect and choose Allow on every visit when your browser offers it, so it doesn’t ask again. Not the right folder? Use a different folder. Installing Hodo as an app makes coming back smoother.', kw: 'reconnect folder permission allow every visit welcome back install app lost connection' }); }
-    if (!GUIDE_ITEMS.some(x => x.id === 'areafix')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'areas'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'areafix', g: 'concepts', t: 'Fix or remove an area', d: 'Made a typo in a new area? Click Undo right after adding it. Or open a card’s area list and hover an area: ✎ renames it on every task, 🗑 removes it from the list and its tasks (with Undo). Settings → Areas has the full list.', kw: 'area typo rename remove delete wrong mistake edit' }); }
+    if (!GUIDE_ITEMS.some(x => x.id === 'areafix')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'areas'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'areafix', g: 'concepts', t: 'Fix or remove an area', d: 'Made a typo in a new area? Click Undo right after adding it. Or open a card’s area list and hover an area: ✎ renames it on every task, 🗑 removes it from the list and its tasks (with Undo). Settings → Areas & people has the full list.', kw: 'area typo rename remove delete wrong mistake edit' }); }
     // ===== Fix an area from the card's area list (Nov 1) =====
     // A typo in a new area is easy to undo: adding one shows "New area “…” added · Undo" (takes the area away and puts the
     // task's old area back). Hovering any area in the list shows ✎ (rename it right there: Enter or clicking away saves,
@@ -19413,6 +19474,224 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
         return r;
       }; }
     window.addEventListener('focus', () => { try { if (typeof memoryDirHandle !== 'undefined' && memoryDirHandle) lkReloadMemory(); } catch (e) {} });
+    // ===== Time passing: the header line (Nov 3) =====
+    // Replaces the page light (the whole background drifting through the workday felt unsettling). The thin line under the
+    // header fills from left to right across your working hours. Early Bird: a clean line of ink with a tiny calligraphy
+    // nib whose tip sits exactly on the line's end. Night Owl: a soft glowing line with a dot at "now", amber in the last
+    // hour. Hovering it: "About 3 h 35 min left in your workday". Outside working hours (and on days off) it rests.
+    dayLightPaint = function () {};
+    const TL_NIB = '<svg viewBox="0 0 14 14" aria-hidden="true"><g transform="rotate(38 1 13)"><path d="M1 13 L-2.6 5.2 Q-2.8 2.6 -1.2 1 L3.2 1 Q4.8 2.6 4.6 5.2 Z"/><path class="cut" d="M1 12.2 L1 5.6"/><circle class="hole" cx="1" cy="5" r=".9"/></g></svg>';
+    const tlEl = document.createElement('div'); tlEl.className = 'tl'; tlEl.setAttribute('aria-hidden', 'true'); tlEl.hidden = true;
+    tlEl.innerHTML = '<b></b><i></i><span class="nib">' + TL_NIB + '</span><span class="tl-hit"></span>';
+    (document.querySelector('body > header') || document.querySelector('header')).appendChild(tlEl);
+    function tlLeft() { const h = dayHours(), e = dayMin(h.e), m = Math.max(0, Math.round(e - dayNow())); return m < 1 ? 'Your workday is ending now' : `About ${m >= 60 ? Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + (m % 60) + ' min' : '') : m + ' min'} left in your workday`; }
+    function tlPaint() {
+      try {
+        let off = false; try { off = localStorage.getItem('koi-time-line') === '0'; } catch (e) {}
+        const ph = dayPhase(); if (off || (ph !== 'work' && ph !== 'last')) { tlEl.hidden = true; return; }
+        const h = dayHours(), s0 = dayMin(h.s), e = dayMin(h.e), f = Math.min(1, Math.max(0, (dayNow() - s0) / Math.max(1, e - s0)));
+        const ink = themeNow() !== 'dark', pct = (f * 100).toFixed(3) + '%';
+        tlEl.hidden = false; tlEl.classList.toggle('ink', ink); tlEl.classList.toggle('late', ph === 'last' && !ink);
+        tlEl.querySelector('b').style.width = pct; tlEl.querySelector('i').style.left = pct; tlEl.querySelector('.nib').style.left = pct;
+        tlEl.querySelector('i').style.display = ink ? 'none' : ''; tlEl.querySelector('.nib').style.display = ink ? '' : 'none';
+        tlEl.dataset.f = f.toFixed(4);
+        const tip = tlEl.querySelector('.tl-tip'); if (tip) { tip.textContent = tlLeft(); tip.style.left = pct; }
+      } catch (e) {}
+    }
+    tlEl.querySelector('.tl-hit').addEventListener('mouseenter', () => { if (tlEl.querySelector('.tl-tip')) return; const t = document.createElement('span'); t.className = 'tl-tip'; tlEl.appendChild(t); tlPaint(); });
+    tlEl.querySelector('.tl-hit').addEventListener('mouseleave', () => { const t = tlEl.querySelector('.tl-tip'); if (t) t.remove(); });
+    tlPaint(); setInterval(tlPaint, 30000);
+    // Settings → You, under Working hours: the line can be switched off (Nov 3)
+    (function tlSetting() {
+      const hrs = document.querySelector('#settingsPanel [data-hrs]'); const row = hrs && hrs.closest('.sp-row'); if (!row) return;
+      let on = true; try { on = localStorage.getItem('koi-time-line') !== '0'; } catch (e) {}
+      const r = document.createElement('div'); r.className = 'sp-row';
+      r.innerHTML = `<div class="sp-rl"><span class="sp-rt">Workday line</span><span class="sp-hint">The thin line under the header fills across your working hours (ink in Early Bird, a small star in Night Owl). Hover it to see what’s left.</span></div><label class="sp-switch"><input type="checkbox" id="tlToggle" aria-label="Workday line"${on ? ' checked' : ''}><span class="sw-track"><span class="sw-knob"></span></span></label>`;
+      row.after(r);
+      r.querySelector('#tlToggle').addEventListener('change', e => { try { localStorage.setItem('koi-time-line', e.target.checked ? '1' : '0'); } catch (x) {} tlPaint(); });
+    })();
+    new MutationObserver(tlPaint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    document.addEventListener('change', e => { if (e.target && e.target.closest && e.target.closest('#settingsPanel')) setTimeout(tlPaint, 50); });
+    // ===== Shelved and removed (Nov 3) =====
+    // Stoic Winner leaves the music (Quiet Grinder stays; someone who had it picked gets Quiet Grinder); its code is kept for
+    // the comeback. Daylight drift is gone from Hodo: its saved choice is cleared. ("Start with each Focus session" left
+    // the music panel with Focus paused.)
+    { const i = MU.findIndex(t => t.id === 'velvet'); if (i >= 0) MU.splice(i, 1); }
+    if (mu.cur === 'velvet' || mu.cur === 'stoic') { mu.cur = MU[0].id; muLS.set('koi-mu-cur', mu.cur); }
+    try { localStorage.removeItem('koi-drift'); } catch (e) {}
+    { const g = GUIDE_ITEMS.find(x => x.id === 'music'); if (g) g.d = 'A mood to work to: Quiet Grinder. More are coming.'; }
+    // ===== Settings, centred (Nov 3) =====
+    // Settings opens as a centred window over a soft dimmed Hodo: a side menu with search on the left, one section at a
+    // time on the right, each with a one-line intro. The rows themselves are the same ones as before (same ids, same
+    // code); this module only moves them into six sections: You · Your week · Look & feel · Areas & people · Hodo Link ·
+    // Help. Settings you can see (Switch automatically, Workday line, Celebrations) show a small live preview on hover.
+    (function soBuild() {
+      const panel = document.getElementById('settingsPanel'), body = document.getElementById('spBody'); if (!panel || !body || panel.classList.contains('so')) return;
+      const IC = {
+        you: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/>',
+        week: '<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+        look: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor" stroke="none" opacity=".35"/>',
+        areas: '<path d="M4 6.5h9M4 12h16M4 17.5h11"/><circle cx="17.5" cy="6.5" r="2"/><circle cx="18.5" cy="17.5" r="2"/>',
+        link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+        help: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.1-2.4 3.6"/><circle cx="12" cy="17" r=".6" fill="currentColor"/>'
+      };
+      const SECS = [
+        { g: 'you', t: 'You', d: 'Who you are and where Hodo keeps your work.' },
+        { g: 'week', t: 'Your week', d: 'When you work, so Hodo can plan around it.' },
+        { g: 'look', t: 'Look & feel', d: 'How Hodo looks, sounds and cheers you on.' },
+        { g: 'areas', t: 'Areas & people', d: 'The parts of your work and the people in it.' },
+        { g: 'link', t: 'Hodo Link', d: 'Let Claude plan and update your tasks with you.' },
+        { g: 'help', t: 'Help', d: 'Find your way around Hodo.' }
+      ];
+      // extra words people search with, by row title
+      const WORDS = {
+        'Your name': 'photo picture avatar profile', 'Name': 'full short', 'Work': 'job role company', 'About your work': 'team clients context',
+        'Your Hodo Folder': 'file files tasks.md onedrive drive save where location backup computer', 'Work week': 'weekend days calendar sunday monday',
+        'Working hours': 'time start end day hours', 'Workday line': 'line progress time left header pen star', 'Weekly review': 'parked review day',
+        'Theme': 'dark light night day early bird night owl colour color', 'Switch automatically': 'auto dark light sunrise sunset night day',
+        'Location': 'city sun sunrise sunset', 'Celebrations': 'confetti animation ink stars effect', 'Sounds': 'audio volume mute sound',
+        'Areas': 'area colour color label category', 'People you work with': 'people person contacts names team emails',
+        'The welcome tour': 'tour start intro learn', 'New stuff! after updates': 'updates release notes whats new version', 'Keyboard': 'keys shortcuts keyboard',
+        'Hodo Link': 'claude link extension ai connect mcp'
+      };
+      const titleOf = r => { const t = r.querySelector('.sp-rt'); return t ? t.childNodes[0].textContent.trim() : ''; };
+      const rows = [...panel.querySelectorAll('.sp-row')], row = name => rows.find(r => titleOf(r) === name);
+      const old = [...body.children];
+      // the side
+      const side = document.createElement('aside'); side.className = 'so-side';
+      side.innerHTML = `<div class="so-find"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="search" id="soFind" placeholder="Search settings" aria-label="Search settings" autocomplete="off" spellcheck="false"></div>
+        <nav class="so-nav" id="soNav">${SECS.map(s => `<button type="button" data-so="${s.g}"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[s.g]}</svg>${s.t}</button>`).join('')}</nav><div class="so-foot"></div>`;
+      const head = panel.querySelector('.sp-head'), h1 = head.querySelector('.sp-h1'); side.prepend(h1);
+      const foot = side.querySelector('.so-foot');
+      [...head.children].forEach(c => { if (!c.classList.contains('sp-close')) foot.appendChild(c); });
+      const main = document.createElement('div'); main.className = 'so-main';
+      main.innerHTML = '<div class="so-top"><div><h2 id="soTitle"></h2><p id="soIntro"></p></div></div>';
+      main.querySelector('.so-top').appendChild(head.querySelector('.sp-close'));
+      panel.insertBefore(side, body); panel.insertBefore(main, body); main.appendChild(body);
+      // the sections
+      const mk = s => { const sec = document.createElement('section'); sec.className = 'sp-group so-sec'; sec.dataset.g = s.g; sec.innerHTML = `<h3 class="sp-gh">${s.t}</h3>`; return sec; };
+      const S = {}; SECS.forEach(s => S[s.g] = mk(s));
+      const lkSecOld = body.querySelector('.sp-group[data-g="link"]'); if (lkSecOld) { lkSecOld.classList.add('so-sec', 'open'); S.link = lkSecOld; }
+      const prof = document.getElementById('spProfile'); if (prof) { prof.classList.add('so-sec'); prof.dataset.g = 'you'; S.you = prof; }   // the photo code paints into #spProfile
+      const put = (g, ...els) => els.forEach(e => { if (e) S[g].appendChild(e); });
+      const sub = t => { const d = document.createElement('div'); d.className = 'so-sub'; d.textContent = t; return d; };
+      put('you', row('Name'), row('Work'), row('About your work'), row('Your Hodo Folder'));
+      put('week', row('Work week'), row('Working hours'), row('Workday line'), row('Weekly review'));
+      const thLabel = [...panel.querySelectorAll('.sp-label')].find(l => /Theme/.test(l.textContent)), stLabel = [...panel.querySelectorAll('.sp-label')].find(l => /Style/.test(l.textContent));
+      put('look', stLabel, document.getElementById('styleToggle'), thLabel, panel.querySelector('.sp-themes'), row('Switch automatically'), panel.querySelector('.sp-loc'),
+        row('Celebrations'), row('Sounds'), panel.querySelector('.sp-sound'), panel.querySelector('.sp-prev'));
+      put('areas', row('Areas'), row('People you work with'));
+            const kb = panel.querySelector('.sp-group[data-g="keys"] .sp-gbi'), keys = kb ? [...kb.children] : [panel.querySelector('.sp-kgrid')];   // the key list and, on Windows, quick-capture setup
+      put('help', row('The welcome tour'), row('New stuff! after updates'), sub('Keyboard'), ...keys);
+      // gone from Settings: Daylight drift, Memory, Focus, Hodo AI (kept in the page, hidden, so older code still finds them)
+      old.filter(o => o !== S.link && o !== S.you).forEach(o => { o.classList.add('so-old'); o.removeAttribute('data-g'); });
+      SECS.forEach(s => body.appendChild(S[s.g]));
+      const none = document.createElement('div'); none.className = 'so-none'; none.textContent = 'No setting matches that. Try another word.'; body.appendChild(none);
+      // previews mark
+      const EYE = '<svg class="so-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+      const PV = { 'Switch automatically': 'auto', 'Workday line': 'line', 'Celebrations': 'cel' };
+      Object.keys(PV).forEach(k => { const r = row(k); if (!r) return; r.dataset.pv = PV[k]; const t = r.querySelector('.sp-rt'); if (t) t.insertAdjacentHTML('beforeend', EYE); });
+      // showing a section
+      const nav = side.querySelector('#soNav'), find = side.querySelector('#soFind');
+      let cur = 'you';
+      const show = g => {
+        if (!S[g]) g = 'you'; cur = g; const s = SECS.find(x => x.g === g);
+        Object.values(S).forEach(x => x.classList.toggle('so-on', x === S[g]));
+        nav.querySelectorAll('[data-so]').forEach(b => b.classList.toggle('on', b.dataset.so === g));
+        main.querySelector('#soTitle').textContent = s.t; main.querySelector('#soIntro').textContent = s.d; body.scrollTop = 0;
+      };
+      window.soShow = show;
+      nav.addEventListener('click', e => { const b = e.target.closest('[data-so]'); if (!b) return; if (find.value) { find.value = ''; search(); } show(b.dataset.so); });
+      // older code opens a section by clicking the old menu: send it to the new one
+      const MAP = { you: 'you', look: 'look', feel: 'look', people: 'areas', ai: 'link', link: 'link', files: 'you', focus: 'you', keys: 'help' };
+      document.querySelectorAll('#spNav [data-go]').forEach(b => b.addEventListener('click', () => { show(MAP[b.dataset.go] || 'you'); setTimeout(() => body.scrollTo({ top: 0 }), 0); }));
+      // search
+      const text = el => (el.textContent + ' ' + (WORDS[titleOf(el)] || '') + ' ' + (el.dataset.t ? WORDS[el.dataset.t] || '' : '')).toLowerCase();
+      function search() {
+        const q = find.value.trim().toLowerCase(), words = q.split(/\s+/).filter(Boolean);
+        panel.classList.toggle('so-searching', !!q); let any = false;
+        Object.entries(S).forEach(([g, sec]) => {
+          let hit = false; const kids = [...sec.children].filter(c => !c.classList.contains('sp-gh'));
+          kids.forEach((c, i) => {
+            let t = text(c);
+            if (c.classList.contains('sp-cards') || c.classList.contains('sp-kgrid') || c.classList.contains('sp-sound') || c.classList.contains('sp-prev')) { const lab = kids.slice(0, i).reverse().find(x => x.classList.contains('sp-label') || x.classList.contains('so-sub') || x.classList.contains('sp-row')); if (lab) t += ' ' + text(lab) + ' ' + (WORDS[lab.textContent.replace(/\s+[A-Z]$/, '').trim()] || ''); }
+            if (c.classList.contains('sp-label') || c.classList.contains('so-sub')) t += ' ' + (WORDS[c.textContent.replace(/\s+[A-Z]$/, '').trim()] || '');
+            if (g === 'link') t += ' ' + WORDS['Hodo Link'];
+            const m = !!q && words.every(w => t.includes(w)); c.classList.toggle('so-match', m); if (m) hit = true;
+          });
+          // a label and its cards travel together
+          kids.forEach((c, i) => { if (c.classList.contains('so-match') && (c.classList.contains('sp-label') || c.classList.contains('so-sub')) && kids[i + 1]) kids[i + 1].classList.add('so-match'); if (c.classList.contains('so-match') && (c.classList.contains('sp-cards') || c.classList.contains('sp-kgrid')) && kids[i - 1]) kids[i - 1].classList.add('so-match'); });
+          kids.forEach((c, i) => { if (c.classList.contains('so-match') && titleOf(c) === 'Sounds') { kids[i + 1] && kids[i + 1].classList.add('so-match'); kids[i + 2] && kids[i + 2].classList.add('so-match'); } });
+          sec.classList.toggle('so-hit', hit); if (hit) any = true;
+        });
+        panel.classList.toggle('so-empty', !!q && !any);
+        main.querySelector('#soTitle').textContent = q ? 'Search' : SECS.find(x => x.g === cur).t;
+        main.querySelector('#soIntro').textContent = q ? (any ? 'Everything that matches, with the section it lives in.' : '') : SECS.find(x => x.g === cur).d;
+        if (!q) show(cur);
+      }
+      find.addEventListener('input', search);
+      find.addEventListener('keydown', e => { if (e.key === 'Escape' && find.value) { e.stopPropagation(); e.preventDefault(); find.value = ''; search(); } });
+      // a click on a search result's section title opens that section at the row
+      body.addEventListener('click', e => {
+        if (!panel.classList.contains('so-searching')) return; const h = e.target.closest('.so-sec > .sp-gh'); if (!h) return;
+        const sec = h.parentElement, first = sec.querySelector('.so-match'); find.value = ''; search(); show(sec.dataset.g);
+        if (first) { first.scrollIntoView({ block: 'center' }); first.classList.add('so-flash'); setTimeout(() => first.classList.remove('so-flash'), 1500); }
+      });
+      // the dimmed backdrop; a click on it closes Settings
+      const scrim = document.createElement('div'); scrim.className = 'so-scrim'; document.body.insertBefore(scrim, panel);
+      scrim.addEventListener('click', () => document.getElementById('spClose').click());
+      // opening always starts on You with an empty search, unless older code asked for a section
+      new MutationObserver(() => { if (!panel.hidden) { if (find.value) { find.value = ''; search(); } } }).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
+      panel.classList.add('so'); show('you');
+      // Hodo Link's status pill (On / Off / Update / for Claude) shows in the menu
+      const lkPill = S.link && S.link.querySelector('.sp-pill'), navLk = nav.querySelector('[data-so="link"]');
+      if (lkPill && navLk) { const mirror = () => { let m = navLk.querySelector('.sp-pill'); if (!m) { m = document.createElement('span'); navLk.appendChild(m); } m.className = lkPill.className; m.textContent = lkPill.textContent; m.hidden = !lkPill.textContent.trim(); };
+        new MutationObserver(mirror).observe(lkPill, { attributes: true, childList: true, characterData: true, subtree: true }); mirror(); }
+      // ---- previews on hover ----
+      const pv = document.createElement('div'); pv.className = 'so-pv'; document.body.appendChild(pv);
+      const NIB = typeof TL_NIB !== 'undefined' ? TL_NIB : '';
+      const fmtH = h => { const hh = Math.floor(h), ap = hh >= 12 && hh < 24 ? 'pm' : 'am', d = ((hh + 11) % 12) + 1; return d + ' ' + ap; };
+      function paint(kind) {
+        const dark = (typeof themeNow === 'function' ? themeNow() : document.documentElement.dataset.theme) === 'dark';
+        if (kind === 'line') {
+          const tg = document.getElementById('tlToggle'), on = !tg || tg.checked;
+          const tl = document.querySelector('header .tl'); let f = tl && tl.dataset.f ? +tl.dataset.f : .42; f = Math.min(1, Math.max(.06, f));
+          const pct = (f * 100).toFixed(1) + '%';
+          const ln = dark ? `<div class="so-pv-line"><b style="width:${pct}"></b><i style="left:${pct}"></i></div>` : `<div class="so-pv-line ink"><b style="width:${pct}"></b><span class="nib" style="left:${pct}">${NIB}</span></div>`;
+          return `<div class="so-pv-stage ${on ? '' : 'so-pv-off'}"><div class="so-pv-hd"><i></i><i style="width:30px"></i><i style="width:36px"></i><i style="width:24px"></i></div>${ln}<div class="so-pv-cards"><i></i><i></i><i></i></div></div>
+            <div class="so-pv-cap">${on ? (dark ? 'Night Owl: a small star travels along the line as your workday passes.' : 'Early Bird: a pen draws the line as your workday passes.') : 'Off: the header stays plain.'}</div>`;
+        }
+        if (kind === 'cel') {
+          const on = (document.getElementById('celebrateToggle') || {}).checked;
+          const ink = [[-26, -20], [-6, -30], [18, -24], [30, -6], [-30, 4], [22, 14]].map(([x, y]) => `<i style="--x:${x}px;--y:${y}px"></i>`).join('');
+          return `<div class="so-pv-stage ${on ? '' : 'so-pv-quiet'}">${dark ? '<span class="so-pv-star"></span><span class="so-pv-star b"></span>' : `<div class="so-pv-ink">${ink}</div>`}<div class="so-pv-task"><span class="so-pv-box"></span><span>Send the weekly report</span></div></div>
+            <div class="so-pv-cap">${on ? (dark ? 'Night Owl: shooting stars when you finish something.' : 'Early Bird: a little ink splash when you finish something.') : 'Off: a quiet tick, nothing else.'}</div>`;
+        }
+        if (kind === 'auto') {
+          const m = (panel.querySelector('#themeAutoMode .on') || {}).dataset; const mode = m ? m.am : 'off';
+          let a = 6, b = 18, cap = 'Early Bird from 6 am, Night Owl from 6 pm.';
+          if (mode === 'sun') { try { const t = koiSunTimes(new Date(), KOI_LAT, KOI_LNG); a = t.sunrise.getHours() + t.sunrise.getMinutes() / 60; b = t.sunset.getHours() + t.sunset.getMinutes() / 60; cap = `Early Bird from sunrise (${fmtH(a)}), Night Owl from sunset (${fmtH(b)}).`; } catch (e) {} }
+          const now = new Date(), n = (now.getHours() + now.getMinutes() / 60) / 24 * 100;
+          const band = mode === 'off' ? (dark ? '' : '<b style="left:0;width:100%"></b>') : `<b style="left:${a / 24 * 100}%;width:${(b - a) / 24 * 100}%"></b>`;
+          if (mode === 'off') cap = 'Off: Hodo stays on the theme you pick, all day.';
+          return `<div class="so-pv-stage"><span class="so-pv-lbl">Today</span><div class="so-pv-day">${band}<u style="left:${n}%"></u></div><div class="so-pv-hrs"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>12 am</span></div></div><div class="so-pv-cap">${cap}</div>`;
+        }
+        return '';
+      }
+      let hov = null;
+      const place = r => {
+        pv.innerHTML = paint(r.dataset.pv); const rc = r.getBoundingClientRect(), w = 250, h = pv.offsetHeight || 150;
+        let x = Math.min(rc.right - w, window.innerWidth - w - 12), y = rc.top - h - 8; if (y < 12) y = rc.bottom + 8;
+        pv.style.left = Math.max(12, x) + 'px'; pv.style.top = y + 'px'; pv.classList.add('show');
+      };
+      const hide = () => { hov = null; pv.classList.remove('show'); };
+      body.addEventListener('mouseover', e => { const r = e.target.closest('.sp-row[data-pv]'); if (r === hov) return; if (!r) return hide(); hov = r; place(r); });
+      body.addEventListener('mouseleave', hide); body.addEventListener('scroll', hide, { passive: true });
+      body.addEventListener('focusin', e => { const r = e.target.closest('.sp-row[data-pv]'); if (r) { hov = r; place(r); } else hide(); });
+      body.addEventListener('change', () => { if (hov) place(hov); });
+      body.addEventListener('click', () => { if (hov) setTimeout(() => hov && place(hov), 30); });
+      new MutationObserver(() => { if (panel.hidden) hide(); }).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
+    })();
     applyWaitRail();
   </script>
 </body>
