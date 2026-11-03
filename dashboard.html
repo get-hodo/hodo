@@ -7646,7 +7646,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.6';
+    const KOI_VERSION = '2.6.1';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -15698,6 +15698,9 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.6.1': [
+        { k: 'solved', t: 'People missing from Settings', d: 'Now People is back under <b>Settings → Areas &amp; people</b>, next to Areas.' }
+      ],
       '2.6': [
         { k: 'new', t: 'Watch your workday pass, at a glance', d: 'The thin line under the header now fills up across your working hours. In Early Bird, a pen draws it in ink. In Night Owl, a small star travels along it. Point at it to see what’s left, like <i>“About 2 h 15 min left in your workday”</i>. It replaces the light that used to shift across the page, so the page stays calm all day. Don’t want it? Switch it off in <b>Settings → Your week</b>.' },
         { k: 'reworked', t: 'Settings, with room to breathe', d: 'Settings now opens in the middle of the screen, in six clear sections: <b>You</b>, <b>Your week</b>, <b>Look &amp; feel</b>, <b>Areas &amp; people</b>, <b>Hodo Link</b> and <b>Help</b>. Each one says in a line what it’s for. You can also search for any setting, even with everyday words like “dark” or “shortcuts”. Settings with a small eye show a live preview when you point at them, so you see the change before you make it.' },
@@ -19554,8 +19557,10 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
         'The welcome tour': 'tour start intro learn', 'New stuff! after updates': 'updates release notes whats new version', 'Keyboard': 'keys shortcuts keyboard',
         'Hodo Link': 'claude link extension ai connect mcp'
       };
-      const titleOf = r => { const t = r.querySelector('.sp-rt'); return t ? t.childNodes[0].textContent.trim() : ''; };
-      const rows = [...panel.querySelectorAll('.sp-row')], row = name => rows.find(r => titleOf(r) === name);
+      const titleOf = r => { if (r.dataset && r.dataset.t) return r.dataset.t; const t = r.querySelector('.sp-rt'); return t ? t.childNodes[0].textContent.trim() : ''; };
+      // rows are found by their control first (titles can change: "People you work with" becomes "12 people"), then by title
+      const BY_ID = { 'Your Hodo Folder': 'spFileBtn', 'Weekly review': 'reviewDaySel', 'Workday line': 'tlToggle', 'Switch automatically': 'themeAutoMode', 'Celebrations': 'celebrateToggle', 'Sounds': 'soundToggle', 'Areas': 'spAreasBtn', 'People you work with': 'spPeopleBtn' };
+      const rows = [...panel.querySelectorAll('.sp-row')], row = name => { const c = BY_ID[name] && document.getElementById(BY_ID[name]), r = (c && c.closest('.sp-row')) || rows.find(x => titleOf(x) === name); if (r) r.dataset.t = name; return r; };
       const old = [...body.children];
       // the side
       const side = document.createElement('aside'); side.className = 'so-side';
@@ -19584,7 +19589,8 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
             const kb = panel.querySelector('.sp-group[data-g="keys"] .sp-gbi'), keys = kb ? [...kb.children] : [panel.querySelector('.sp-kgrid')];   // the key list and, on Windows, quick-capture setup
       put('help', row('The welcome tour'), row('New stuff! after updates'), sub('Keyboard'), ...keys);
       // gone from Settings: Daylight drift, Memory, Focus, Hodo AI (kept in the page, hidden, so older code still finds them)
-      old.filter(o => o !== S.link && o !== S.you).forEach(o => { o.classList.add('so-old'); o.removeAttribute('data-g'); });
+      const HOME = { you: 'you', look: 'look', feel: 'look', people: 'areas', files: 'you', keys: 'help' };
+      old.filter(o => o !== S.link && o !== S.you).forEach(o => { const h = HOME[o.dataset.g]; if (h) o.querySelectorAll('.sp-row').forEach(r => S[h].appendChild(r)); o.classList.add('so-old'); o.removeAttribute('data-g'); });
       SECS.forEach(s => body.appendChild(S[s.g]));
       const none = document.createElement('div'); none.className = 'so-none'; none.textContent = 'No setting matches that. Try another word.'; body.appendChild(none);
       // previews mark

@@ -1,5 +1,8 @@
 # Hodo: what changed
 
+## Hodo 2.6.1 · Nov 03, 2026
+- SOLVED: People missing from Settings
+
 ## Hodo 2.6 · Nov 03, 2026
 - NEW: Watch your workday pass, at a glance
 - REWORKED: Settings, with room to breathe
