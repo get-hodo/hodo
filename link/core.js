@@ -32,7 +32,7 @@ function resolveFolder(raw) {
 const FOLDER = resolveFolder(process.env.HODO_FOLDER || process.argv[2] || '');
 const TASKS = () => path.join(FOLDER, 'TASKS.md');
 const LINK = () => path.join(FOLDER, 'memory', 'hodo-link.json');
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 
 // ---------- dates, in Hodo's own formats ----------
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -62,8 +62,8 @@ const weekStart = () => { // week starts on the user's work week (profile), Sund
 // ---------- reading and writing TASKS.md, line by line ----------
 const TASK_RE = /^- \[( |x|X)\] \*\*(.+?)\*\*(?: - (.*?))?(?: <!-- id:([\w-]+) -->)?\s*$/;
 function load() {
-  if (!FOLDER) throw new Error('Hodo Link has no folder yet. In Claude: Settings → Extensions → Hodo Link → choose your Hodo Folder, and make sure Enabled is on.');
-  let text; try { text = fs.readFileSync(TASKS(), 'utf8'); } catch (e) { throw new Error(`No TASKS.md in ${FOLDER}. In Claude: Settings → Extensions → Hodo Link, choose your Hodo Folder (the one with TASKS.md), or the folder it’s in.`); }
+  if (!FOLDER) throw new Error('Hodo Link has no folder yet. In Claude: Settings → Desktop app → Extensions → Manage → Hodo Link: choose your Hodo Folder, and make sure it is Enabled.');
+  let text; try { text = fs.readFileSync(TASKS(), 'utf8'); } catch (e) { throw new Error(`No TASKS.md in ${FOLDER}. In Claude: Settings → Desktop app → Extensions → Manage → Hodo Link: choose your Hodo Folder (the one with TASKS.md), or the folder it’s in.`); }
   const mtime = fs.statSync(TASKS()).mtimeMs;
   const lines = text.replace(/\r\n/g, '\n').split('\n');
   const sections = []; let cur = null;
