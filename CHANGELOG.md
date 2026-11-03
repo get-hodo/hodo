@@ -1,5 +1,11 @@
 # Hodo: what changed
 
+## Hodo 2.5 · Nov 03, 2026
+- NEW: Projects: big goals, finally in one place
+- NEW: Hand Claude your plan, get a project back
+- NEW: Undo for Claude’s big moves
+- REWORKED: Hodo Link now updates itself
+
 ## Hodo 2.4.1 · Nov 02, 2026
 - REWORKED: Your Three, simpler to use
 - SOLVED: Week · Plan · Day bar missing on Today

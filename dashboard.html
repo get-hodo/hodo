@@ -13,6 +13,8 @@
   - Fix an area from the card's area list   "Fix an area from the card's area list (Nov 1)"
   - Your photo is the Settings button        "Your photo is the Settings button (Nov 2)"
   - The Day page comes alive (statuses)      "The Day page comes alive: statuses on Today (Nov 2)"
+  - Projects (tab, chip, page, panel)        "Projects (Nov 3)"
+  - Hodo Link 1.3.0 in Hodo (update, undo)  "Hodo Link 1.3.0 in Hodo (Nov 3)"
   - Quick-action strip (board / list / cal)    "Quick-action strip inside board cards", "Quick-action strip in List view"
   - Two dates, capsules, field editors         "Two dates (Oct 3)", "CAPSULES", "FIELD EDITOR POPOVER"
   - Calendar                                   "/* ===== CALENDAR VIEW", "CALENDAR TASK CARD", "Calendar row: everything eases"
@@ -5090,6 +5092,106 @@
     .dy-card.ds-pending .acts, .dy-card.ds-progress .acts, .dy-card.ds-wait .acts { align-self: flex-start; flex-wrap: nowrap; max-width: none; }
     .dy-card.ds-pending, .dy-card.ds-progress, .dy-card.ds-wait, .dy-card.kept { cursor: pointer; }
     .dy-card.ds-pending:active, .dy-card.ds-progress:active, .dy-card.ds-wait:active { cursor: grabbing; }
+    /* ===== Projects (Nov 3) ===== */
+    .pj-chip { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px 0 6px; border-radius: 7px; border: 1px solid color-mix(in srgb, var(--text-primary) 28%, var(--border)); background: transparent; color: var(--text-secondary); font: inherit; font-size: 11.5px; font-weight: 600; white-space: nowrap; cursor: pointer; max-width: 220px; vertical-align: middle; }
+    .pj-chip .pj-cn { overflow: hidden; text-overflow: ellipsis; }
+    .pj-chip svg { width: 13px; height: 13px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
+    .pj-chip b { font-weight: 700; color: var(--text-muted); }
+    .pj-chip:hover { border-color: var(--text-primary); color: var(--text-primary); background: var(--bg-secondary); }
+    .pj-chip.late { border-color: color-mix(in srgb, #e08a2c 70%, transparent); color: #b8661c; background: color-mix(in srgb, #e08a2c 10%, transparent); }
+    [data-theme="dark"] .pj-chip.late { color: #f0a85a; }
+    .pj-chip.closed { opacity: .55; }
+    body.pj-in .pj-chip:not(.pj-keep) { display: none; }
+    .pj-pop { position: fixed; z-index: 9000; width: 320px; padding: 16px 18px 14px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 20px 50px -20px rgba(0,0,0,.35); font-size: 13px; color: var(--text-secondary); }
+    .pj-pop h4 { margin: 0 0 4px; display: flex; gap: 8px; align-items: center; font-size: 15px; color: var(--text-primary); } .pj-pop h4 svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; }
+    .pj-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin: 10px 0 3px; }
+    .pj-goal { color: var(--text-primary); line-height: 1.45; } .pj-dlt { color: var(--text-primary); font-weight: 600; } .pj-dlt span { color: var(--brand); font-weight: 600; } .pj-dlt span.late { color: #c0392b; }
+    .pj-ctx { line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
+    .pj-progl { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+    .pj-progl i { flex: 1; height: 5px; border-radius: 3px; background: var(--bg-secondary); overflow: hidden; } .pj-progl i b { display: block; height: 100%; background: var(--st-done-edge); border-radius: 3px; }
+    .pj-open { display: block; width: 100%; margin-top: 12px; padding: 10px 0 0; border: 0; border-top: 1px solid var(--border-light); background: none; text-align: left; font: inherit; color: var(--brand); font-weight: 650; cursor: pointer; }
+    .pj-empty { color: var(--text-muted); font-style: italic; }
+    /* the Projects page */
+    .pj-panel { overflow: auto; }
+    .pj-page { width: 100%; max-width: 1100px; margin: 26px auto 40px; padding: 0 24px; box-sizing: border-box; }
+    .pj-h1 { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; } .pj-h1 h2 { margin: 0; font-size: 24px; color: var(--text-primary); } .pj-h1 span { color: var(--text-muted); font-size: 13px; }
+    .pj-newb { margin-left: auto; align-self: center; padding: 9px 15px; border: 0; border-radius: 10px; background: var(--brand); color: #fff; font: inherit; font-weight: 650; font-size: 13px; cursor: pointer; }
+    [data-theme="dark"] .pj-newb { color: #1e1612; }
+    .pj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .pj-card { padding: 18px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-light); box-shadow: 0 1px 3px rgba(0,0,0,.05); display: flex; flex-direction: column; gap: 10px; cursor: pointer; text-align: left; font: inherit; color: inherit; transition: transform .15s ease, box-shadow .15s ease; }
+    .pj-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -18px rgba(0,0,0,.35); }
+    .pj-card .top { display: flex; gap: 12px; align-items: center; min-width: 0; } .pj-card .nm { font-size: 16px; font-weight: 700; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pj-ring { width: 46px; height: 46px; flex: none; position: relative; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; color: var(--text-primary); }
+    .pj-ring svg { position: absolute; inset: 0; } .pj-ring circle { fill: none; stroke-width: 4; stroke-linecap: round; }
+    .pj-card .gl { font-size: 13px; color: var(--text-secondary); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.9em; }
+    .pj-card .dl { font-size: 12.5px; font-weight: 600; color: var(--text-primary); } .pj-card .dl span { color: var(--brand); } .pj-card .dl span.late { color: #c0392b; }
+    .pj-card .nx { margin-top: 2px; padding-top: 10px; border-top: 1px solid var(--border-light); font-size: 12.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .pj-card .nx b { color: var(--text-primary); font-weight: 600; }
+    .pj-card.newc { cursor: default; border-style: dashed; } .pj-card.newc:hover { transform: none; box-shadow: none; }
+    .pj-card.newc input { font: inherit; font-size: 15px; font-weight: 650; padding: 9px 11px; border-radius: 9px; border: 1px solid var(--brand); background: var(--bg-card); color: var(--text-primary); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+    .pj-card.newc small { font-size: 12px; color: var(--text-muted); }
+    .pj-none { padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 14px; line-height: 1.6; border: 1.5px dashed var(--border); border-radius: 16px; }
+    .pj-fin { margin-top: 30px; } .pj-fin h3 { font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 10px; }
+    .pj-finrow { display: flex; gap: 12px; align-items: center; width: 100%; margin-bottom: 8px; padding: 11px 14px; border-radius: 12px; background: color-mix(in srgb, var(--st-done-bg) 55%, var(--bg-card)); border: 1px solid color-mix(in srgb, var(--st-done-edge) 30%, transparent); font: inherit; font-size: 13.5px; color: var(--text-secondary); cursor: pointer; text-align: left; }
+    .pj-finrow b { color: var(--text-primary); } .pj-finrow .ck { width: 22px; height: 22px; border-radius: 6px; background: var(--st-done-edge); color: #fff; display: grid; place-items: center; font-size: 12px; flex: none; }
+    .pj-finrow .d { margin-left: auto; color: var(--st-done-text); font-weight: 600; font-size: 12.5px; }
+    /* one project open: the slim bar */
+    .pjb { margin: 2px 0 12px; padding: 9px 12px 9px 14px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border-light); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; }
+    .pjb .l1 { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .pjb .bk { border: 0; background: none; padding: 4px 6px; margin-left: -4px; border-radius: 7px; font: inherit; font-size: 12.5px; color: var(--text-muted); cursor: pointer; white-space: nowrap; } .pjb .bk:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .pjb .nm { display: flex; align-items: center; gap: 7px; font-size: 17px; font-weight: 700; color: var(--text-primary); white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis; } .pjb .nm svg { width: 17px; height: 17px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; }
+    .pjb .pr { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 650; color: var(--text-secondary); white-space: nowrap; } .pjb .pr i { width: 70px; height: 5px; border-radius: 3px; background: var(--bg-secondary); overflow: hidden; } .pjb .pr i b { display: block; height: 100%; background: var(--st-done-edge); transition: width .4s ease; }
+    .pjb .gl { font-size: 13.5px; color: var(--text-primary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .pjb .gl em { font-style: normal; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin-right: 8px; }
+    .pjb .gl.none { color: var(--text-muted); cursor: pointer; }
+    .pjb .rt { display: flex; align-items: center; gap: 8px; }
+    .pjb .dl { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; border: 0; background: color-mix(in srgb, var(--brand) 10%, var(--bg-card)); color: var(--text-primary); font: inherit; font-size: 12.5px; font-weight: 650; white-space: nowrap; cursor: pointer; } .pjb .dl span { color: var(--brand); } .pjb .dl span.late { color: #c0392b; }
+    .pjb .dl svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+    .pjb .cx { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); font: inherit; font-size: 12.5px; font-weight: 600; color: var(--text-primary); white-space: nowrap; cursor: pointer; } .pjb .cx.on, .pjb .cx:hover { border-color: var(--text-primary); background: var(--bg-secondary); }
+    body.pj-in #pageBar .area-tabs { visibility: hidden; } body.pj-in .column .wr-head, body.pj-in #listView .lv-hz .count, body.pj-in #listView .lv-hz .hz-pace { display: none; }
+    /* the project panel (goal, deadline, context) */
+    .pjd { position: fixed; top: 128px; right: 20px; bottom: 20px; width: 380px; max-width: calc(100vw - 40px); z-index: 900; padding: 18px 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: -20px 0 50px -30px rgba(0,0,0,.35); display: flex; flex-direction: column; overflow: auto; font-size: 13.5px; color: var(--text-secondary); animation: pjdIn .22s ease both; }
+    @keyframes pjdIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+    .pjd .hd { display: flex; align-items: center; gap: 8px; } .pjd .hd svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--text-primary); stroke-width: 1.5; }
+    .pjd .nmi { flex: 1; min-width: 0; font: inherit; font-size: 16px; font-weight: 700; color: var(--text-primary); border: 1px solid transparent; border-radius: 8px; padding: 5px 7px; background: none; }
+    .pjd .nmi:hover { border-color: var(--border); } .pjd .nmi:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .pjd .x { border: 0; background: none; width: 30px; height: 30px; border-radius: 8px; color: var(--text-muted); cursor: pointer; font-size: 16px; } .pjd .x:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .pjd .pj-l { margin-top: 16px; }
+    .pjd textarea, .pjd input[type="date"] { width: 100%; box-sizing: border-box; font: inherit; font-size: 13.5px; line-height: 1.5; color: var(--text-primary); padding: 9px 11px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg-card); resize: none; }
+    .pjd textarea:focus, .pjd input[type="date"]:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .pjd .cnt { margin-top: 4px; font-size: 11.5px; color: var(--text-muted); text-align: right; min-height: 15px; } .pjd .cnt.over { color: #c97a1c; font-weight: 600; }
+    .pjd .hint { margin-top: 4px; font-size: 12px; color: #b8661c; } [data-theme="dark"] .pjd .hint { color: #f0a85a; }
+    .pjd .dlrow { display: flex; gap: 8px; align-items: center; } .pjd .dlrow input { flex: 1; } .pjd .lnk { border: 0; background: none; font: inherit; font-size: 12.5px; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .pjd .ft { margin-top: auto; padding-top: 18px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .pjd .ft .sp-btn { white-space: nowrap; } .pjd .ft .del { margin-left: auto; border: 0; background: none; font: inherit; font-size: 12.5px; color: var(--text-muted); cursor: pointer; } .pjd .ft .del:hover { color: var(--danger, #c0392b); }
+    .pjd .st { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    /* picking a project */
+    .pj-pick { position: fixed; z-index: 9100; width: 260px; padding: 8px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 18px 40px -18px rgba(0,0,0,.35); font-size: 13px; }
+    .pj-pick .t { padding: 4px 8px 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .pj-pick button.it { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 8px; border: 0; border-radius: 8px; background: none; font: inherit; color: var(--text-primary); text-align: left; cursor: pointer; }
+    .pj-pick button.it:hover, .pj-pick button.it.on { background: var(--bg-secondary); } .pj-pick button.it span { margin-left: auto; color: var(--text-muted); font-size: 12px; }
+    .pj-pick button.it svg { width: 14px; height: 14px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; }
+    .pj-pick input { width: 100%; box-sizing: border-box; margin-top: 6px; padding: 7px 9px; font: inherit; font-size: 13px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); }
+    .pj-pick input:focus { outline: none; border-color: var(--brand); }
+    .pj-pick .rm { display: block; width: 100%; margin-top: 4px; padding: 6px 8px; border: 0; background: none; font: inherit; font-size: 12.5px; color: var(--text-muted); text-align: left; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .tp-pjrow { display: flex; align-items: center; gap: 8px; margin: 8px 0 2px; font-size: 12.5px; color: var(--text-muted); }
+    .tp-pjrow .lnk { border: 0; background: none; padding: 0; font: inherit; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    /* the finished moment */
+    .pj-done-ov { position: fixed; inset: 0; z-index: 5300; display: grid; place-items: center; background: rgba(20, 20, 19, .35); animation: pjdIn .2s ease both; }
+    .pj-done { width: 340px; max-width: calc(100vw - 32px); padding: 26px 26px 20px; border-radius: 20px; background: var(--bg-card); border: 1px solid var(--border); text-align: center; box-shadow: 0 30px 70px -20px rgba(0,0,0,.45); animation: pjPop .5s cubic-bezier(.2,1.4,.4,1) both; }
+    @keyframes pjPop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+    .pj-done .stamp { width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 18px; display: grid; place-items: center; background: var(--st-done-edge); color: #fff; } .pj-done .stamp svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .pj-done .k { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--st-done-edge); }
+    .pj-done h3 { margin: 4px 0 6px; font-size: 20px; color: var(--text-primary); } .pj-done p { margin: 0 0 18px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; }
+    .pj-done .bt { display: flex; gap: 8px; justify-content: center; }
+    .pj-done .bt button { padding: 9px 16px; border-radius: 10px; font: inherit; font-weight: 650; font-size: 13.5px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); }
+    .pj-done .bt button.pri { background: var(--st-done-edge); border-color: var(--st-done-edge); color: #fff; }
+    .wk-pj { display: flex; align-items: center; gap: 8px; margin: 6px 0 10px; padding: 9px 12px; border-radius: 10px; background: color-mix(in srgb, var(--st-done-bg) 55%, var(--bg-card)); font-size: 13px; color: var(--text-secondary); } .wk-pj b { color: var(--text-primary); }
+    @media (max-width: 760px) { .pjb { grid-template-columns: 1fr; } .pjb .rt { justify-content: flex-start; } }
+    @media (prefers-reduced-motion: reduce) { .pjd, .pj-done, .pj-done-ov { animation: none; } .pj-card { transition: none; } }
+    /* New stuff shout-outs (Nov 3) */
+    .ns-shout { display: inline-flex; align-items: center; gap: 7px; margin: 12px 8px 0 0; padding: 6px 12px; border-radius: 999px; font-size: 13px; color: var(--text-secondary); background: color-mix(in srgb, var(--brand) 9%, var(--bg-card)); border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent); }
+    .ns-shout b { color: var(--text-primary); font-weight: 650; }
+    .ns-shout.you { background: color-mix(in srgb, #e0a13a 12%, var(--bg-card)); border-color: color-mix(in srgb, #e0a13a 35%, transparent); }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7451,7 +7553,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.4.1';
+    const KOI_VERSION = '2.5';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -15541,6 +15643,12 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.5': [
+        { k: 'new', t: 'Projects: big goals, finally in one place', d: 'Give a goal a home: its deadline, why it matters, and every task that gets you there. Each task shows how far the project has come (“2/5”); hover it to see the goal at a glance. When the last task is done, you get to close the project for good. Find it all in the new <b>Projects</b> tab.', forYou: 'You5ef' },
+        { k: 'new', t: 'Hand Claude your plan, get a project back', d: 'Tell Claude <i>“here’s my plan for the launch”</i> and it lands in Hodo as a project: one task for each day of work, each planned for its day. Claude can also re-sort your areas or change many tasks at once, and it refuses plans that don’t add up, like a task planned after its own deadline. New in Claude’s prompt menu: <b>Plan my day</b>, <b>Land the day</b> and more.' },
+        { k: 'new', t: 'Undo for Claude’s big moves', d: 'When Claude changes a lot at once, Hodo tells you exactly what it did, with an <b>Undo</b> right there. Changed your mind later? It waits in <b>Settings → Hodo Link</b> for an hour.' },
+        { k: 'reworked', t: 'Hodo Link now updates itself', d: 'One last update by hand: <b>Settings → Hodo Link → Download update</b>, install it in Claude, and make sure it’s switched on. After that, it keeps itself up to date.', inspired: 'Majeed' }
+      ],
       '2.4.1': [
         { k: 'reworked', t: 'Your Three, simpler to use', d: 'Click a task on Today to open its details, like on the board. The status icons and Swap now sit at the top right, and the ✓ marks a task done.' },
         { k: 'solved', t: 'Week · Plan · Day bar missing on Today', d: 'Now the bar is back at the top of the Today page.' },
@@ -15645,6 +15753,10 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       vers.forEach(v => (KOI_NOTES[v] || []).forEach(x => { if (x.key && gone.has(x.key)) return; (x.over || []).forEach(k => gone.add(k)); out.push(x); }));
       return out;
     }
+    // Nov 3: shout-outs. "inspired": the first person whose feedback inspired the update (💡 Inspired by Name. Thanks 💖);
+    // "forYou": someone who asked for something already on Hodo's list (This is for you, Name 😉). Names only with the
+    // person's OK, and only names in tools/shoutouts.txt pass the release privacy check (inside these two fields only).
+    function nsShout(x) { return (x.inspired ? `<div class="ns-shout insp"><span aria-hidden="true">💡</span><span>Inspired by <b>${escapeHtml(x.inspired)}</b>. Thanks 💖</span></div>` : '') + (x.forYou ? `<div class="ns-shout you"><span>This is for you, <b>${escapeHtml(x.forYou)}</b> 😉</span></div>` : ''); }
     function koiNotesOpen(ver) {
       const items = (ver ? (KOI_NOTES[ver] || []) : koiNotesMissed()).slice().sort((a, b) => Object.keys(NS_TAG).indexOf(a.k) - Object.keys(NS_TAG).indexOf(b.k));
       if (!items.length) return;
@@ -15659,7 +15771,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       const pick = i => { const x = items[i];
         nsEl.querySelectorAll('.ns-row').forEach(r => r.classList.toggle('on', +r.dataset.i === i));
         const clip = x.clip && typeof GUIDE_CLIPS !== 'undefined' && GUIDE_CLIPS.has(x.clip);
-        view.innerHTML = `<span class="ns-tag ${x.k}">${NS_TAG[x.k]}</span><h3>${escapeHtml(x.t)}</h3><div class="ns-p">${x.d}</div>${clip ? `<div class="ns-media"><video src="guide/${x.clip}.webm" muted loop playsinline autoplay></video></div>` : ''}`; };
+        view.innerHTML = `<span class="ns-tag ${x.k}">${NS_TAG[x.k]}</span><h3>${escapeHtml(x.t)}</h3><div class="ns-p">${x.d}</div>${nsShout(x)}${clip ? `<div class="ns-media"><video src="guide/${x.clip}.webm" muted loop playsinline autoplay></video></div>` : ''}`; };
       nsEl.querySelectorAll('.ns-row').forEach(r => r.onclick = () => pick(+r.dataset.i));
       pick(0);
       try { if (!localStorage.getItem('koi-notes-seen-day')) localStorage.setItem('koi-notes-seen-day', new Date().toDateString()); } catch (e) {}
@@ -17874,9 +17986,9 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     const lkOn = () => !!lk.seen;
     // The extension that ships with this Hodo, and the one Claude is running (it writes its version into hodo-link.json,
     // from 1.2.2 on). Connected or not, the download is always one click away (Oct 29: people couldn't reinstall).
-    const LK_EXT_VERSION = '1.2.3';
+    const LK_EXT_VERSION = '1.3.0';   // Nov 3: the shell version needed; from 1.3.0 the extension updates its core by itself
     const lkVerLt = (a, b) => { const x = String(a || '0').split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) < (y[i] || 0); } return false; };
-    const lkOutdated = () => lkOn() && lkVerLt(lk.version, LK_EXT_VERSION);
+    const lkOutdated = () => lkOn() && (lkVerLt(lk.shell || lk.version, LK_EXT_VERSION) || !!(lk.shellOld && lkVerLt(lk.shell, lk.shellOld)));
     function lkExtRow() {
       const old = lkOutdated();
       return `<div class="lk-row lk-ext${old ? ' upd' : ''}"><div>The Hodo extension<small>${old ? `<b>An update is ready: ${LK_EXT_VERSION}.</b> ` : ''}${lk.version ? `Installed: ${escapeHtml(lk.version)}. ` : ''}Download it, then in Claude: Settings → Extensions → Install Extension. It replaces the old one.</small></div><a class="sp-btn${old ? ' pri' : ''}" href="Hodo.mcpb" download="Hodo.mcpb">${old ? 'Download update' : 'Download again'}</a></div>`;
@@ -18131,7 +18243,7 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
       put('caldl', [{ id: 'daypeek', g: 'mouse', t: 'Quick look on Today', d: 'On the Today page, click a task’s title to see its description, Done =, dates and sub-tasks. Tick sub-tasks right there, or open the details.', kw: 'peek preview title today look' }]);
       put('you', [
         { id: 'hours', g: 'capture', t: 'Working hours', d: 'The hours you want your work to fit in. Today uses them to offer Land at the end, and the page’s light drifts from morning to evening across them. Settings → You.', kw: 'hours day start end light' },
-        { id: 'link', g: 'capture', t: 'Hodo Link', d: 'Let Claude work on your tasks: add and change them from any chat, and tidy your captures for you to review. Changes are marked “by Claude”. No API key.', how: 'Settings → Hodo Link → download the Hodo extension, drag it onto the Claude desktop app and click Install (or Settings → Extensions → Install Extension in Claude), check the folder says Hodo Folder (usually filled in already), and make sure Enabled is on next to Hodo Link. Downloaded but nothing happens? Hodo reminds you to switch it on.', kw: 'claude ai extension mcp connect assistant enable enabled switch on folder' },
+        { id: 'link', g: 'capture', t: 'Hodo Link', d: 'Let Claude work on your tasks: add and change them from any chat, and tidy your captures for you to review. Changes are marked “by Claude”. No API key.', how: 'Settings → Hodo Link → download the Hodo extension, drag it onto the Claude desktop app and click Install (or Settings → Extensions → Install Extension in Claude), check the folder says Hodo Folder (usually filled in already), and make sure Enabled is on next to Hodo Link. Downloaded but nothing happens? Hodo reminds you to switch it on. Claude can then add a whole plan as a project (one task per day of work), change many tasks or your areas in one go, and Hodo offers Undo for any big change. From 1.3.0, Hodo Link keeps itself up to date.', kw: 'claude ai extension mcp connect assistant enable enabled switch on folder' },
         { id: 'tour', g: 'capture', t: 'The welcome tour', d: 'Five small steps through the essentials, with practice tasks. Settings → The welcome tour.', kw: 'tour help start learn onboard' }
       ]);
     })();
@@ -18962,6 +19074,345 @@ The areas your tasks belong to (Settings → You → Areas). "Suggest when text 
     // the ring outside the Day page (Land, the Weekly reset) keeps its own drawing; the In Progress time ticks once a minute
     setInterval(() => { try { if (activeMainTab === 'day' && dayS.state === 'active' && dayPanel && !dsDrag && !dayPanel.querySelector('input:focus') && dayPanel.querySelector('.ds-progress')) dayRender(); } catch (e) {} }, 60000);
     if (!GUIDE_ITEMS.some(x => x.id === 'daystatus')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'promise'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'daystatus', g: 'moves', t: 'Run your day from Today', d: 'Once the day is started, each of your Three shows its status: click Pending, In Progress, Waiting On or Done on the card, or pick the card up and drop it on a status. In Progress rises to the top with its sub-tasks to tick, Waiting On steps aside with Nudge, Done folds away. The ring shows where each one is.', kw: 'today day status in progress waiting done drag three promise' }); }
+    // ===== Projects (Nov 3) =====
+    // A project is a goal with an end, made of several tasks (an area never ends; a project does). One project per task at
+    // most, saved in the task's line as "project <name>". The list lives in memory/projects.md (name, open/closed, goal,
+    // deadline, context). Tasks show an outlined chip "Name · 2/5" (orange when planned or due after the project's deadline;
+    // grey once closed); hovering it shows the project's goal, deadline, context and progress; clicking opens the project.
+    // The Projects tab lists open projects (nearest deadline first) and finished ones. One project open = your own board
+    // (or List / Calendar) showing only its tasks, under a slim bar (goal, deadline, "Context ›" side panel to edit all).
+    // New tasks added while a project is open join it. When its last open task is finished: "Project finished" with
+    // Close it / Not yet. Goals: a soft 120-character limit with a counter and a gentle hint for vague goals.
+    const PJ_IC = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.2l5.6 2.9L8 8 2.4 5.1z"/><path d="M2.4 8.1 8 11l5.6-2.9"/><path d="M2.4 11 8 13.9l5.6-2.9"/></svg>';
+    const PJ_GOAL_MAX = 120, PJ_VAGUE = /^(work(ing)? on|improve|help( with)?|look into|continue|support|try to|start|explore|deal with|handle|think about)\b/i;
+    let pjList = [], pjOpen = null, pjPanelOpen = false, pjNewOpen = false;
+    try { const c = JSON.parse(localStorage.getItem('koi-projects') || 'null'); if (Array.isArray(c)) pjList = c; } catch (e) {}
+    const pjNorm = n => String(n || '').replace(/[·\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+    const pjKey = n => pjNorm(n).toLowerCase();
+    const pjFind = n => pjList.find(p => pjKey(p.name) === pjKey(n)) || null;
+    const pjYmd = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+    const pjDate = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+    // ---- the task line: "project <name>" ----
+    { const _snc = splitNoteCapsules; splitNoteCapsules = function (note) {
+        const out = _snc.apply(this, arguments); out.project = '';
+        const i = (out.restParts || []).findIndex(p => /^project\s+\S/i.test(p));
+        if (i >= 0) { out.project = pjNorm(out.restParts[i].replace(/^project\s+/i, '')); out.restParts.splice(i, 1); out.rest = (out.prioExtra ? [out.prioExtra] : []).concat(out.restParts).join(' · '); }
+        return out;
+      }; }
+    { const _cn = composeNote; composeNote = function (info, taskDone) {
+        const r = _cn.apply(this, arguments); const p = info && pjNorm(info.project);
+        return p ? (r ? r + ' · ' : '') + 'project ' + p : r;
+      }; }
+    const pjOf = t => t ? splitNoteCapsules(t.note || '').project : '';
+    function pjSetTask(t, name) { const i = splitNoteCapsules(t.note || ''); i.project = name ? pjNorm(name) : ''; t.note = composeNote(i, t.checked); }
+    // ---- the list: memory/projects.md ----
+    function pjSerialize() {
+      return '# Projects\n\nHodo keeps your projects here. Each has a goal, a deadline and some context; its tasks carry "project <name>" in TASKS.md.\n' + pjList.map(p => `\n## ${p.name}\n- Status: ${p.closed ? 'closed' : 'open'}\n${p.deadline ? `- Deadline: ${p.deadline}\n` : ''}${p.goal ? `- Goal: ${String(p.goal).replace(/\n+/g, ' ')}\n` : ''}${p.created ? `- Created: ${p.created}\n` : ''}${p.closed ? `- Closed: ${p.closed}\n` : ''}${p.context ? '\n' + String(p.context).replace(/^## /gm, '') + '\n' : ''}`).join('');
+    }
+    function pjParse(text) {
+      const out = []; String(text || '').split(/^## /m).slice(1).forEach(chunk => {
+        const lines = chunk.split('\n'), name = pjNorm(lines.shift()); if (!name) return;
+        const p = { name, goal: '', deadline: '', context: '', created: '', closed: '' }; let i = 0;
+        for (; i < lines.length; i++) { const m = /^- (Status|Deadline|Goal|Created|Closed):\s*(.*)$/i.exec(lines[i]); if (!m) break; const k = m[1].toLowerCase(), v = m[2].trim(); if (k === 'status') { if (/closed/i.test(v) && !p.closed) p.closed = 'yes'; } else p[k] = v; }
+        if (p.closed === 'yes') p.closed = pjYmd(new Date());
+        p.context = lines.slice(i).join('\n').trim(); out.push(p);
+      }); return out;
+    }
+    let pjSaveT = null;
+    function pjSave() {
+      try { localStorage.setItem('koi-projects', JSON.stringify(pjList)); } catch (e) {}
+      clearTimeout(pjSaveT); pjSaveT = setTimeout(() => { try { koiMemWrite('projects.md', pjSerialize()).catch(err => showStatus('Couldn’t save projects: ' + err.message)); } catch (e) {} }, 500);
+    }
+    function pjLoadFromMemory() { const e = koiMemEntry('projects.md'); if (e) { const l = pjParse(e.content); pjList = l; try { localStorage.setItem('koi-projects', JSON.stringify(pjList)); } catch (x) {} } else if (pjList.length && typeof memoryDirHandle !== 'undefined' && memoryDirHandle) pjSave(); }
+    { const _lmP = loadMemoryHandle; loadMemoryHandle = async function () { const r = await _lmP.apply(this, arguments); try { pjLoadFromMemory(); pjRepaint(); } catch (e) {} return r; }; }
+    function pjCreate(name) {
+      name = pjNorm(name); if (!name) return null; const ex = pjFind(name); if (ex) { if (ex.closed) { ex.closed = ''; pjSave(); } return ex; }
+      const p = { name, goal: '', deadline: '', context: '', created: pjYmd(new Date()), closed: '' }; pjList.push(p); pjSave(); return p;
+    }
+    // ---- counting ----
+    let pjCache = null;
+    function pjStats(name) {
+      if (!pjCache) { pjCache = new Map(); allTasksFlat().forEach(x => { const k = pjKey(pjOf(x.task)); if (!k) return; const s = pjCache.get(k) || { n: 0, k: 0, tasks: [], parked: 0 }; s.n++; if (isDoneSection(x.sectionId) || x.task.checked) s.k++; s.tasks.push(x); pjCache.set(k, s); });
+        try { (deep.items || []).forEach(t => { const m = /(?:^|·\s*)project\s+([^·]+?)\s*(?:·|$)/i.exec(t.note || '') || /(?:^|·\s*)project\s+([^·]+?)\s*(?:·|$)/i.exec((deepMeta(t).rest || []).map(x => x).join(' · ')); if (m) { const k = pjKey(m[1]), s = pjCache.get(k) || { n: 0, k: 0, tasks: [], parked: 0 }; s.parked++; pjCache.set(k, s); } }); } catch (e) {} }
+      return pjCache.get(pjKey(name)) || { n: 0, k: 0, tasks: [], parked: 0 };
+    }
+    { const _rtP = renderTasks; renderTasks = function () { pjCache = null; const r = _rtP.apply(this, arguments); try { pjAfterRender(); } catch (e) {} return r; }; }
+    function pjDays(p) { const d = pjDate(p && p.deadline); return d ? kDiff(d) : null; }
+    function pjDaysTxt(n) { return n == null ? '' : n === 0 ? 'today' : n === 1 ? 'tomorrow' : n > 0 ? `in ${n} days` : `${-n} day${n === -1 ? '' : 's'} late`; }
+    function pjDlFmt(p) { const d = pjDate(p.deadline); return d ? d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : ''; }
+    function pjLate(info, p) { const d = pjDate(p && p.deadline); if (!d) return false; const pl = info.date && info.date.kind === 'due' && info.date.date; return !!((pl && pl > d) || (info.deadline && info.deadline > d)); }
+    // ---- the chip ----
+    function pjChipHtml(info) {
+      const name = info.project; if (!name) return ''; const p = pjFind(name), s = pjStats(name);
+      const cls = (p && p.closed) ? ' closed' : pjLate(info, p) ? ' late' : '';
+      const tip = pjLate(info, p) && !(p && p.closed) ? ' title="Planned after the project’s deadline"' : '';
+      return `<button type="button" class="pj-chip${cls}" data-pj="${escapeHtml(name)}"${tip}>${PJ_IC}<span class="pj-cn">${escapeHtml(p ? p.name : name)}</span> <b>${s.k}/${s.n}</b></button>`;
+    }
+    { const _ch = capsulesHtml; capsulesHtml = function (info) { const r = _ch.apply(this, arguments); try { return pjChipHtml(info) + r; } catch (e) { return r; } }; }
+    // hover: the project's card; click: open the project
+    let pjPopEl = null, pjPopT = null;
+    function pjPopClose() { clearTimeout(pjPopT); if (pjPopEl) { pjPopEl.remove(); pjPopEl = null; } }
+    function pjPopShow(chip) {
+      pjPopClose(); const name = chip.dataset.pj, p = pjFind(name) || { name, goal: '', deadline: '', context: '' }, s = pjStats(name), dd = pjDays(p);
+      const el = document.createElement('div'); el.className = 'pj-pop'; el.setAttribute('role', 'dialog');
+      el.innerHTML = `<h4>${PJ_IC}${escapeHtml(p.name)}</h4>
+        <div class="pj-l">Goal</div><div class="pj-goal${p.goal ? '' : ' pj-empty'}">${p.goal ? escapeHtml(p.goal) : 'No goal yet'}</div>
+        <div class="pj-l">Deadline</div><div class="pj-dlt">${p.deadline ? `${escapeHtml(pjDlFmt(p))} · <span class="${dd < 0 ? 'late' : ''}">${pjDaysTxt(dd)}</span>` : '<span class="pj-empty">None set</span>'}</div>
+        ${p.context ? `<div class="pj-l">Context</div><div class="pj-ctx">${escapeHtml(p.context)}</div>` : ''}
+        <div class="pj-progl">${s.k} of ${s.n} done${s.parked ? ` · ${s.parked} parked` : ''}<i><b style="width:${s.n ? Math.round(s.k / s.n * 100) : 0}%"></b></i></div>
+        <button type="button" class="pj-open">Open project →</button>`;
+      document.body.appendChild(el); pjPopEl = el;
+      const r = chip.getBoundingClientRect(); let top = r.bottom + 6; if (top + el.offsetHeight > innerHeight - 8) top = Math.max(8, r.top - el.offsetHeight - 6);
+      el.style.left = Math.max(8, Math.min(r.left, innerWidth - el.offsetWidth - 8)) + 'px'; el.style.top = top + 'px';
+      el.querySelector('.pj-open').addEventListener('click', () => { pjPopClose(); pjGo(p.name); });
+      el.addEventListener('mouseleave', () => { pjPopT = setTimeout(pjPopClose, 250); }); el.addEventListener('mouseenter', () => clearTimeout(pjPopT));
+    }
+    document.addEventListener('mouseover', e => { const c = e.target.closest && e.target.closest('.pj-chip'); if (!c) return; clearTimeout(pjPopT); if (pjPopEl && pjPopEl.__for === c) return; pjPopT = setTimeout(() => { if (c.isConnected) { pjPopShow(c); if (pjPopEl) pjPopEl.__for = c; } }, 320); });
+    document.addEventListener('mouseout', e => { const c = e.target.closest && e.target.closest('.pj-chip'); if (!c || (e.relatedTarget && c.contains(e.relatedTarget))) return; clearTimeout(pjPopT); pjPopT = setTimeout(() => { if (pjPopEl && !pjPopEl.matches(':hover')) pjPopClose(); }, 250); });
+    document.addEventListener('click', e => { const c = e.target.closest && e.target.closest('.pj-chip'); if (!c) return; e.stopPropagation(); e.preventDefault(); pjPopClose(); pjGo(c.dataset.pj); }, true);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && pjPopEl) pjPopClose(); });
+    // ---- picking a project for a task (details panel, selection bar) ----
+    function pjPick(anchor, current, onPick) {
+      document.querySelectorAll('.pj-pick').forEach(x => x.remove());
+      const open = pjList.filter(p => !p.closed).sort((a, b) => (pjDate(a.deadline) || 9e15) - (pjDate(b.deadline) || 9e15));
+      const el = document.createElement('div'); el.className = 'pj-pick';
+      el.innerHTML = `<div class="t">Project</div>${open.map(p => `<button type="button" class="it${pjKey(p.name) === pjKey(current) ? ' on' : ''}" data-pk="${escapeHtml(p.name)}">${PJ_IC}${escapeHtml(p.name)}<span>${pjStats(p.name).k}/${pjStats(p.name).n}</span></button>`).join('')}
+        <input placeholder="+ New project…" aria-label="New project name" maxlength="60">${current ? '<button type="button" class="rm">Take it out of the project</button>' : ''}`;
+      document.body.appendChild(el);
+      const r = anchor.getBoundingClientRect(); el.style.left = Math.max(8, Math.min(r.left, innerWidth - el.offsetWidth - 8)) + 'px'; el.style.top = Math.min(r.bottom + 6, innerHeight - el.offsetHeight - 8) + 'px';
+      const done = v => { el.remove(); document.removeEventListener('mousedown', off, true); if (v !== undefined) onPick(v); };
+      el.querySelectorAll('[data-pk]').forEach(b => b.addEventListener('click', () => done(b.dataset.pk)));
+      const inp = el.querySelector('input'); inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter' && pjNorm(inp.value)) { const p = pjCreate(inp.value); done(p.name); } else if (e.key === 'Escape') done(); });
+      const rm = el.querySelector('.rm'); if (rm) rm.addEventListener('click', () => done(''));
+      const off = e => { if (!el.contains(e.target)) done(); }; setTimeout(() => document.addEventListener('mousedown', off, true), 0);
+      if (!open.length) setTimeout(() => inp.focus(), 0);
+    }
+    { const _tpR = tpRender; tpRender = function () {
+        const r = _tpR.apply(this, arguments);
+        try { const f = tpFind(); if (!f) return r; const caps = tpEl.querySelector('.tp-caps'); if (!caps) return r; const cur = pjOf(f.task);
+          caps.insertAdjacentHTML('afterend', `<div class="tp-pjrow">${cur ? `<button type="button" class="lnk" data-tppj="1">Change project</button>` : `<button type="button" class="lnk" data-tppj="1">+ Add to a project</button>`}</div>`);
+          tpEl.querySelector('[data-tppj]').addEventListener('click', e => pjPick(e.currentTarget, cur, v => { pjSetTask(f.task, v); markChanged(); renderTasks(); tpRender(); if (v) showStatus(`In ${v}`); }));
+        } catch (e) {}
+        return r;
+      }; }
+    { const _sbr = selBarRender; selBarRender = function () {
+        const r = _sbr.apply(this, arguments);
+        try { if (selBarEl && !selBarEl.querySelector('[data-sb="pj"]')) { const ws = selBarEl.querySelector('[data-sb="ws"]'); if (ws) ws.insertAdjacentHTML('afterend', `<button class="sb-b" data-sb="pj"${koiSel.size ? '' : ' disabled'}>Project${SB_IC.chev}</button>`); } } catch (e) {}
+        return r;
+      }; }
+    document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.sel-bar [data-sb="pj"]'); if (!b) return; e.stopPropagation(); e.preventDefault(); if (!koiSel.size) return;
+      pjPick(b, '', v => { const snap = selSnap(); const ts = selTasks(); ts.forEach(x => pjSetTask(x.task, v)); selDone(v ? `${ts.length} in ${v}` : `Project cleared on ${ts.length}`, snap, false); }); }, true);
+    setTimeout(() => { try { KOI_FLOATS.forEach(f => { f.inside += ', .pj-pick, .pj-pop, .pjd, .pjb, .pj-done-ov'; }); } catch (e) {} }, 0);   // clicks in project pieces never count as "away"
+    // ---- the Projects tab and page ----
+    const pjTabBtn = document.createElement('button'); pjTabBtn.id = 'pjTabBtn'; pjTabBtn.className = 'place-tab'; pjTabBtn.innerHTML = `<span class="pk-ic pl-ic">${PJ_IC}</span>Projects`;
+    tasksTabBtn.after(pjTabBtn);
+    const pjPanel = document.createElement('section'); pjPanel.id = 'pjPanel'; pjPanel.className = 'tab-panel pj-panel'; tasksPanel.after(pjPanel);
+    let pjBar = null;
+    function pjRing(k, n, size) { size = size || 46; const r = size / 2 - 4, c = 2 * Math.PI * r; return `<div class="pj-ring" style="width:${size}px;height:${size}px"><svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" stroke="var(--border)"/>${k ? `<circle cx="${size / 2}" cy="${size / 2}" r="${r}" stroke="var(--st-done-edge)" stroke-dasharray="${c * k / Math.max(1, n)} ${c}" transform="rotate(-90 ${size / 2} ${size / 2})"/>` : ''}</svg>${k}/${n}</div>`; }
+    function pjNext(name) { const s = pjStats(name), rank = x => statusKey(x.sectionId) === 'progress' ? 0 : isWaitSection(x.sectionId) ? 2 : 1; const open = s.tasks.filter(x => !(isDoneSection(x.sectionId) || x.task.checked)).sort((a, b) => rank(a) - rank(b)); return open[0] ? open[0].task : null; }
+    function pjRenderList() {
+      const open = pjList.filter(p => !p.closed).sort((a, b) => (pjDate(a.deadline) || 9e15) - (pjDate(b.deadline) || 9e15)), fin = pjList.filter(p => p.closed).sort((a, b) => String(b.closed).localeCompare(String(a.closed)));
+      const card = p => { const s = pjStats(p.name), dd = pjDays(p), nx = pjNext(p.name);
+        return `<button type="button" class="pj-card" data-pjo="${escapeHtml(p.name)}"><div class="top">${pjRing(s.k, s.n)}<div style="min-width:0"><div class="nm">${escapeHtml(p.name)}</div><div class="dl">${p.deadline ? `${escapeHtml(pjDlFmt(p))} · <span class="${dd < 0 ? 'late' : ''}">${pjDaysTxt(dd)}</span>` : '<span style="color:var(--text-muted);font-weight:500">No deadline</span>'}</div></div></div>
+          <div class="gl">${p.goal ? escapeHtml(p.goal) : '<span class="pj-empty">No goal yet</span>'}</div><div class="nx">${nx ? `Next: <b>${escapeHtml(cleanTitle(nx.title))}</b>` : s.n ? 'Everything is done' : 'No tasks yet'}</div></button>`; };
+      pjPanel.innerHTML = `<div class="pj-page"><div class="pj-h1"><h2>Projects</h2><span>${open.length} open${open.length > 1 ? ' · nearest deadline first' : ''}</span><button type="button" class="pj-newb" data-pjnew="1">+ New project</button></div>
+        ${open.length || pjNewOpen ? `<div class="pj-grid">${pjNewOpen ? '<div class="pj-card newc"><input data-pjname placeholder="Name the project" maxlength="60"><small>Enter to create it · Esc to cancel</small></div>' : ''}${open.map(card).join('')}</div>` : '<div class="pj-none">A project is a goal with an end, made of several tasks.<br>Make one here, or add tasks to a project from their details.</div>'}
+        ${fin.length ? `<div class="pj-fin"><h3>Finished</h3>${fin.map(p => `<button type="button" class="pj-finrow" data-pjo="${escapeHtml(p.name)}"><span class="ck">✓</span><b>${escapeHtml(p.name)}</b> · ${pjStats(p.name).n} task${pjStats(p.name).n === 1 ? '' : 's'}<span class="d">Finished ${pjDate(p.closed) ? pjDate(p.closed).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span></button>`).join('')}</div>` : ''}</div>`;
+      pjPanel.querySelectorAll('[data-pjo]').forEach(b => b.addEventListener('click', () => pjGo(b.dataset.pjo)));
+      pjPanel.querySelector('[data-pjnew]').addEventListener('click', () => { pjNewOpen = true; pjRenderList(); });
+      const ni = pjPanel.querySelector('[data-pjname]'); if (ni) { ni.focus(); ni.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter' && pjNorm(ni.value)) { const p = pjCreate(ni.value); pjNewOpen = false; pjGo(p.name, true); } else if (e.key === 'Escape') { pjNewOpen = false; pjRenderList(); } }); ni.addEventListener('blur', () => setTimeout(() => { if (pjNewOpen && !pjNorm(ni.value)) { pjNewOpen = false; pjRenderList(); } }, 150)); }
+    }
+    function pjShowList() {
+      pjOpen = null; pjPanelClose(); document.body.classList.remove('pj-in'); if (pjBar) { pjBar.remove(); pjBar = null; }
+      _pjSw('tasks'); activeMainTab = 'projects';
+      tasksTabBtn.classList.remove('active'); memoryTabBtn.classList.remove('active'); try { dayTabBtn.classList.remove('active'); dayPanel.classList.remove('active'); } catch (e) {}
+      tasksPanel.classList.remove('active'); memoryPanel.classList.remove('active'); pjPanel.classList.add('active'); pjTabBtn.classList.add('active');
+      try { taskViewToggle.style.display = 'none'; } catch (e) {}
+      pjRenderList(); try { applyFilter(); } catch (e) {}
+    }
+    function pjGo(name, withPanel) {
+      const p = pjFind(name) || pjCreate(name); if (!p) return;
+      pjOpen = p.name; pjPanel.classList.remove('active');
+      _pjSw('tasks'); tasksTabBtn.classList.remove('active'); pjTabBtn.classList.add('active'); document.body.classList.add('pj-in');
+      try { sessionStorage.setItem('koi-tab', 'tasks'); } catch (e) {}
+      try { applyFilter(); } catch (e) {} renderTasks(); pjBarPaint();
+      if (withPanel) pjPanelShow();
+    }
+    let _pjSw = null;
+    { const _sw = switchMainTab; _pjSw = function (t) { return _sw.call(this, t); };
+      switchMainTab = function (tab) {
+        if (tab === 'projects') { pjShowList(); return; }
+        if (pjOpen || activeMainTab === 'projects') { pjOpen = null; pjPanelClose(); document.body.classList.remove('pj-in'); if (pjBar) { pjBar.remove(); pjBar = null; } pjPanel.classList.remove('active'); pjTabBtn.classList.remove('active'); }
+        const r = _sw.apply(this, arguments); if (pjOpen === null) { try { applyFilter(); } catch (e) {} } return r;
+      }; }
+    pjTabBtn.addEventListener('click', () => switchMainTab('projects'));
+    // the filter: only the open project's tasks
+    { const _km = kfMatch; kfMatch = function (task) { if (pjOpen && pjKey(pjOf(task)) !== pjKey(pjOpen)) return false; return _km.apply(this, arguments); }; }
+    let pjKfOther = null;
+    { const _ka = kfActive; pjKfOther = _ka; kfActive = function () { return !!pjOpen || _ka.apply(this, arguments); }; }
+    function pjBarPaint() {
+      if (!pjOpen) return; const p = pjFind(pjOpen); if (!p) return; const s = pjStats(p.name), dd = pjDays(p);
+      if (!pjBar) { pjBar = document.createElement('div'); pjBar.className = 'pjb'; const pb = document.getElementById('pageBar'); (pb || tasksPanel.firstChild).after ? (pb ? pb.after(pjBar) : tasksPanel.prepend(pjBar)) : tasksPanel.prepend(pjBar); }
+      pjBar.innerHTML = `<div class="l1"><button type="button" class="bk" data-pjb="back">← Projects</button><span class="nm" title="${escapeHtml(p.name)}">${PJ_IC}${escapeHtml(p.name)}</span><span class="pr">${s.k} of ${s.n}<i><b style="width:${s.n ? Math.round(s.k / s.n * 100) : 0}%"></b></i></span></div>
+        ${p.goal ? `<div class="gl" title="${escapeHtml(p.goal)}"><em>Goal</em>${escapeHtml(p.goal)}</div>` : '<div class="gl none" data-pjb="ctx"><em>Goal</em>Add a goal: what will be true when this is done?</div>'}
+        <div class="rt"><button type="button" class="dl" data-pjb="ctx">${KOI_FLAG}${p.deadline ? `${escapeHtml(pjDlFmt(p))} · <span class="${dd < 0 ? 'late' : ''}">${pjDaysTxt(dd)}</span>` : 'Add a deadline'}</button><button type="button" class="cx${pjPanelOpen ? ' on' : ''}" data-pjb="ctx">Context ›</button></div>`;
+      pjBar.querySelector('[data-pjb="back"]').addEventListener('click', () => switchMainTab('projects'));
+      pjBar.querySelectorAll('[data-pjb="ctx"]').forEach(b => b.addEventListener('click', () => { if (pjPanelOpen) pjPanelClose(); else pjPanelShow(); }));
+    }
+    // column counts follow the project
+    { const _afP = applyFilter; applyFilter = function () { const r = _afP.apply(this, arguments); try { if (pjOpen && pjKfOther && !pjKfOther()) { const bn = document.getElementById('kfBanner'); if (bn) bn.hidden = true; } if (pjOpen) { document.querySelectorAll('#board .column').forEach(c => { const cnt = c.querySelector('.column-header .count'); if (cnt) cnt.textContent = c.querySelectorAll('.cards .task-card:not(.kf-hide)').length; }); document.querySelectorAll('#listView .lv-group').forEach(g => { const ce = g.querySelector('.lv-gcount'); if (ce) ce.textContent = g.querySelectorAll('.lv-item[data-task-id]:not(.kf-hide)').length; }); } } catch (e) {} return r; }; }
+    function pjAfterRender() {
+      if (pjOpen) pjBarPaint();
+      if (activeMainTab === 'projects' && !pjOpen && pjPanel.classList.contains('active') && !pjPanel.querySelector('[data-pjname]')) pjRenderList();
+    }
+    function pjRepaint() { pjCache = null; if (activeMainTab === 'projects' && !pjOpen) pjRenderList(); else { try { renderTasks(); } catch (e) {} } }
+    // ---- the side panel: name, goal, deadline, context; close / reopen / delete ----
+    let pjdEl = null;
+    function pjPanelClose() { pjPanelOpen = false; if (pjdEl) { pjdEl.remove(); pjdEl = null; } if (pjBar) { const c = pjBar.querySelector('.cx'); if (c) c.classList.remove('on'); } }
+    function pjRename(from, to) {
+      to = pjNorm(to); const p = pjFind(from); if (!p || !to || to === p.name) return false;
+      if (pjKey(to) !== pjKey(from) && pjFind(to)) { showStatus(`There’s already a project called ${to}`); return false; }
+      allTasksFlat().forEach(x => { if (pjKey(pjOf(x.task)) === pjKey(from)) pjSetTask(x.task, to); });
+      try { (deep.items || []).forEach(t => { if (t.note) t.note = t.note.replace(new RegExp('(^|·\\s*)project\\s+' + from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\\s*(?:·|$))', 'i'), `$1project ${to}$2`); }); } catch (e) {}
+      p.name = to; if (pjKey(pjOpen) === pjKey(from)) pjOpen = to; pjSave(); markChanged(); renderTasks(); return true;
+    }
+    function pjPanelShow() {
+      const p = pjFind(pjOpen); if (!p) return; pjPanelClose(); pjPanelOpen = true;
+      const el = document.createElement('aside'); el.className = 'pjd'; el.setAttribute('aria-label', 'Project');
+      const bar = pjBar && pjBar.getBoundingClientRect(); if (bar) el.style.top = Math.max(70, bar.top) + 'px';
+      el.innerHTML = `<div class="hd">${PJ_IC}<input class="nmi" data-pjf="name" value="${escapeHtml(p.name)}" maxlength="60" aria-label="Project name"><button type="button" class="x" data-pjf="x" title="Close (Esc)">✕</button></div>
+        <div class="pj-l">Goal</div><textarea data-pjf="goal" rows="2" placeholder="What will be true when this is done?">${escapeHtml(p.goal || '')}</textarea><div class="cnt"></div><div class="hint" hidden>Sounds like an activity. What will be true when it’s done?</div>
+        <div class="pj-l">Deadline</div><div class="dlrow"><input type="date" data-pjf="deadline" value="${escapeHtml(p.deadline || '')}">${p.deadline ? '<button type="button" class="lnk" data-pjf="nodl">Remove</button>' : ''}</div>
+        <div class="pj-l">Context</div><textarea data-pjf="context" rows="4" placeholder="Why it matters, who’s involved, links, anything you’ll want to remember.">${escapeHtml(p.context || '')}</textarea>
+        <div class="ft">${p.closed ? `<button type="button" class="sp-btn" data-pjf="reopen">Reopen the project</button><span class="st">Finished ${pjDate(p.closed) ? pjDate(p.closed).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>` : '<button type="button" class="sp-btn" data-pjf="close">Close the project</button>'}<button type="button" class="del" data-pjf="del">Delete project</button></div>`;
+      document.body.appendChild(el); pjdEl = el; if (pjBar) { const c = pjBar.querySelector('.cx'); if (c) c.classList.add('on'); }
+      const grow = t => { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, t.dataset.pjf === 'goal' ? 140 : 420) + 'px'; };
+      const goal = el.querySelector('[data-pjf="goal"]'), cnt = el.querySelector('.cnt'), hint = el.querySelector('.hint'), ctx = el.querySelector('[data-pjf="context"]');
+      const paintGoal = () => { const n = goal.value.trim().length; cnt.textContent = n >= 100 ? `${n} / ${PJ_GOAL_MAX}${n > PJ_GOAL_MAX ? ' · Shorter goals are easier to check' : ''}` : ''; cnt.classList.toggle('over', n > PJ_GOAL_MAX); hint.hidden = !PJ_VAGUE.test(goal.value.trim()); };
+      let t0 = null; const later = fn => { clearTimeout(t0); t0 = setTimeout(fn, 450); };
+      goal.addEventListener('input', () => { grow(goal); paintGoal(); later(() => { p.goal = goal.value.replace(/\s*\n+\s*/g, ' ').trim(); pjSave(); pjBarPaint(); }); });
+      ctx.addEventListener('input', () => { grow(ctx); later(() => { p.context = ctx.value.trim(); pjSave(); }); });
+      el.querySelector('[data-pjf="deadline"]').addEventListener('change', e => { const d = koiDateFromInput(e.target.value); if (!d) return; p.deadline = pjYmd(d); pjSave(); renderTasks(); });
+      const nd = el.querySelector('[data-pjf="nodl"]'); if (nd) nd.addEventListener('click', () => { p.deadline = ''; pjSave(); renderTasks(); pjPanelShow(); });
+      const nm = el.querySelector('[data-pjf="name"]'); nm.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') nm.blur(); if (e.key === 'Escape') { nm.value = p.name; nm.blur(); } });
+      nm.addEventListener('blur', () => { if (pjNorm(nm.value) && pjNorm(nm.value) !== p.name) { if (!pjRename(p.name, nm.value)) nm.value = p.name; } else nm.value = p.name; });
+      el.querySelector('[data-pjf="x"]').addEventListener('click', pjPanelClose);
+      const cl = el.querySelector('[data-pjf="close"]'); if (cl) cl.addEventListener('click', () => { pjClose(p.name); pjPanelShow(); });
+      const ro = el.querySelector('[data-pjf="reopen"]'); if (ro) ro.addEventListener('click', () => { p.closed = ''; pjSave(); renderTasks(); pjPanelShow(); toast(`${p.name} is open again`, 2000); });
+      el.querySelector('[data-pjf="del"]').addEventListener('click', () => pjDelete(p.name));
+      [goal, ctx].forEach(grow); paintGoal();
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && pjdEl && !e.target.closest('.pj-pick')) { e.stopPropagation(); pjPanelClose(); } }, true);
+    function pjClose(name) { const p = pjFind(name); if (!p) return; p.closed = pjYmd(new Date()); pjSave(); renderTasks(); try { dayHeart.low(); } catch (e) {} }
+    function pjDelete(name) {
+      const p = pjFind(name); if (!p) return; const snapL = JSON.stringify(pjList), notes = new Map(); allTasksFlat().forEach(x => notes.set(x.task, x.task.note));
+      allTasksFlat().forEach(x => { if (pjKey(pjOf(x.task)) === pjKey(name)) pjSetTask(x.task, ''); });
+      pjList = pjList.filter(x => x !== p); pjSave(); markChanged(); pjPanelClose(); switchMainTab('projects');
+      tdUndoToast(`Project “${p.name}” deleted`, () => { pjList = JSON.parse(snapL); notes.forEach((n, t) => { t.note = n; }); pjSave(); markChanged(); renderTasks(); pjRepaint(); });
+    }
+    // ---- new tasks added while a project is open join it ----
+    const pjSeen = new WeakSet(); let pjSeenReady = false;
+    function pjMarkSeen() { allTasksFlat().forEach(x => pjSeen.add(x.task)); pjSeenReady = true; }
+    { const _mc = markChanged; markChanged = function () {
+        try { if (pjOpen && pjSeenReady) { const fresh = allTasksFlat().filter(x => !pjSeen.has(x.task)); if (fresh.length && fresh.length <= 3) fresh.forEach(x => { if (!pjOf(x.task) && Math.floor(+x.task.id || 0) > Date.now() - 15000) pjSetTask(x.task, pjOpen); }); } pjMarkSeen(); } catch (e) {}
+        return _mc.apply(this, arguments);
+      }; }
+    { const _rtS = renderTasks; renderTasks = function () { const r = _rtS.apply(this, arguments); try { if (!pjOpen) pjMarkSeen(); } catch (e) {} return r; }; }
+    // ---- the finished moment ----
+    const pjAsked = new Set();
+    { const _ascP = applyStatusChange; applyStatusChange = function (task, fromId, toId) {
+        const r = _ascP.apply(this, arguments);
+        try { if (isDoneSection(toId) && !isDoneSection(fromId)) { const name = pjOf(task), p = name && pjFind(name);
+          if (p && !p.closed) setTimeout(() => { pjCache = null; const s = pjStats(p.name); if (s.n && s.k >= s.n && !pjAsked.has(pjKey(p.name))) { pjAsked.add(pjKey(p.name)); pjFinished(p.name); } }, 950); } } catch (e) {}
+        return r;
+      }; }
+    function pjFinished(name) {
+      const p = pjFind(name); if (!p) return; const s = pjStats(name);
+      document.querySelectorAll('.pj-done-ov').forEach(x => x.remove());
+      const ov = document.createElement('div'); ov.className = 'pj-done-ov';
+      ov.innerHTML = `<div class="pj-done" role="dialog" aria-label="Project finished"><div class="stamp"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg></div><div class="k">Project finished</div><h3>${escapeHtml(p.name)}</h3><p>All ${s.n} task${s.n === 1 ? '' : 's'} done${p.goal ? `. ${escapeHtml(p.goal)}` : '.'}</p><div class="bt"><button type="button" data-pjd="later">Not yet</button><button type="button" class="pri" data-pjd="close">Close it</button></div></div>`;
+      document.body.appendChild(ov); try { dayHeart.chord(1); } catch (e) {}
+      const fin = close => { ov.remove(); document.removeEventListener('keydown', key, true); if (close) { pjClose(p.name); toast(`${p.name} is finished. Well done.`, 2600); } };
+      const key = e => { if (e.key === 'Escape') { e.stopPropagation(); fin(false); } }; document.addEventListener('keydown', key, true);
+      ov.querySelector('[data-pjd="close"]').addEventListener('click', () => fin(true)); ov.querySelector('[data-pjd="later"]').addEventListener('click', () => fin(false));
+      ov.addEventListener('click', e => { if (e.target === ov) fin(false); });
+    }
+    // ---- Today's Three: the chip under the title ----
+    { const _rdP = dayRenderDay; dayRenderDay = function () {
+        const r = _rdP.apply(this, arguments);
+        try { dayPanel.querySelectorAll('.dy-three > .dy-card:not(.kept)').forEach(c => { const f = dayFind(c.dataset.id); const info = f && splitNoteCapsules(f.task.note || ''); if (!info || !info.project) return; const m = c.querySelector('.meta'); if (m && !m.querySelector('.pj-chip')) { const pill = m.querySelector('.ds-pill'); (pill || m.firstChild) ? (pill ? pill.insertAdjacentHTML('afterend', pjChipHtml(info)) : m.insertAdjacentHTML('afterbegin', pjChipHtml(info))) : m.insertAdjacentHTML('afterbegin', pjChipHtml(info)); const ch = m.querySelector('.pj-chip'); if (ch) { ch.classList.add('pj-keep'); ch.style.marginTop = '6px'; } } }); } catch (e) {}
+        return r;
+      }; }
+    // ---- the Weekly reset: projects finished this week ----
+    { const _wkR = wkRender; wkRender = function () {
+        const r = _wkR.apply(this, arguments);
+        try { const since = new Date(); since.setDate(since.getDate() - 7); const fin = pjList.filter(p => p.closed && pjDate(p.closed) && pjDate(p.closed) >= since);
+          if (fin.length) { const lbl = dayPanel.querySelector('.wk .ln-lbl'); if (lbl && !dayPanel.querySelector('.wk-pj')) lbl.insertAdjacentHTML('afterend', `<div class="wk-pj">${PJ_IC.replace('<svg', '<svg style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.5"')}<span>Projects finished this week: <b>${fin.map(p => escapeHtml(p.name)).join('</b>, <b>')}</b></span></div>`); } } catch (e) {}
+        return r;
+      }; }
+    if (!GUIDE_ITEMS.some(x => x.id === 'projects')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'areas'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'projects', g: 'concepts', t: 'Projects', d: 'A project is a goal with an end, made of several tasks (an area never ends; a project does). Make one on the Projects tab, or add a task to one from its details (or several at once from the selection bar). Each task shows a chip with the project’s progress; hover it to see the goal, deadline and context. Open a project to see only its tasks, and Context › to edit its goal, deadline and context. When its last task is done, Hodo asks whether to close it.', kw: 'project goal parent family group deadline context progress' }); }
+    // ===== Hodo Link 1.3.0 in Hodo (Nov 3): it updates itself, and Claude's big changes can be undone in one click =====
+    // The extension is now a small shell that fetches its newest core from Hodo's website when Claude starts it (only
+    // downloads, checks the fingerprint). Settings shows "Hodo Link 1.3.x · up to date"; "Download update" only when the
+    // shell itself is too old (1.2.x, or a future shell bump). Before Claude changes many things at once (add_plan,
+    // update_tasks, manage_areas, renaming a project) Hodo Link keeps a copy (memory/hodo-link/undo.json) and notes it in
+    // hodo-link.json ("bulk"); Hodo then offers "Claude changed 12 tasks · Undo" (a toast, and in Settings → Hodo Link for an
+    // hour). Undo only goes ahead if TASKS.md is still exactly as Claude left it. Projects and areas Claude changed are
+    // read again at once.
+    lkExtRow = function () {
+      const old = lkOutdated();
+      return `<div class="lk-row lk-ext${old ? ' upd' : ''}"><div>The Hodo extension<small>${old ? `<b>An update is ready: ${LK_EXT_VERSION}.</b> Download it, then in Claude: Settings → Extensions → Install Extension. It replaces the old one, and from then on Hodo Link updates itself.` : `${lk.version ? `<b>Hodo Link ${escapeHtml(lk.version)} · up to date.</b> ` : ''}It keeps itself up to date from Hodo’s website when Claude starts it.`}</small></div><a class="sp-btn${old ? ' pri' : ''}" href="Hodo.mcpb" download="Hodo.mcpb">${old ? 'Download update' : 'Download again'}</a></div>`;
+    };
+    let lkBulkShown = 0, lkLastAt = 0;
+    const lkBulkSeen = () => { try { return +localStorage.getItem('koi-lk-bulk') || 0; } catch (e) { return 0; } };
+    async function lkSha1(t) { const b = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+    async function lkMemFile(dir, name) { try { let d = await memoryDirHandle.getDirectoryHandle('memory'); if (dir) d = await d.getDirectoryHandle(dir); return await (await d.getFileHandle(name)).getFile(); } catch (e) { return null; } }
+    async function lkUndoBulk() {
+      try {
+        const b = lk.bulk; if (!b || b.undone) return;
+        const uf = await lkMemFile('hodo-link', 'undo.json'), u = uf && JSON.parse(await uf.text());
+        if (!u || !taskFileHandle) { toast('There’s nothing to undo.', 2200); return; }
+        try { if (hasChanges) await autoSave(); } catch (e) {}
+        const now = (await (await taskFileHandle.getFile()).text()).replace(/\r\n/g, '\n');
+        if (b.after && (await lkSha1(now)) !== b.after) { toast('Your tasks changed after Claude’s change, so it can’t be undone in one click.', 3600); return; }
+        const w = await taskFileHandle.createWritable(); await w.write(u.tasks); await w.close();
+        if (u.areas != null) { await koiMemWrite('areas.md', u.areas); try { koiProfileLoadFromMemory(); } catch (e) {} }
+        if (u.projects != null) { await koiMemWrite('projects.md', u.projects); try { pjLoadFromMemory(); } catch (e) {} } else { pjList = []; pjSave(); }
+        await loadTaskHandle(taskFileHandle);
+        await lkWrite({ bulk: Object.assign({}, b, { undone: Date.now() }) });
+        try { localStorage.setItem('koi-lk-bulk', String(b.at)); } catch (e) {}
+        try { dayHeart.low(); } catch (e) {} toast('Claude’s change is undone.', 2400); lkPaint();
+      } catch (e) { showStatus('Couldn’t undo: ' + e.message); }
+    }
+    async function lkReloadMemory() {
+      try { const f = await lkMemFile('', 'projects.md'); if (f) { const t = await f.text(); const e = koiMemEntry('projects.md'); if (e) e.content = t; pjList = pjParse(t); try { localStorage.setItem('koi-projects', JSON.stringify(pjList)); } catch (x) {} pjRepaint(); } } catch (e) {}
+      try { const f = await lkMemFile('', 'areas.md'), e = koiMemEntry('areas.md'); if (f && e) { const t = await f.text(); if (t !== e.content) { e.content = t; koiProfileLoadFromMemory(); } } } catch (e) {}
+    }
+    { const _lkr = lkRead; lkRead = async function () {
+        const r = await _lkr.apply(this, arguments);
+        try {
+          const at = lk.last && lk.last.at || 0; if (at && at !== lkLastAt) { const first = !lkLastAt; lkLastAt = at; if (!first) lkReloadMemory(); }
+          const b = lk.bulk; if (b && !b.undone && b.at > lkBulkSeen() && b.at !== lkBulkShown && Date.now() - b.at < 3600e3) {
+            lkBulkShown = b.at; try { localStorage.setItem('koi-lk-bulk', String(b.at)); } catch (e) {}
+            lkReloadMemory();
+            const msg = `Claude ${String(b.what || 'made a big change').replace(/\.$/, '')}`;
+            document.querySelectorAll('.fx-toast').forEach(x => x.remove());
+            const t = document.createElement('div'); t.className = 'fx-toast td-toast lk-bulk-toast'; t.innerHTML = `<span>${escapeHtml(msg)}</span><button type="button">${TD_IC.undo}Undo</button>`;
+            document.body.appendChild(t); t.querySelector('button').addEventListener('click', () => { t.remove(); lkUndoBulk(); });
+            setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 600); }, 12000);
+          }
+        } catch (e) {}
+        return r;
+      }; }
+    // Settings → Hodo Link: undo Claude's last big change, for an hour
+    { const _lkp = lkPaint; lkPaint = function () {
+        const r = _lkp.apply(this, arguments);
+        try { const b = lk.bulk, box = lkSec && lkSec.querySelector('.lk-body .lk-ok'); if (box && b && !b.undone && Date.now() - b.at < 3600e3 && !lkSec.querySelector('[data-lk="undo"]')) {
+          box.insertAdjacentHTML('afterend', `<div class="lk-row"><div>Claude’s last big change<small>${escapeHtml(String(b.what || ''))} · ${lkAgo(b.at)}</small></div><button type="button" class="sp-btn" data-lk="undo">Undo it</button></div>`);
+          lkSec.querySelector('[data-lk="undo"]').addEventListener('click', lkUndoBulk); } } catch (e) {}
+        return r;
+      }; }
+    window.addEventListener('focus', () => { try { if (typeof memoryDirHandle !== 'undefined' && memoryDirHandle) lkReloadMemory(); } catch (e) {} });
     applyWaitRail();
   </script>
 </body>
