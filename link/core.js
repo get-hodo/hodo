@@ -32,7 +32,7 @@ function resolveFolder(raw) {
 const FOLDER = resolveFolder(process.env.HODO_FOLDER || process.argv[2] || '');
 const TASKS = () => path.join(FOLDER, 'TASKS.md');
 const LINK = () => path.join(FOLDER, 'memory', 'hodo-link.json');
-const VERSION = '1.3.2';
+const VERSION = '1.3.3';
 
 // ---------- dates, in Hodo's own formats ----------
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -121,7 +121,8 @@ function splitNote(note) {
   parts[0] = first;
   const areas = readAreas().map(a => a.name.toLowerCase());
   parts.forEach(p => { p = p.trim(); if (!p) return;
-    if (/^(due|by)\s/i.test(p) && !o.due) o.due = p.replace(/^(due|by)\s+/i, '');
+    if (/^due Claude\b/i.test(p)) return;   // 1.3.3: an older bug read "by Claude Nov 3" as a planned day and wrote "due Claude Nov 3"; dropped on the next write
+    if (/^(due|by)\s/i.test(p) && !/^by Claude\b/i.test(p) && !o.due) o.due = p.replace(/^(due|by)\s+/i, '');
     else if ((m = p.match(/^waiting on (.+)$/i))) o.waitOn = m[1];
     else if ((m = p.match(/^deadline (.+)$/i))) o.deadline = m[1];
     else if (/^(high|medium|low)$/i.test(p)) o.priority = p.toLowerCase();
@@ -258,17 +259,48 @@ function waitView(t) {
   return { id: t.id || t.title, title: t.title, waiting_on: o.waitOn || o.who || '', waiting_since: since ? iso(since) : null, nudged_on: nudges, nudge_due_today: due, planned: o.due || null, deadline: o.deadline || null, description: t.desc.filter((l, i) => !d || i < d.start || i >= d.end).join('\n'), steps: t.steps.map(s => s.text), draft: d ? d.text : null, sent_before: sentOf(t) };
 }
 
+// ---------- references and outputs (Nov 3, 1.3.3): the same "📎 Reference: [name](link)" lines Hodo writes, shown as file chips ----------
+const LINK_RE = /^📎\s*(?:(reference|ref|output|out)\s*:\s*)?\[([^\]]*)\]\((.+)\)\s*$/i;
+function linkUrl(raw) {   // like Hodo's own: web links, or a file path on the computer (opened as file:///…)
+  const v = String(raw || '').trim().replace(/^["'<]+|["'>]+$/g, '');
+  if (/^(https?|file):\/\//i.test(v)) return v.replace(/\s/g, '%20');
+  if (/^[a-z]:[\\/]/i.test(v) || /^\\\\/.test(v)) return 'file:///' + encodeURI(v.replace(/\\/g, '/').replace(/^\/+/, '')).replace(/#/g, '%23');
+  if (/^~?\//.test(v)) return 'file://' + encodeURI(v).replace(/#/g, '%23');
+  if (/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(v)) return 'https://' + v;
+  throw new Error(`"${v || '(empty)'}" is not a link or a file path. Give a web link (https://…) or the file's full path.`);
+}
+function linkName(name, url) {
+  let n = String(name || '').replace(/[\[\]\n\r]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!n) { try { n = decodeURIComponent(url.split(/[?#]/)[0].replace(/\/+$/, '').split('/').pop()); } catch (e) { n = ''; } }
+  return (n || 'Link').slice(0, 80);
+}
+const linkView = l => { const m = String(l).match(LINK_RE); return m ? { kind: /^out/i.test(m[1] || '') ? 'output' : 'reference', name: m[2].trim(), url: m[3].trim() } : null; };
+function setLinks(t, a) {
+  const add = (arr, kind) => (Array.isArray(arr) ? arr : arr ? [arr] : []).forEach(x => {
+    if (typeof x === 'string') x = { url: x };
+    const url = linkUrl(x && (x.url || x.link || x.path)), line = `📎 ${kind === 'output' ? 'Output' : 'Reference'}: [${linkName(x && x.name, url)}](${url})`;
+    const i = t.links.findIndex(l => { const v = linkView(l); return v && v.url === url; });
+    if (i >= 0) t.links[i] = line; else t.links.push(line);   // the same link again: its name and kind are updated
+  });
+  (Array.isArray(a.remove_links) ? a.remove_links : []).forEach(k => { k = String(k || '').toLowerCase().trim(); if (!k) return;
+    let i = t.links.findIndex(l => { const v = linkView(l); return v && (v.url.toLowerCase() === k || v.name.toLowerCase() === k); });
+    if (i < 0) i = t.links.findIndex(l => { const v = linkView(l); return v && v.name.toLowerCase().includes(k); });
+    if (i < 0) throw new Error(`“${t.title}” has no reference or output matching "${k}".`); t.links.splice(i, 1); });
+  add(a.references, 'reference'); add(a.outputs, 'output');
+}
+
 // ---------- tools ----------
-const view = t => ({ id: t.id || t.title, title: t.title, column: t.section.name, finished: isDone(t.section) || t.checked, note: t.note, description: t.desc.join('\n'), steps: t.steps });
+const view = t => Object.assign({ id: t.id || t.title, title: t.title, column: t.section.name, finished: isDone(t.section) || t.checked, note: t.note, description: t.desc.join('\n'), steps: t.steps }, t.links.length ? { references: t.links.map(linkView).filter(v => v && v.kind === 'reference').map(v => ({ name: v.name, url: v.url })), outputs: t.links.map(linkView).filter(v => v && v.kind === 'output').map(v => ({ name: v.name, url: v.url })) } : {});
 const str = (d, extra) => Object.assign({ type: 'string', description: d }, extra || {});
 const FIELDS = { for: str('Who it is for (a name).'), with: str('Who it is done with (a name).'), waiting_on: str('Who you are waiting on (a name). Use with column "Waiting On".'), planned: str('The day it is planned for (YYYY-MM-DD, "today", "tomorrow", or a weekday). Empty string clears it.'), deadline: str('A hard deadline (YYYY-MM-DD). Empty string clears it.'), priority: str('high, medium or low. Only when the person said so.', { enum: ['high', 'medium', 'low', ''] }), area: str('One of the areas from list_people_and_areas.'), this_week: { type: 'boolean', description: 'true to promise it this week (above the This week line in Pending).' }, project: str('The project it belongs to (an open project from list_projects). Empty string takes it out of its project.') };
+const LINKS = { references: { type: 'array', description: 'Files or links the task needs (a document to read, a sheet to check, a page to use). Each: name (short, like the file name) and url (a web link, or the file\'s full path on the computer). Hodo shows them as reference chips on the task. Never put these links in the description.', items: { type: 'object', required: ['url'], properties: { name: str('Short name, like the file name.'), url: str('https://… or a full file path.') } } }, outputs: { type: 'array', description: 'Files or links the task produced (the finished report, the sent deck). Same shape as references.', items: { type: 'object', required: ['url'], properties: { name: str('Short name.'), url: str('https://… or a full file path.') } } } };
 const TOOLS = [
   { name: 'list_tasks', description: 'List tasks in the Hodo folder: each with its id, title, column, note (people, dates, area, priority), description and steps. Use search to find a task by words in its title or description.',
     inputSchema: { type: 'object', properties: { column: str('Only this column (for example Pending, In Progress, Waiting On, Done).'), search: str('Words to look for.'), include_finished: { type: 'boolean', description: 'Include Done tasks (default false).' }, limit: { type: 'number', description: 'Max tasks (default 50).' } } }, annotations: { title: 'List tasks', readOnlyHint: true } },
   { name: 'add_task', description: 'Add one task to Hodo (Pending by default, at the top). One task = one day of work: steps are for one sitting, never for other days. Keep the title short (under 90 characters), starting with a verb. Put context in description and concrete steps in steps. For a plan spread over days, use add_plan. It appears in Hodo at once, marked "by Claude".',
-    inputSchema: { type: 'object', required: ['title'], properties: Object.assign({ title: str('Short task title, verb first.'), column: str('Column name (default Pending).'), description: str('Context, the finish line ("Done = …" as the first line if known), links as text.'), steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks, in order.' } }, FIELDS) }, annotations: { title: 'Add a task', readOnlyHint: false, destructiveHint: false } },
-  { name: 'update_task', description: 'Change a task: title, people, dates, priority, area, project, description, or steps (add, tick, untick, remove, reorder, or move them to another task). Only the fields you pass change. For many tasks at once, use update_tasks.',
-    inputSchema: { type: 'object', required: ['id'], properties: Object.assign({ id: str('The task id (or its exact title).'), title: str('New title.'), description: str('Replaces the description.'), add_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to add at the end.' }, tick_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to mark done (their text, or words from it).' }, untick_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to mark not done.' }, remove_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to remove.' }, steps: { type: 'array', items: { type: 'string' }, description: 'Replace the whole list of sub-tasks, in this order (done ones stay done when the text is the same). Use it to reorder.' }, move_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to move to another task (with move_to).' }, move_to: str('The task (id or exact title) that move_steps go to.') }, FIELDS) }, annotations: { title: 'Change a task', readOnlyHint: false, destructiveHint: false } },
+    inputSchema: { type: 'object', required: ['title'], properties: Object.assign({ title: str('Short task title, verb first.'), column: str('Column name (default Pending).'), description: str('Context and the finish line ("Done = …" as the first line if known). Files and links go in references, not here.'), steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks, in order.' } }, FIELDS, LINKS) }, annotations: { title: 'Add a task', readOnlyHint: false, destructiveHint: false } },
+  { name: 'update_task', description: 'Change a task: title, people, dates, priority, area, project, description, references and outputs (files and links: add, rename, remove), or steps (add, tick, untick, remove, reorder, or move them to another task). Only the fields you pass change. For many tasks at once, use update_tasks.',
+    inputSchema: { type: 'object', required: ['id'], properties: Object.assign({ id: str('The task id (or its exact title).'), title: str('New title.'), description: str('Replaces the description.'), add_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to add at the end.' }, tick_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to mark done (their text, or words from it).' }, untick_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to mark not done.' }, remove_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to remove.' }, steps: { type: 'array', items: { type: 'string' }, description: 'Replace the whole list of sub-tasks, in this order (done ones stay done when the text is the same). Use it to reorder.' }, move_steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks to move to another task (with move_to).' }, move_to: str('The task (id or exact title) that move_steps go to.'), remove_links: { type: 'array', items: { type: 'string' }, description: 'References or outputs to take off (their name or link).' } }, FIELDS, LINKS) }, annotations: { title: 'Change a task', readOnlyHint: false, destructiveHint: false } },
   { name: 'move_task', description: 'Move a task to another column: In Progress, Waiting On, Done (finished; its finish date is recorded), Pending, or Parked (set aside for later; it comes back at the weekly review).',
     inputSchema: { type: 'object', required: ['id', 'to'], properties: { id: str('The task id (or its exact title).'), to: str('Column name, "Done" or "Parked".') } }, annotations: { title: 'Move a task', readOnlyHint: false, destructiveHint: false } },
   { name: 'delete_task', description: 'Delete a task into Hodo\'s Waste Yard (it can be restored there for 30 days). Only when the person clearly asked to delete it.',
@@ -278,7 +310,7 @@ const TOOLS = [
   { name: 'list_captures', description: 'List the items waiting in Hodo\'s Captured list, with their ids and whether they are already tidied by Claude.',
     inputSchema: { type: 'object', properties: {} }, annotations: { title: 'List captures', readOnlyHint: true } },
   { name: 'tidy_capture', description: 'Turn one capture into a proper task, kept in Captured for the person to review (Add, Edit or Discard in Hodo). Write a short verb-first title; fill people, dates, area and priority only from what the capture says; put the context and a "Done = …" line in description and concrete steps in steps. The original words are kept.',
-    inputSchema: { type: 'object', required: ['id', 'title'], properties: Object.assign({ id: str('The capture id.'), title: str('Short task title, verb first.'), description: str('Context and the finish line.'), steps: { type: 'array', items: { type: 'string' } } }, FIELDS) }, annotations: { title: 'Tidy a capture', readOnlyHint: false, destructiveHint: false } },
+    inputSchema: { type: 'object', required: ['id', 'title'], properties: Object.assign({ id: str('The capture id.'), title: str('Short task title, verb first.'), description: str('Context and the finish line. Files and links go in references.'), steps: { type: 'array', items: { type: 'string' } } }, FIELDS, LINKS) }, annotations: { title: 'Tidy a capture', readOnlyHint: false, destructiveHint: false } },
   { name: 'list_waiting', description: 'The tasks the person is waiting on someone else for (the Waiting On column): who, since when, the days they already nudged, whether a nudge is due today, any nudge draft already saved, and the nudges already sent (so a new one can follow on from them).',
     inputSchema: { type: 'object', properties: { due_only: { type: 'boolean', description: 'Only the ones with a nudge due today.' } } }, annotations: { title: 'List what you are waiting on', readOnlyHint: true } },
   { name: 'save_nudge_draft', description: 'Save a follow-up message for a waiting task, for the person to copy and send themselves (Hodo never sends it). Write it as the person, short and polite: what is needed, by when if known, and an easy way to answer. Match the language and tone of the task and of earlier messages. One draft per task; saving again replaces it; an empty text removes it.',
@@ -296,6 +328,7 @@ function changeTask(doc, t, a, changed) {
   markClaude(o); t.note = joinNote(o);
   if (a.title) t.title = cleanTitle(a.title);
   if (a.description !== undefined) t.desc = String(a.description || '').split('\n').filter((l, i, arr) => l || i < arr.length - 1);
+  setLinks(t, a);
   if (Array.isArray(a.steps)) { const old = t.steps; t.steps = a.steps.map(x => String(x).trim()).filter(Boolean).map(x => { const was = old.find(y => y.text.toLowerCase() === x.toLowerCase()); return { text: x, done: !!(was && was.done) }; }); }
   (a.remove_steps || []).forEach(k => { const i = stepMatch(t, k); if (i < 0) throw new Error(`“${t.title}” has no step matching "${k}".`); t.steps.splice(i, 1); });
   (a.add_steps || []).forEach(x => { x = String(x).trim(); if (x) t.steps.push({ text: x, done: false }); });
@@ -326,6 +359,7 @@ const RUN = {
     checkSteps(a.steps);
     const o = splitNote(''); applyFields(o, a); checkDates(o, title); markClaude(o);
     const t = { id: newUid(), title, note: joinNote(o), checked: isDone(col), desc: a.description ? String(a.description).split('\n') : [], links: [], steps: (a.steps || []).map(s => ({ text: String(s).trim(), done: false })).filter(s => s.text) };
+    setLinks(t, a);
     const lines = doc.lines.slice(); lines.splice(col.line + 1, 0, ...taskLines(t)); save(doc, lines); did(`added “${title}”`);
     return { added: { id: t.id, title, column: col.name, note: t.note } };
   },
@@ -393,7 +427,7 @@ const RUN = {
     const capLine = t.desc.find(l => /^Captured:\s/i.test(l)), original = capLine ? capLine.replace(/^Captured:\s*/i, '') : [t.title, ...t.desc].join(' ').trim();
     const desc = a.description ? String(a.description).split('\n') : [];
     if (!desc.some(l => /^Captured:\s/i.test(l))) { if (desc.length) desc.push(''); desc.push('Captured: ' + original); }
-    t.title = title; t.note = joinNote(o); t.desc = desc; t.steps = (a.steps || []).map(s => ({ text: String(s).trim(), done: false })).filter(s => s.text);
+    t.title = title; t.note = joinNote(o); t.desc = desc; t.steps = (a.steps || []).map(s => ({ text: String(s).trim(), done: false })).filter(s => s.text); setLinks(t, a);
     const lines = doc.lines.slice(); lines.splice(t.start, t.end - t.start, ...taskLines(t)); save(doc, lines);
     linkWrite({ seen: Date.now(), tidiedAt: Date.now(), last: { at: Date.now(), what: `tidied “${title}”` } });
     return { tidied: { id: t.id, title, note: t.note }, next: 'It waits in Captured for the person to review.' };
@@ -441,9 +475,9 @@ TOOLS.push(
     inputSchema: { type: 'object', required: ['name'], properties: { name: str('The project\'s name (an existing one to change it).'), new_name: str('A new name.'), goal: str('What will be true when it is done. One sentence, at most 120 characters.'), deadline: str('The project\'s deadline (YYYY-MM-DD). Empty string clears it.'), context: str('Background: why it matters, who is involved, links. Any length.'), status: str('open or closed.', { enum: ['open', 'closed'] }) } }, annotations: { title: 'Save a project', readOnlyHint: false, destructiveHint: false } },
   { name: 'add_plan', description: 'Put a whole plan into Hodo in one go: a project (created or updated) and its tasks, one task per day of work, each planned for its day. Everything is checked first and written all at once or not at all; the person can undo it in Hodo with one click. Use this whenever a plan spreads work over several days.',
     inputSchema: { type: 'object', required: ['tasks'], properties: { project: { type: 'object', description: 'The project these tasks belong to (created if new).', properties: { name: str('Project name.'), goal: str('What will be true when it is done (at most 120 characters).'), deadline: str('YYYY-MM-DD.'), context: str('Background.') }, required: ['name'] },
-      tasks: { type: 'array', description: 'The tasks, in order. Each is one day\'s piece of work.', items: { type: 'object', required: ['title'], properties: Object.assign({ title: str('Short task title, verb first.'), column: str('Column (default Pending).'), description: str('Context, and "Done = …" as the first line if known.'), steps: { type: 'array', items: { type: 'string' }, description: 'Steps for this one sitting (no day names).' } }, FIELDS) } } } }, annotations: { title: 'Add a whole plan', readOnlyHint: false, destructiveHint: false } },
+      tasks: { type: 'array', description: 'The tasks, in order. Each is one day\'s piece of work.', items: { type: 'object', required: ['title'], properties: Object.assign({ title: str('Short task title, verb first.'), column: str('Column (default Pending).'), description: str('Context, and "Done = …" as the first line if known. Files and links go in references.'), steps: { type: 'array', items: { type: 'string' }, description: 'Steps for this one sitting (no day names).' } }, FIELDS, LINKS) } } } }, annotations: { title: 'Add a whole plan', readOnlyHint: false, destructiveHint: false } },
   { name: 'update_tasks', description: 'Change many tasks in one go (areas, projects, dates, priority, people, titles, steps…). Each change is like update_task. Everything is checked first and applied all at once or not at all; the person can undo it in Hodo with one click.',
-    inputSchema: { type: 'object', required: ['changes'], properties: { changes: { type: 'array', description: 'One entry per task: its id plus the fields to change.', items: { type: 'object', required: ['id'], properties: Object.assign({ id: str('The task id (or its exact title).'), title: str('New title.'), description: str('Replaces the description.') }, FIELDS) } } } }, annotations: { title: 'Change many tasks', readOnlyHint: false, destructiveHint: false } },
+    inputSchema: { type: 'object', required: ['changes'], properties: { changes: { type: 'array', description: 'One entry per task: its id plus the fields to change.', items: { type: 'object', required: ['id'], properties: Object.assign({ id: str('The task id (or its exact title).'), title: str('New title.'), description: str('Replaces the description.'), remove_links: { type: 'array', items: { type: 'string' }, description: 'References or outputs to take off (name or link).' } }, FIELDS, LINKS) } } } }, annotations: { title: 'Change many tasks', readOnlyHint: false, destructiveHint: false } },
   { name: 'manage_areas', description: 'Change the person\'s areas: add new ones, rename (every task follows), recolour, or remove (taken off its tasks). Rename and remove also work on old labels that are no longer areas but are still written in task notes (for example a past area name): remove clears them; rename turns them into an area when the task has none. Colours: Purple, Teal, Slate, Rose, Blue, Olive, Amber. The person can undo it in Hodo with one click.',
     inputSchema: { type: 'object', properties: { add: { type: 'array', items: { type: 'object', required: ['name'], properties: { name: str('Area name.'), colour: str('Purple, Teal, Slate, Rose, Blue, Olive or Amber.') } } }, rename: { type: 'array', items: { type: 'object', required: ['from', 'to'], properties: { from: str('Current name.'), to: str('New name.') } } }, recolour: { type: 'array', items: { type: 'object', required: ['name', 'colour'], properties: { name: str('Area name.'), colour: str('Colour.') } } }, remove: { type: 'array', items: { type: 'string' }, description: 'Areas to remove (taken off their tasks).' } } }, annotations: { title: 'Change areas', readOnlyHint: false, destructiveHint: true } }
 );
@@ -477,7 +511,8 @@ Object.assign(RUN, {
         const col = it.column ? boardCols(doc).find(s => s.name.toLowerCase() === String(it.column).toLowerCase()) : (it.waiting_on ? boardCols(doc).find(isWait) : pending(doc));
         if (!col) throw new Error(`“${title}”: no column called "${it.column}". Columns: ${boardCols(doc).map(s => s.name).join(', ')}.`);
         const o = splitNote(''); applyFields(o, Object.assign({}, it, proj && it.project === undefined ? { project: proj.name } : {})); checkDates(o, title); markClaude(o);
-        built.push({ col, t: { id: newUid(), title, note: joinNote(o), checked: isDone(col), desc: it.description ? String(it.description).split('\n') : [], links: [], steps: (it.steps || []).map(x => ({ text: String(x).trim(), done: false })).filter(x => x.text) } });
+        const nt = { id: newUid(), title, note: joinNote(o), checked: isDone(col), desc: it.description ? String(it.description).split('\n') : [], links: [], steps: (it.steps || []).map(x => ({ text: String(x).trim(), done: false })).filter(x => x.text) };
+        setLinks(nt, it); built.push({ col, t: nt });
       });
     } catch (e) { if (projBefore == null) { try { fs.unlinkSync(PROJ()); } catch (x) {} } else fs.writeFileSync(PROJ(), projBefore, 'utf8'); throw e; }
     const what = `added a plan of ${built.length} task${built.length === 1 ? '' : 's'}${proj ? ` to “${proj.name}”` : ''}`;
@@ -535,6 +570,7 @@ const INSTRUCTIONS = [
   'A project is a goal with an end, made of several tasks; an area never ends. Before adding tasks for a goal, check list_projects; reuse an existing project rather than making a near-duplicate. A project\'s goal is one sentence, at most 120 characters, saying what will be true when it is done (an outcome, not an activity).',
   'Dates: a task\'s planned day must be on or before its deadline, and both on or before its project\'s deadline. Hodo Link refuses anything else; fix the plan rather than forcing it.',
   'For many changes at once (re-sorting areas, moving dates, renaming), use update_tasks or manage_areas: one call, all or nothing, and the person can undo it in Hodo with one click. Say what changed in one or two lines afterwards.',
+  'Files and links a task needs (a document to read, a sheet to check) go in references, each with a short name and its link or full file path; what a task produced goes in outputs. Hodo shows them as chips on the task. Never paste them into the description. To fix an older task that has a link in its description, update_task with references and the description without the link.',
   'Keep titles short and verb-first. Only set priority, dates or people the person actually gave. Ask before deleting anything. Never send messages on the person\'s behalf; nudge drafts are for them to send.'
 ].join('\n');
 // ---------- prompts: Hodo's rituals, ready to start from Claude's prompt menu ----------

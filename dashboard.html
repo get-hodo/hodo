@@ -19074,9 +19074,17 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       });
       // order: In Progress, Pending, Waiting On, Done (the slot order inside each)
       cards.map((c, i) => ({ c, i })).sort((a, b) => (DS_RANK[a.c.dataset.st] ?? 1) - (DS_RANK[b.c.dataset.st] ?? 1) || a.i - b.i).forEach(({ c }) => three.appendChild(c));
-      // glide from where they were
-      if (before && !reduceMotion) three.querySelectorAll(':scope > .dy-card').forEach(c => { const b = before[c.dataset.id]; if (!b) return; const a = c.getBoundingClientRect(), dy = b.top - a.top, sc = b.height && a.height ? b.height / a.height : 1;
-        if (Math.abs(dy) > 2 || Math.abs(sc - 1) > .04) c.animate([{ transform: `translateY(${dy}px)`, transformOrigin: 'top' }, { transform: 'none', transformOrigin: 'top' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
+      // glide from where they were (Nov 3, 2.6.2): each card slides from its old place, a card that grows opens downward
+      // in step (its bottom edge travels with the cards below it), and what sits under the Three slides with them
+      if (before && before.cards && !reduceMotion) queueMicrotask(() => {   // after every later addition to the page (bars, chips) is in, before it paints
+        if (!three.isConnected) return;
+        const E = 'cubic-bezier(.2,.8,.2,1)', D = 420;
+        three.querySelectorAll(':scope > .dy-card').forEach(c => { const b = before.cards[c.dataset.id]; if (!b) return; const a = c.getBoundingClientRect(), dy = b.top - a.top, dh = a.height - b.height;
+          const k0 = { transform: `translateY(${dy}px)` }, k1 = { transform: 'none' };
+          if (dh > 2) { const r = getComputedStyle(c).borderRadius || '0px'; k0.clipPath = `inset(0 0 ${dh}px 0 round ${r})`; k1.clipPath = `inset(0 0 0 0 round ${r})`; }
+          if (Math.abs(dy) > 1 || dh > 2) { const an = c.animate([k0, k1], { duration: D, easing: E }); if (dy > 1) { c.style.zIndex = '2'; an.onfinish = an.oncancel = () => { c.style.zIndex = ''; }; } } });   // a card rising passes over the others
+        for (let n = three.nextElementSibling; n; n = n.nextElementSibling) { const b = before.after[n.className]; if (!b) continue; const dy = b.top - n.getBoundingClientRect().top; if (Math.abs(dy) > 1) n.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: D, easing: E }); }
+      });
       // a click on a card opens its details, like on the board (again closes); the title's small preview is not used here
       three.querySelectorAll(':scope > .dy-card').forEach(c => {
         c.querySelectorAll('[data-peek]').forEach(x => x.removeAttribute('data-peek'));
@@ -19092,8 +19100,18 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       three.querySelectorAll('[data-dsnudge]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const f = dayFind(b.closest('.dy-card').dataset.id); if (f) { try { waitNudge(f.task); } catch (x) {} setTimeout(dayRender, 60); } }));
       dsDragWire(three);
     }
+    // where the cards (and what's under them) were; a status change takes it first, so the two or three redraws it causes
+    // all glide from the real starting point instead of from a half-drawn one (the glitch of 2.6.1)
+    let dsSnap = null;
+    function dsSnapshot() {
+      const s = { at: Date.now(), cards: {}, after: {} };
+      try { const three = dayPanel.querySelector('.dy-three'); if (!three) return s; three.querySelectorAll(':scope > .dy-card').forEach(c => { s.cards[c.dataset.id] = c.getBoundingClientRect(); });
+        for (let n = three.nextElementSibling; n; n = n.nextElementSibling) s.after[n.className] = n.getBoundingClientRect(); } catch (e) {}
+      return s;
+    }
+    { const _dsSet = dsSet; dsSet = function () { if (activeMainTab === 'day') dsSnap = dsSnapshot(); return _dsSet.apply(this, arguments); }; }
     { const _rdS = dayRenderDay; dayRenderDay = function () {
-        const before = {}; try { dayPanel.querySelectorAll('.dy-three > .dy-card').forEach(c => { before[c.dataset.id] = c.getBoundingClientRect(); }); } catch (e) {}
+        const before = dsSnap && Date.now() - dsSnap.at < 700 ? dsSnap : dsSnapshot();
         const r = _rdS.apply(this, arguments);
         try { dsDecorate(before); } catch (e) {}
         return r;
@@ -19698,6 +19716,12 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       body.addEventListener('click', () => { if (hov) setTimeout(() => hov && place(hov), 30); });
       new MutationObserver(() => { if (panel.hidden) hide(); }).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
     })();
+    // ===== Notes: "due Claude …" healed (Nov 3, 2.6.2) =====
+    // Hodo Link before 1.3.3 read its own "by Claude Nov 3" mark as a planned day and wrote "due Claude Nov 3" into the
+    // task line. Hodo never read it as a date; now it drops it, so the next save of that task cleans the line.
+    { const _snHeal = splitNoteCapsules; splitNoteCapsules = function () { const i = _snHeal.apply(this, arguments);
+        if (i && Array.isArray(i.restParts) && i.restParts.some(x => /^due Claude\b/i.test(x))) { i.restParts = i.restParts.filter(x => !/^due Claude\b/i.test(x)); i.rest = i.restParts.join(' · '); }
+        return i; }; }
     applyWaitRail();
   </script>
 </body>
