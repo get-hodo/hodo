@@ -32,7 +32,7 @@ function resolveFolder(raw) {
 const FOLDER = resolveFolder(process.env.HODO_FOLDER || process.argv[2] || '');
 const TASKS = () => path.join(FOLDER, 'TASKS.md');
 const LINK = () => path.join(FOLDER, 'memory', 'hodo-link.json');
-const VERSION = '1.3.1';
+const VERSION = '1.3.2';
 
 // ---------- dates, in Hodo's own formats ----------
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -444,7 +444,7 @@ TOOLS.push(
       tasks: { type: 'array', description: 'The tasks, in order. Each is one day\'s piece of work.', items: { type: 'object', required: ['title'], properties: Object.assign({ title: str('Short task title, verb first.'), column: str('Column (default Pending).'), description: str('Context, and "Done = …" as the first line if known.'), steps: { type: 'array', items: { type: 'string' }, description: 'Steps for this one sitting (no day names).' } }, FIELDS) } } } }, annotations: { title: 'Add a whole plan', readOnlyHint: false, destructiveHint: false } },
   { name: 'update_tasks', description: 'Change many tasks in one go (areas, projects, dates, priority, people, titles, steps…). Each change is like update_task. Everything is checked first and applied all at once or not at all; the person can undo it in Hodo with one click.',
     inputSchema: { type: 'object', required: ['changes'], properties: { changes: { type: 'array', description: 'One entry per task: its id plus the fields to change.', items: { type: 'object', required: ['id'], properties: Object.assign({ id: str('The task id (or its exact title).'), title: str('New title.'), description: str('Replaces the description.') }, FIELDS) } } } }, annotations: { title: 'Change many tasks', readOnlyHint: false, destructiveHint: false } },
-  { name: 'manage_areas', description: 'Change the person\'s areas: add new ones, rename (every task follows), recolour, or remove (taken off its tasks). Colours: Purple, Teal, Slate, Rose, Blue, Olive, Amber. The person can undo it in Hodo with one click.',
+  { name: 'manage_areas', description: 'Change the person\'s areas: add new ones, rename (every task follows), recolour, or remove (taken off its tasks). Rename and remove also work on old labels that are no longer areas but are still written in task notes (for example a past area name): remove clears them; rename turns them into an area when the task has none. Colours: Purple, Teal, Slate, Rose, Blue, Olive, Amber. The person can undo it in Hodo with one click.',
     inputSchema: { type: 'object', properties: { add: { type: 'array', items: { type: 'object', required: ['name'], properties: { name: str('Area name.'), colour: str('Purple, Teal, Slate, Rose, Blue, Olive or Amber.') } } }, rename: { type: 'array', items: { type: 'object', required: ['from', 'to'], properties: { from: str('Current name.'), to: str('New name.') } } }, recolour: { type: 'array', items: { type: 'object', required: ['name', 'colour'], properties: { name: str('Area name.'), colour: str('Colour.') } } }, remove: { type: 'array', items: { type: 'string' }, description: 'Areas to remove (taken off their tasks).' } } }, annotations: { title: 'Change areas', readOnlyHint: false, destructiveHint: true } }
 );
 TOOLS.find(t => t.name === 'list_tasks').inputSchema.properties.project = str('Only tasks in this project.');
@@ -504,12 +504,21 @@ Object.assign(RUN, {
     const doc = load(), list = readAreasFull(), key = n => String(n || '').trim().toLowerCase(), colour = c => { if (!c) return ''; const m = AREA_COLOURS.find(x => x.toLowerCase() === String(c).trim().toLowerCase()); if (!m) throw new Error(`"${c}" isn't a colour Hodo has: ${AREA_COLOURS.join(', ')}.`); return m; };
     const notes = []; let used = list.map(x => x.colour);
     (a.add || []).forEach(x => { const n = cell(x.name); if (!n) throw new Error('An area needs a name.'); if (list.some(y => key(y.name) === key(n))) { notes.push(`“${n}” already exists`); return; } const c = colour(x.colour) || AREA_COLOURS.find(k => !used.includes(k)) || AREA_COLOURS[list.length % AREA_COLOURS.length]; used.push(c); list.push({ name: n, colour: c, words: [] }); });
-    const renames = (a.rename || []).map(r => { const ar = list.find(y => key(y.name) === key(r.from)); if (!ar) throw new Error(`No area called "${r.from}". Areas: ${list.map(y => y.name).join(', ')}.`); const to = cell(r.to); if (!to) throw new Error('A new name is needed.'); if (key(to) !== key(ar.name) && list.some(y => y !== ar && key(y.name) === key(to))) throw new Error(`There's already an area called "${to}".`); const from = ar.name; ar.name = to; return { from, to }; });
+    // 1.3.2 (Nov 3): old labels that are no longer areas (left in task notes from long ago) can be renamed or removed too
+    const inNotes = n => doc.sections.some(s => s.tasks.some(t => (t.note || '').split(/\s+·\s+/).some(p => key(p) === key(n))));
+    const renames = (a.rename || []).map(r => { const to = cell(r.to); if (!to) throw new Error('A new name is needed.'); const ar = list.find(y => key(y.name) === key(r.from));
+      if (!ar) { if (!inNotes(r.from)) throw new Error(`No area or old label called "${r.from}". Areas: ${list.map(y => y.name).join(', ')}.`); return { from: cell(r.from), to, label: true }; }
+      if (key(to) !== key(ar.name) && list.some(y => y !== ar && key(y.name) === key(to))) throw new Error(`There's already an area called "${to}". To merge "${ar.name}" into it, remove "${ar.name}" after moving its tasks, or rename only the label.`); const from = ar.name; ar.name = to; return { from, to }; });
     (a.recolour || []).forEach(r => { const ar = list.find(y => key(y.name) === key(r.name)); if (!ar) throw new Error(`No area called "${r.name}".`); ar.colour = colour(r.colour); });
-    const removes = (a.remove || []).map(n => { const i = list.findIndex(y => key(y.name) === key(n)); if (i < 0) throw new Error(`No area called "${n}".`); return list.splice(i, 1)[0].name; });
+    const removes = (a.remove || []).map(n => { const i = list.findIndex(y => key(y.name) === key(n)); if (i >= 0) return list.splice(i, 1)[0].name; if (inNotes(n)) return cell(n); throw new Error(`No area or old label called "${n}".`); });
     const touched = [];
     doc.sections.forEach(s => s.tasks.forEach(t => { const parts = t.note ? t.note.split(/\s+·\s+/) : []; let ch = false;
-      const out = parts.map(p => { const r = renames.find(x => key(x.from) === key(p)); if (r) { ch = true; return r.to; } if (removes.some(x => key(x) === key(p))) { ch = true; return null; } return p; }).filter(x => x !== null);
+      const areaNow = n => list.some(y => key(y.name) === key(n));
+      let out = parts.map(p => { const r = renames.find(x => key(x.from) === key(p)); if (r) { ch = true; return r.label ? { label: r.to } : r.to; } if (removes.some(x => key(x) === key(p))) { ch = true; return null; } return p; }).filter(x => x !== null);
+      // a renamed old label only becomes an area if the task has none yet (one area per task); otherwise it just goes
+      const hasArea = out.some(p => typeof p === 'string' && areaNow(p));
+      out = out.map(p => typeof p === 'object' ? (!hasArea && areaNow(p.label) ? p.label : null) : p).filter(x => x !== null);
+      out = out.filter((p, i) => !(areaNow(p) && out.findIndex(q => key(q) === key(p)) !== i));   // no area twice
       if (ch) { t.note = out.join(' · '); touched.push(t); } }));
     const what = [ (a.add || []).length ? `added ${(a.add || []).length} area${(a.add || []).length === 1 ? '' : 's'}` : '', renames.length ? `renamed ${renames.length}` : '', (a.recolour || []).length ? `recoloured ${(a.recolour || []).length}` : '', removes.length ? `removed ${removes.length}` : '' ].filter(Boolean).join(', ') || 'changed nothing';
     const finish = keepUndo(doc, `${what} (areas)${touched.length ? `, ${touched.length} task${touched.length === 1 ? '' : 's'} updated` : ''}`, touched.length);
