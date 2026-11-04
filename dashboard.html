@@ -17,6 +17,8 @@
   - Hodo Link 1.3.0 in Hodo (update, undo)  "Hodo Link 1.3.0 in Hodo (Nov 3)"
   - Time passing: the header line           "Time passing: the header line (Nov 3)"
   - Settings, centred (Nov 3)                "===== Settings, centred (Nov 3)", "SETTINGS, CENTRED"
+  - The Pulse (release notes, Nov 4)         "===== Release notes (Nov 4)", "RELEASE NOTES" (KOI_RELEASES: a date per version, a title per main one)
+  - Columns: remove extra ones (Nov 4)       "===== Columns: no new ones", "COLUMNS (Nov 4)"
   - Quick-action strip (board / list / cal)    "Quick-action strip inside board cards", "Quick-action strip in List view"
   - Two dates, capsules, field editors         "Two dates (Oct 3)", "CAPSULES", "FIELD EDITOR POPOVER"
   - Calendar                                   "/* ===== CALENDAR VIEW", "CALENDAR TASK CARD", "Calendar row: everything eases"
@@ -5306,6 +5308,79 @@
       .so-pv { display: none; }
     }
     #settingsPanel.so .mp-row { justify-content: flex-start; gap: 18px; }
+    /* ===== RELEASE NOTES (Nov 4): the last 6 releases ===== */
+    .rn-scrim { position: fixed; inset: 0; z-index: 2600; display: flex; align-items: center; justify-content: center; padding: 24px; background: color-mix(in srgb, #1d1a16 30%, transparent); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+    [data-theme="dark"] .rn-scrim { background: rgba(6, 8, 14, .55); }
+    .rn-panel { position: relative; display: flex; width: min(940px, 100%); height: min(720px, 100%); background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: 0 30px 80px rgba(0, 0, 0, .22), 0 4px 14px rgba(0, 0, 0, .08); }
+    .rn-side { flex: none; width: 260px; display: flex; flex-direction: column; gap: 14px; padding: 22px 12px 16px; background: var(--bg-secondary); border-right: 1px solid var(--border-light, var(--border)); }
+    .rn-h { padding: 0 10px; display: flex; flex-direction: column; gap: 3px; }
+    .rn-h b { font-size: 18px; font-weight: 700; }
+    .rn-h span { font-size: 12.5px; color: var(--text-muted); }
+    .rn-list { display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
+    .rn-row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; font: inherit; padding: 9px 10px; border: 0; border-radius: 11px; background: transparent; color: var(--text-secondary); cursor: pointer; }
+    .rn-row:hover { background: color-mix(in srgb, var(--text-primary) 6%, transparent); }
+    .rn-row.on { background: var(--bg-card); box-shadow: 0 1px 3px var(--shadow); color: var(--text-primary); }
+    .rn-row b { font-size: 13.5px; font-weight: 650; line-height: 1.3; color: var(--text-primary); }
+    .rn-v { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--brand, var(--accent)); }
+    .rn-v i { font-style: normal; font-weight: 600; letter-spacing: 0; font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: color-mix(in srgb, var(--brand, var(--accent)) 12%, transparent); }
+    .rn-row small { font-size: 11.5px; color: var(--text-muted); }
+    .rn-main { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; position: relative; }
+    .rn-x { position: sticky; top: 14px; float: right; margin: 14px 14px 0 0; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: 22px; line-height: 1; cursor: pointer; z-index: 2; }
+    .rn-x:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .rn-issue { max-width: 620px; padding: 26px 40px 40px; }
+    .rn-top span { font-size: 12px; font-weight: 650; color: var(--text-muted); letter-spacing: .02em; }
+    .rn-top h2 { margin: 4px 0 6px; font-size: 26px; font-weight: 750; letter-spacing: -.015em; line-height: 1.2; }
+    .rn-cat { margin-top: 22px; }
+    .rn-cat > .ns-tag { display: inline-block; margin-bottom: 4px; }
+    .rn-item { padding: 12px 0 14px; border-bottom: 1px solid var(--border-light, var(--border)); }
+    .rn-item:last-child { border-bottom: 0; }
+    .rn-item h3 { margin: 0 0 6px; font-size: 16px; font-weight: 680; }
+    .rn-p { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); }
+    .rn-p ul { margin: 6px 0 0; padding-left: 18px; }
+    .rn-fix { margin-top: 26px; padding: 4px 18px 6px; border-radius: 14px; background: var(--bg-secondary); }
+    .rn-fix-h { padding-top: 12px; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+    .rn-fix .rn-cat { margin-top: 12px; }
+    @media (max-width: 720px) {
+      .rn-scrim { padding: 0; } .rn-panel { border-radius: 0; height: 100%; flex-direction: column; border: 0; }
+      .rn-side { width: auto; border-right: 0; border-bottom: 1px solid var(--border-light, var(--border)); padding: 14px 12px 10px; gap: 8px; }
+      .rn-list { flex-direction: row; overflow-x: auto; scrollbar-width: none; } .rn-row { flex: none; max-width: 200px; } .rn-row b { display: none; }
+      .rn-issue { padding: 16px 18px 30px; } .rn-x { margin: 8px 8px 0 0; }
+    }
+    .rn-fix .rn-fold { padding: 2px 0; border: 0; }
+    .rn-fold-t { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 0; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+    .rn-fold-t:hover { color: var(--text-primary); }
+    .rn-fold-t:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; border-radius: 6px; }
+    .rn-fold-t i { font-style: normal; font-weight: 700; color: var(--text-muted); transition: transform .15s; display: inline-block; width: 10px; }
+    .rn-fold.open .rn-fold-t i { transform: rotate(90deg); }
+    .rn-fold .rn-p, .rn-fold .ns-shout { display: none; }
+    .rn-fold.open .rn-p { display: block; padding: 0 0 8px 18px; }
+    .rn-fold.open .ns-shout { display: inline-flex; margin-left: 18px; }
+    .ns-foot .ns-path { flex: 1; font-size: 12.5px; color: var(--text-secondary); line-height: 1.45; }
+    .ns-foot .ns-path b { color: var(--text-primary); font-weight: 650; }
+    .ns-foot .ns-disp { flex: none; font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); cursor: pointer; margin-right: 8px; }
+    .ns-foot .ns-disp:hover { border-color: var(--text-muted); }
+    .so-nav-sep { height: 1px; margin: 8px 10px; background: var(--border); }
+    .so-nav .so-pulse { display: flex; align-items: center; gap: 10px; font: inherit; font-size: 13.5px; font-weight: 550; text-align: left; padding: 8px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--text-secondary); cursor: pointer; }
+    .so-nav .so-pulse svg { width: 17px; height: 17px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+    .pb .pb-run { display: none; }
+    .so-nav .so-pulse.beat svg { opacity: 1; }
+    .beat .pb { opacity: 1; }
+    .beat .pb .pb-base { stroke: var(--brand, var(--accent)); opacity: .5; }
+    .beat .pb .pb-run { display: inline; stroke: var(--brand, var(--accent)); stroke-width: 2.2; stroke-dasharray: .3 1; stroke-dashoffset: .3; animation: pbRun 3.4s cubic-bezier(.45, 0, .25, 1) infinite; }
+    @keyframes pbRun { 0% { stroke-dashoffset: .3; opacity: 1; } 42% { stroke-dashoffset: -1; opacity: 1; } 43%, 100% { stroke-dashoffset: -1; opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .beat .pb .pb-run { display: none; } .beat .pb .pb-base { opacity: 1; } }
+    .rn-beat { display: inline-flex; line-height: 0; }
+    .rn-beat svg { width: 16px; height: 16px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .so-nav .so-pulse:hover { background: color-mix(in srgb, var(--text-primary) 6%, transparent); color: var(--text-primary); }
+    @media (max-width: 720px) { .so-nav-sep { width: 1px; height: auto; margin: 6px 2px; } .so-nav .so-pulse { flex: none; padding: 6px 10px; } .so-nav .so-pulse svg { display: none; } }
+    /* ===== COLUMNS (Nov 4): remove an extra column; the four main ones stay ===== */
+    .csp-rm { display: block; width: 100%; margin-top: 8px; padding: 8px 0 2px; border: 0; border-top: 1px solid var(--border-light); background: transparent; font: inherit; font-weight: 600; text-align: left; color: var(--danger, #c0392b); cursor: pointer; }
+    .csp-rm:hover { text-decoration: underline; }
+    .csp-keep { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+    .csp-keep b { color: var(--text-secondary); font-weight: 600; }
+    .csp-rm-ask { background: color-mix(in srgb, var(--danger, #c0392b) 8%, var(--bg-card)); }
+    .csp-rm-ask select { font: inherit; font-size: 12.5px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); }
+    .csp-rm-ask button[data-csp="go"] { background: var(--danger, #c0392b); color: #fff; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7046,12 +7121,7 @@
         board.appendChild(createColumn(section.id, section.name, sectionTasks));
       });
 
-      const addSectionBtn = document.createElement('div');
-      addSectionBtn.className = 'column';
-      addSectionBtn.style.cssText = 'background: transparent; border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; min-height: 120px;';
-      addSectionBtn.innerHTML = '<span style="color: var(--text-muted); font-size: 14px; font-weight: 500;">+ Add Section</span>';
-      addSectionBtn.addEventListener('click', () => startAddingSection(addSectionBtn));
-      board.appendChild(addSectionBtn);
+      // no "+ Add Section" (Nov 4): Hodo is one flow of four statuses; extra columns people already have can be removed from their ⚙
     }
 
     function renderListOld() {
@@ -7185,12 +7255,6 @@
         listView.appendChild(sectionEl);
       });
 
-      // Add Section button
-      const addSectionBtn = document.createElement('div');
-      addSectionBtn.className = 'list-add-section';
-      addSectionBtn.textContent = '+ Add Section';
-      addSectionBtn.addEventListener('click', () => { startAddingListSection(addSectionBtn); });
-      listView.appendChild(addSectionBtn);
     }
 
     function startEditingListSectionTitle(titleEl, section) {
@@ -7646,7 +7710,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.6.1';
+    const KOI_VERSION = '2.7';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -13434,7 +13498,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { open: () => typeof lvMenuEl !== 'undefined' && lvMenuEl, inside: '.lv-menu', close: () => lvCloseMenu() },
       { open: () => document.querySelector('.section-picker'), inside: '.section-picker', close: () => document.querySelectorAll('.section-picker').forEach(x => x.remove()) },
       { open: () => { const m = document.getElementById('kfMenu'); return m && !m.hidden; }, inside: '#kfWrap', close: () => { const m = document.getElementById('kfMenu'); if (m) m.hidden = true; const b = document.getElementById('kfBtn'); if (b) b.classList.remove('open'); } },
-      { open: () => { const p = document.getElementById('settingsPanel'); return p && !p.hidden; }, inside: '#settingsPanel, #settingsBtn', close: () => { document.getElementById('settingsPanel').hidden = true; document.getElementById('settingsBtn').classList.remove('active'); } },
+      { open: () => { const p = document.getElementById('settingsPanel'); return p && !p.hidden; }, inside: '#settingsPanel, #settingsBtn, .rn-scrim', close: () => { document.getElementById('settingsPanel').hidden = true; document.getElementById('settingsBtn').classList.remove('active'); } },
       { open: () => { const p = document.getElementById('muPop'); return p && !p.hidden; }, inside: '#muWrap', close: () => { document.getElementById('muPop').hidden = true; } },
       { open: () => typeof tpEl !== 'undefined' && tpEl, inside: '.tpanel, .field-pop, .fp, .task-card, .lv-item, .cq-menu, .tray, .qc-overlay, .fx-toast', close: () => { if (tpEl) closeTaskPanel(); } },
     ];
@@ -15015,7 +15079,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'three', g: 'concepts', t: 'The Three', d: 'Today’s three picks. Their cards show ★ Today #1, #2 and #3. Once all three are done, anything else is a bonus.', kw: 'today picks star priority bonus' },
       { id: 'duna', g: 'concepts', t: 'Duna', d: 'Your Rundown assistant. She talks you through the day and suggests your Three. You can rename her in Settings.', kw: 'assistant rundown chat' },
       { id: 'statuses', g: 'concepts', t: 'Statuses', d: 'Pending, In Progress, Waiting On and Done: the board’s columns. You can add, rename and reorder columns.', kw: 'columns board pending progress done waiting' },
-      { id: 'colset', g: 'concepts', t: 'Done and Waiting columns', d: 'Any column can be a Done column or a Waiting column, whatever its name. Click the ⚙ on a column’s header to set it.', how: 'Column header → ⚙ → Done column / Waiting column. With several Done columns, Hodo asks which one when you finish a task from Focus, the Rundown or the bulk bar.', kw: 'gear settings column done waiting rename' },
+      { id: 'colset', g: 'concepts', t: 'Columns', d: 'Hodo has four columns: Pending, In Progress, Waiting On and Done. They always stay; you can rename and recolour them from the ⚙ on a column’s header. An extra column from an older Hodo can be removed there, and its tasks move to the column you choose (with Undo).', how: 'Column header → ⚙ → Colour, or Remove column on an extra column. On an extra column the ⚙ also has Done column / Waiting column.', kw: 'gear settings column done waiting rename' },
       { id: 'captured', g: 'concepts', t: 'Captured', d: 'Catch now, decide later. Thoughts wait here, off the board, until you review them.', kw: 'inbox capture catch' },
       { id: 'parked', g: 'concepts', t: 'Parked', d: 'Not now, not never. Important things that aren’t for today wait here and come back when it’s time.', keys: ['P'], kw: 'backlog later someday' },
       { id: 'sched', g: 'concepts', t: 'Scheduled and Someday', d: 'A Parked item comes back on a date or a condition (Scheduled), or waits until you choose it (Someday).', kw: 'parked resurface date condition' },
@@ -15698,6 +15762,11 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.7': [
+        { k: 'new', t: 'The Pulse: Hodo’s journey, beat by beat', d: 'Every Hodo update in one place: what changed, when, and who inspired it. Read back through the last six releases any time in <b>Settings</b> (your picture, top right) → <b>The Pulse</b>. When there’s something you haven’t read yet, its little heartbeat lights up.', inspired: 'You5ef' },
+        { k: 'new', t: 'Remove a column you no longer need', d: 'Open a column’s ⚙ and choose <b>Remove column</b>. If it still holds tasks, Hodo asks where they should go first, so nothing is lost, and <b>Undo</b> puts it all back. Pending, In Progress, Waiting On and Done always stay.', forYou: 'You5ef' },
+        { k: 'shelved', t: 'Creating your own statuses', d: 'We’ve taken away “Add status” (the “+ Add Section” button). Hodo works best as one flow: Pending, In Progress, Waiting On and Done, and that’s what Today, the status icons and Claude are built on. Statuses you already made keep working, and you can now remove them from their ⚙; their tasks move wherever you choose. Creating new ones is shelved until further notice.' }
+      ],
       '2.6.1': [
         { k: 'solved', t: 'People missing from Settings', d: 'Now People is back under <b>Settings → Areas &amp; people</b>, next to Areas.' }
       ],
@@ -15829,7 +15898,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       nsEl.innerHTML = `<div class="ns-panel" role="dialog" aria-modal="true" aria-label="New stuff">
         <div class="ns-head"><b>New stuff</b><span>Here’s what changed in Hodo.</span><button class="ns-x" aria-label="Close">×</button></div>
         <div class="ns-body"><div class="ns-list">${items.map((x, i) => `<button class="ns-row" data-i="${i}"><span class="ns-tag ${x.k}">${NS_TAG[x.k]}</span><b>${escapeHtml(x.t)}</b></button>`).join('')}</div><div class="ns-view"></div></div>
-        <div class="ns-foot"><span>You can open this again from the Guide (?).</span><button class="ns-ok">Got it</button></div></div>`;
+        <div class="ns-foot"><span class="ns-path">Read this again any time in <b>The Pulse</b>: <b>Settings</b> (your picture, top right) → <b>The Pulse</b></span><button type="button" class="ns-disp">Open The Pulse</button><button class="ns-ok">Got it</button></div></div>`;
       document.body.appendChild(nsEl);
       const view = nsEl.querySelector('.ns-view');
       const pick = i => { const x = items[i];
@@ -15841,6 +15910,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       try { if (!localStorage.getItem('koi-notes-seen-day')) localStorage.setItem('koi-notes-seen-day', new Date().toDateString()); } catch (e) {}
       const close = () => { const el = nsEl; nsEl = null; if (el) el.remove(); koiNsDismiss(); };   // Oct 19: seen = the pill goes
       nsEl.querySelector('.ns-x').onclick = close; nsEl.querySelector('.ns-ok').onclick = close;
+      { const d = nsEl.querySelector('.ns-disp'); if (d) d.onclick = () => { let from = null; try { from = localStorage.getItem('koi-notes-from'); } catch (e) {} close(); if (typeof koiReleasesOpen === 'function') koiReleasesOpen(null, { from }); }; }
       nsEl.addEventListener('click', e => { if (e.target === nsEl) close(); });
       nsEl.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const rs = [...nsEl.querySelectorAll('.ns-row')], cur = rs.findIndex(r => r.classList.contains('on')); const n = Math.max(0, Math.min(rs.length - 1, cur + (e.key === 'ArrowDown' ? 1 : -1))); pick(n); rs[n].focus(); } });
       nsEl.querySelector('.ns-row').focus();
@@ -16015,10 +16085,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       const cb = r.querySelector('input'); cb.checked = !nsOff();
       cb.onchange = () => { try { localStorage.setItem('koi-notes-off', cb.checked ? '' : '1'); } catch (e) {} koiNsPaint(); };
     })();
-    // the Guide links to the list any time
-    { const _go = guideOpen; guideOpen = function () { const r = _go.apply(this, arguments);
-        const f = document.querySelector('.gd .gd-foot'); if (f && KOI_NOTES[KOI_VERSION] && !f.querySelector('.gd-wn')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'gd-wn'; b.textContent = 'What’s new'; b.onclick = () => koiNotesOpen(); f.appendChild(b); }
-        return r; }; }
+    // (Nov 4: the Guide no longer links to the list; New stuff! and Settings → The Pulse do)
     // the version number is for us, not on screen
     try { const v = document.getElementById('koiVer'); if (v) { const p = v.previousSibling; v.remove(); if (p && p.nodeType === 3) p.textContent = p.textContent.replace(/\s*·\s*$/, ''); } console.info('Hodo ' + KOI_VERSION); } catch (e) {}
 
@@ -19722,6 +19789,165 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     { const _snHeal = splitNoteCapsules; splitNoteCapsules = function () { const i = _snHeal.apply(this, arguments);
         if (i && Array.isArray(i.restParts) && i.restParts.some(x => /^due Claude\b/i.test(x))) { i.restParts = i.restParts.filter(x => !/^due Claude\b/i.test(x)); i.rest = i.restParts.join(' · '); }
         return i; }; }
+    // ===== Release notes (Nov 4): The Pulse, the last 6 releases, to read any time =====
+    // Named "The Pulse" (Hodo's journey, beat by beat; نبض; echoes Today's heartbeat sounds). Found in Settings → The Pulse (bottom of the menu), and from the
+    // footer of the release-day New stuff! window (which stays as it was, short and focused).
+    // People see main numbers only ("Hodo 2.6 · Nov 3"); a fix release (2.6.1) shows inside its release under "Fixed on
+    // <date>". The list keeps the 6 newest releases. Open from Settings → Help, the Guide's What's new, or New stuff!.
+    const KOI_RELEASES = {
+      '2.7': { title: 'Follow the journey', date: '2026-11-05' },
+      '2.6': { title: 'Your day, in plain sight', date: '2026-11-03' },
+      '2.6.1': { date: '2026-11-03' },
+      '2.5': { title: 'Big goals, one day at a time', date: '2026-11-03' },
+      '2.4': { title: 'Run your day from Today', date: '2026-11-02' },
+      '2.4.1': { date: '2026-11-02' },
+      '2.3': { title: 'Make Hodo yours', date: '2026-11-01' },
+      '2.2': { title: 'See your week, plan your day', date: '2026-11-01' },
+      '2.1': { title: 'Claude drafts your nudges', date: '2026-10-25' },
+      '2.1.1': { date: '2026-10-27' },
+      '2.1.2': { date: '2026-10-28' }
+    };
+    const rnMain = v => v.split('.').slice(0, 2).join('.');
+    const rnDate = (iso, y) => { const d = new Date(iso + 'T12:00:00'); return d.toLocaleDateString('en-US', y ? { month: 'short', day: 'numeric', year: 'numeric' } : { month: 'short', day: 'numeric' }); };
+    function rnList() {
+      const mains = [...new Set(Object.keys(KOI_NOTES).map(rnMain))].filter(v => KOI_NOTES[v] && !koiVerNewer(v, rnMain(KOI_VERSION)))
+        .sort((a, b) => koiVerNewer(a, b) ? -1 : koiVerNewer(b, a) ? 1 : 0).slice(0, 6);
+      return mains.map(v => {
+        const meta = KOI_RELEASES[v] || {}, fixes = Object.keys(KOI_NOTES).filter(x => x !== v && rnMain(x) === v && !koiVerNewer(x, KOI_VERSION)).sort((a, b) => koiVerNewer(a, b) ? 1 : -1);
+        return { v, title: meta.title || '', date: meta.date || '', items: KOI_NOTES[v] || [], fixes: fixes.map(x => ({ v: x, date: (KOI_RELEASES[x] || {}).date || meta.date || '', items: KOI_NOTES[x] || [] })) };
+      });
+    }
+    let rnEl = null, rnOnClose = null;
+    function rnClose() { if (rnEl) { rnEl.remove(); rnEl = null; } const f = rnOnClose; rnOnClose = null; if (f) try { f(); } catch (e) {} }
+    function koiReleasesOpen(ver, opts) {
+      opts = opts || {};
+      const L = rnList(); if (!L.length) return;
+      rnClose(); rnOnClose = opts.onClose || null; rnEl = document.createElement('div'); rnEl.className = 'rn-scrim';
+      rnEl.innerHTML = `<div class="rn-panel" role="dialog" aria-modal="true" aria-label="The Pulse">
+        <aside class="rn-side"><div class="rn-h"><b>The Pulse</b><span>Hodo’s journey, beat by beat.</span></div>
+          <div class="rn-list">${L.map((r, i) => `<button type="button" class="rn-row" data-i="${i}"><span class="rn-v">Hodo ${escapeHtml(r.v)}${r.v === rnMain(KOI_VERSION) ? '<i>You’re on this</i>' : ''}${pbUnread(r) ? `<b class="rn-beat beat" title="Not read yet">${RN_BEAT}</b>` : ''}</span><b>${escapeHtml(r.title || 'Hodo ' + r.v)}</b><small>${r.date ? rnDate(r.date) : ''}</small></button>`).join('')}</div></aside>
+        <div class="rn-main"><button class="rn-x" type="button" aria-label="Close" title="Close · Esc">×</button><div class="rn-issue"></div></div></div>`;
+      document.body.appendChild(rnEl);
+      const issue = rnEl.querySelector('.rn-issue'), order = Object.keys(NS_TAG);
+      const itemsHtml = arr => order.map(k => { const xs = arr.filter(x => x.k === k); return xs.length ? `<section class="rn-cat"><span class="ns-tag ${k}">${NS_TAG[k]}</span>${xs.map(x => `<article class="rn-item"><h3>${escapeHtml(x.t)}</h3><div class="rn-p">${x.d}</div>${nsShout(x)}</article>`).join('')}</section>` : ''; }).join('');
+      const pick = i => { const r = L[i];
+        rnEl.querySelectorAll('.rn-row').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+        if (pbUnread(r)) { pbMarkRead([r]); const m = rnEl.querySelector(`.rn-row[data-i="${i}"] .rn-beat`); if (m) m.remove(); }
+        const byDay = {}; r.fixes.forEach(f => { (byDay[f.date] = byDay[f.date] || []).push(...f.items); });
+        issue.innerHTML = `<div class="rn-top"><span>Hodo ${escapeHtml(r.v)}${r.date ? ' · ' + rnDate(r.date, true) : ''}</span><h2>${escapeHtml(r.title || 'Hodo ' + r.v)}</h2></div>${itemsHtml(r.items)}
+          ${Object.keys(byDay).sort().map(d => `<div class="rn-fix"><div class="rn-fix-h">${byDay[d].every(x => x.k === 'solved') ? 'Fixed' : 'Updated'} on ${rnDate(d)}</div>${byDay[d].map(x => `<article class="rn-item rn-fold"><button type="button" class="rn-fold-t" aria-expanded="false"><i aria-hidden="true">›</i>${escapeHtml(x.t)}</button><div class="rn-p">${x.d}</div>${nsShout(x)}</article>`).join('')}</div>`).join('')}`;
+        issue.querySelectorAll('.rn-fold-t').forEach(b => b.onclick = () => { const a = b.parentElement, on = !a.classList.contains('open'); a.classList.toggle('open', on); b.setAttribute('aria-expanded', on ? 'true' : 'false'); });
+        issue.parentElement.scrollTop = 0; };
+      rnEl.querySelectorAll('.rn-row').forEach(b => b.onclick = () => pick(+b.dataset.i));
+      pick(Math.max(0, ver ? L.findIndex(r => r.v === rnMain(ver)) : 0));
+      rnEl.querySelector('.rn-x').onclick = rnClose;
+      rnEl.addEventListener('click', e => { if (e.target === rnEl) rnClose(); });
+      rnEl.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); rnClose(); } if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const rs = [...rnEl.querySelectorAll('.rn-row')], cur = rs.findIndex(x => x.classList.contains('on')), n = Math.max(0, Math.min(rs.length - 1, cur + (e.key === 'ArrowDown' ? 1 : -1))); pick(n); rs[n].focus(); } });
+      rnEl.querySelector('.rn-row.on').focus();
+    }
+    window.koiReleasesOpen = koiReleasesOpen;
+    // The Pulse in the Settings menu (Nov 5: not tucked under Help): its own item at the bottom, below a thin
+    // divider, with a heartbeat line; it isn't a settings section, so a click opens The Pulse on top of Settings and
+    // closing it comes back to Settings. The menu also says which Hodo you're on.
+    // the heartbeat icon (Nov 5): grey like the other menu icons at rest; when a release hasn't been read yet it
+    // takes the brand colour and a pulse travels along it every few seconds (still, just coloured, with reduced motion).
+    // The same icon marks each unread release inside The Pulse until that release is opened. Unread = released after
+    // this person started using Hodo (koi-pulse-base: the version before their update, or the one they started on), not
+    // opened yet (koi-pulse-read: the newest version of each release read). Reading the New stuff! window counts.
+    const RN_PATH = 'M2.5 12.5h4.2l2.1-5.2 3.6 10.4 2.4-7.2 1.5 2h5.2';
+    const RN_BEAT = `<svg class="pb" viewBox="0 0 24 24" aria-hidden="true"><path class="pb-base" d="${RN_PATH}"/><path class="pb-run" pathLength="1" d="${RN_PATH}"/></svg>`;
+    const rnKey = r => [r.v, ...r.fixes.map(f => f.v)].reduce((a, b) => koiVerNewer(b, a) ? b : a);
+    function pbBase() {
+      let b = null; try { b = localStorage.getItem('koi-pulse-base'); } catch (e) {}
+      if (!b) { try { b = (localStorage.getItem('koi-notes-pending') && localStorage.getItem('koi-notes-from')) || KOI_VERSION; localStorage.setItem('koi-pulse-base', b); } catch (e) { b = KOI_VERSION; } }
+      return b;
+    }
+    function pbRead() { try { return JSON.parse(localStorage.getItem('koi-pulse-read') || '[]') || []; } catch (e) { return []; } }
+    function pbUnread(r) { return koiVerNewer(rnKey(r), pbBase()) && !pbRead().includes(rnKey(r)); }
+    function pbMarkRead(rs) { const R = pbRead(); rs.forEach(r => { const k = rnKey(r); if (!R.includes(k)) R.push(k); }); try { localStorage.setItem('koi-pulse-read', JSON.stringify(R)); } catch (e) {} pbPaint(); }
+    function pbPaint() { const b = document.getElementById('soPulse'); if (!b) return; const any = rnList().some(pbUnread); b.classList.toggle('beat', any); b.title = any ? 'Something new in The Pulse' : `Hodo’s journey, beat by beat · you’re on Hodo ${rnMain(KOI_VERSION)}`; }
+    function rnOpenFromSettings() { let from = null; try { if (localStorage.getItem('koi-notes-pending')) from = localStorage.getItem('koi-notes-from'); } catch (e) {} koiReleasesOpen(null, { from }); }
+    (function rnSetting() {
+      const nav = document.getElementById('soNav'); if (!nav) return;
+      nav.insertAdjacentHTML('beforeend', `<div class="so-nav-sep" aria-hidden="true"></div><button type="button" class="so-pulse" id="soPulse" title="Hodo’s journey, beat by beat · you’re on Hodo ${escapeHtml(rnMain(KOI_VERSION))}">${RN_BEAT}The Pulse</button>`);
+      document.getElementById('soPulse').addEventListener('click', rnOpenFromSettings);
+      pbBase(); pbPaint();
+    })();
+    // reading the update in the New stuff! window counts as reading those releases
+    { const _nsoP = koiNotesOpen; koiNotesOpen = function () { const r = _nsoP.apply(this, arguments); try { pbMarkRead(rnList().filter(pbUnread)); } catch (e) {} return r; }; }
+    if (!GUIDE_ITEMS.some(x => x.id === 'releases')) GUIDE_ITEMS.push({ id: 'releases', g: 'views', t: 'The Pulse', d: 'Hodo’s journey, beat by beat: the last 6 releases, each with its date and everything that changed. Small fixes sit folded at the end of the release they belong to.', how: 'Settings (your picture, top right) → The Pulse, at the bottom of the menu. The New stuff! window after an update links to it too.', kw: 'updates whats new version changelog news release notes pulse journey' });
+    // ===== Columns: no new ones, extra ones can be removed (Nov 4) =====
+    // Hodo is one flow of four statuses. The columns Hodo uses as Pending, In Progress, Waiting On and Done are kept
+    // (known by their role, so renaming doesn't change that); any other column can be removed from its ⚙. A column
+    // with tasks asks where they go first (never deleting a task); Undo puts the column, its settings and its tasks back.
+    function colRoles() {
+      const pend = typeof hzPendingId === 'function' ? hzPendingId() : null;
+      const prog = (sections.find(s => statusKey(s.id) === 'progress' && !isWaitSection(s.id)) || {}).id;
+      const wait = (sections.find(s => isWaitSection(s.id)) || {}).id;
+      const done = (koiDoneTarget() || {}).id;
+      return { pending: pend, progress: prog, wait, done };
+    }
+    const COL_ROLE_NAME = { pending: 'Pending', progress: 'In Progress', wait: 'Waiting On', done: 'Done' };
+    // a column is kept when Hodo would otherwise lose that status: the only Done column, the only Waiting column, the
+    // Pending column, the (first) In Progress column. A second Done or Waiting column can go.
+    function colRoleOf(id) {
+      if (!sections.some(x => x.id === id)) return null;
+      if (isDoneSection(id)) return sections.filter(x => isDoneSection(x.id)).length === 1 ? 'done' : null;
+      if (isWaitSection(id)) return sections.filter(x => isWaitSection(x.id) && !isDoneSection(x.id)).length === 1 ? 'wait' : null;
+      const r = colRoles(); return id === r.pending ? 'pending' : id === r.progress ? 'progress' : null;
+    }
+    function colSuggest(s) { const r = colRoles(); return s.done || isDoneSection(s.id) ? r.done : isWaitSection(s.id) ? r.wait : r.pending; }
+    function colRemoveHtml(s) {
+      const role = colRoleOf(s.id);
+      if (role) return `<div class="csp-keep">Hodo needs this column for <b>${COL_ROLE_NAME[role]}</b>. You can rename or recolour it.</div>`;
+      return `<button type="button" class="csp-rm" data-csp="rm">Remove column</button>`;
+    }
+    function colAskHtml(s) {
+      const n = (tasks[s.id] || []).length, sug = colSuggest(s);
+      const opts = sections.filter(x => x.id !== s.id).map(x => `<option value="${escapeHtml(x.id)}"${x.id === sug ? ' selected' : ''}>${escapeHtml(x.name)}</option>`).join('');
+      return `<div class="csp-ask csp-rm-ask"><span>“${escapeHtml(s.name)}” has ${n} task${n === 1 ? '' : 's'}. Move ${n === 1 ? 'it' : 'them'} to:</span><select data-csp="to">${opts}</select><div><button type="button" data-csp="go">Move and remove</button><button type="button" class="ghost" data-csp="cancel">Cancel</button></div></div>`;
+    }
+    function colRemove(id, toId) {
+      const i = sections.findIndex(x => x.id === id); if (i < 0) return;
+      const s = sections[i], moved = (tasks[id] || []).slice(), dest = sections.find(x => x.id === toId);
+      if (moved.length && !dest) return;
+      const was = new Map(moved.map(t => [t, { note: t.note, checked: t.checked }]));
+      if (moved.length) {
+        const toDone = isDoneSection(toId), fromDone = isDoneSection(id);
+        moved.forEach(t => { if (toDone !== fromDone || (toDone && !t.checked) || (!toDone && t.checked)) applyStatusChange(t, id, toId); t.section = toId; });
+        tasks[toId] = (tasks[toId] || []).concat(moved);   // at the bottom, in their order
+      }
+      sections.splice(i, 1); delete tasks[id];
+      koiColPopClose(); markChanged(); renderTasks();
+      tdUndoToast(`Column “${s.name}” removed${moved.length ? ` · ${moved.length} task${moved.length === 1 ? '' : 's'} moved to ${dest.name}` : ''}`, () => {
+        if (sections.some(x => x.id === id)) return;
+        if (moved.length) tasks[toId] = (tasks[toId] || []).filter(t => !was.has(t));
+        sections.splice(Math.min(i, sections.length), 0, s); tasks[id] = moved;
+        moved.forEach(t => { const w = was.get(t); t.note = w.note; t.checked = w.checked; t.section = id; });
+        markChanged(); renderTasks();
+      });
+    }
+    // the ⚙: the four main columns keep only Colour and say why they stay; the others can be removed
+    { const _cpoR = koiColPopOpen; koiColPopOpen = function (btn, id) {
+        const r = _cpoR.apply(this, arguments);
+        const pop = koiColPop, s = sections.find(x => x.id === id); if (!pop || !s) return r;
+        const fix = () => {
+          const role = colRoleOf(s.id);
+          if (role) pop.querySelectorAll('.csp-row, .csp-ask:not(.csp-rm-ask)').forEach(x => x.remove());
+          let foot = pop.querySelector('.csp-foot');
+          if (!foot) { foot = document.createElement('div'); foot.className = 'csp-foot'; foot.innerHTML = colRemoveHtml(s); wire(foot); }
+          if (pop.lastElementChild !== foot) pop.appendChild(foot);
+        };
+        const wire = foot => foot.addEventListener('click', e => {
+          const b = e.target.closest('[data-csp]'); if (!b) return; e.stopPropagation();
+          if (b.dataset.csp === 'rm') { if (!(tasks[s.id] || []).length) { colRemove(s.id, null); return; } foot.innerHTML = colAskHtml(s); foot.querySelector('select').focus(); }
+          else if (b.dataset.csp === 'cancel') foot.innerHTML = colRemoveHtml(s);
+          else if (b.dataset.csp === 'go') colRemove(s.id, foot.querySelector('select').value);
+        });
+        fix();
+        new MutationObserver(fix).observe(pop, { childList: true });
+        return r;
+      }; }
     applyWaitRail();
   </script>
 </body>

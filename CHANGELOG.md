@@ -1,5 +1,10 @@
 # Hodo: what changed
 
+## Hodo 2.7 · Nov 04, 2026
+- NEW: The Pulse: Hodo’s journey, beat by beat
+- NEW: Remove a column you no longer need
+- SHELVED: Creating your own statuses
+
 ## Hodo 2.6.1 · Nov 03, 2026
 - SOLVED: People missing from Settings
 
