@@ -32,7 +32,7 @@ function resolveFolder(raw) {
 const FOLDER = resolveFolder(process.env.HODO_FOLDER || process.argv[2] || '');
 const TASKS = () => path.join(FOLDER, 'TASKS.md');
 const LINK = () => path.join(FOLDER, 'memory', 'hodo-link.json');
-const VERSION = '1.3.3';
+const VERSION = '1.4.0';
 
 // ---------- dates, in Hodo's own formats ----------
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -294,9 +294,37 @@ const view = t => Object.assign({ id: t.id || t.title, title: t.title, column: t
 const str = (d, extra) => Object.assign({ type: 'string', description: d }, extra || {});
 const FIELDS = { for: str('Who it is for (a name).'), with: str('Who it is done with (a name).'), waiting_on: str('Who you are waiting on (a name). Use with column "Waiting On".'), planned: str('The day it is planned for (YYYY-MM-DD, "today", "tomorrow", or a weekday). Empty string clears it.'), deadline: str('A hard deadline (YYYY-MM-DD). Empty string clears it.'), priority: str('high, medium or low. Only when the person said so.', { enum: ['high', 'medium', 'low', ''] }), area: str('One of the areas from list_people_and_areas.'), this_week: { type: 'boolean', description: 'true to promise it this week (above the This week line in Pending).' }, project: str('The project it belongs to (an open project from list_projects). Empty string takes it out of its project.') };
 const LINKS = { references: { type: 'array', description: 'Files or links the task needs (a document to read, a sheet to check, a page to use). Each: name (short, like the file name) and url (a web link, or the file\'s full path on the computer). Hodo shows them as reference chips on the task. Never put these links in the description.', items: { type: 'object', required: ['url'], properties: { name: str('Short name, like the file name.'), url: str('https://… or a full file path.') } } }, outputs: { type: 'array', description: 'Files or links the task produced (the finished report, the sent deck). Same shape as references.', items: { type: 'object', required: ['url'], properties: { name: str('Short name.'), url: str('https://… or a full file path.') } } } };
+// ---------- The Archive (1.4.0, Nov 6): each week Hodo files the tasks finished before that week into the Hodo Folder's
+// Archive/YYYY-MM.md (one file per month of finishing, TASKS.md's format; each task line ends
+// <!-- id:… done:YYYY-MM-DD filed:YYYY-MM-DD from:<column> -->). Hodo Link only reads it: search_archive.
+const ARC_RE = /^- \[(?:x|X| )\] \*\*(.+?)\*\*(?: - (.*?))?\s*<!--\s*id:([\w-]+)([^>]*)-->\s*$/;
+function readArchive() {
+  const dir = path.join(FOLDER, 'Archive'); let files = [];
+  try { files = fs.readdirSync(dir).filter(f => /^\d{4}-\d{2}\.md$/.test(f)).sort().reverse(); } catch (e) { return []; }
+  const out = [];
+  files.forEach(f => {
+    let text = ''; try { text = fs.readFileSync(path.join(dir, f), 'utf8'); } catch (e) { return; }
+    let cur = null;
+    text.replace(/\r\n/g, '\n').split('\n').forEach(l => {
+      const m = l.match(ARC_RE);
+      if (m) { const g = k => { const x = new RegExp('\\b' + k + ':(\\S+)').exec(m[4] || ''); return x ? x[1] : ''; }; let from = 'Done'; try { from = decodeURIComponent(g('from') || 'Done'); } catch (e) {}
+        cur = { id: m[3], title: m[1], note: m[2] || '', done: g('done'), filed: g('filed'), from, month: f.slice(0, 7), desc: [], links: [], steps: [] }; if (cur.done) out.push(cur); else cur = null; return; }
+      if (!cur) return; let x;
+      if ((x = l.match(/^ {2}> ?(.*)$/))) { if (/^📎 /.test(x[1])) cur.links.push(x[1]); else cur.desc.push(x[1]); }
+      else if ((x = l.match(/^ {2}- \[( |x|X)\] (.*)$/))) cur.steps.push({ text: x[2], done: x[1] !== ' ' });
+    });
+  });
+  return out.sort((a, b) => b.done.localeCompare(a.done));
+}
+const arcView = t => { const L = t.links.map(linkView).filter(Boolean);
+  return Object.assign({ id: t.id, title: t.title, finished_on: t.done, filed_on: t.filed, from_column: t.from, note: t.note, description: t.desc.join('\n'), steps: t.steps },
+    L.length ? { references: L.filter(v => v.kind === 'reference').map(v => ({ name: v.name, url: v.url })), outputs: L.filter(v => v.kind === 'output').map(v => ({ name: v.name, url: v.url })) } : {}); };
+const arcText = t => [t.title, t.note, ...t.desc, ...t.steps.map(s => s.text), ...t.links.map(l => { const v = linkView(l); return v ? v.name : l; })].join('\n').toLowerCase();
 const TOOLS = [
   { name: 'list_tasks', description: 'List tasks in the Hodo folder: each with its id, title, column, note (people, dates, area, priority), description and steps. Use search to find a task by words in its title or description.',
     inputSchema: { type: 'object', properties: { column: str('Only this column (for example Pending, In Progress, Waiting On, Done).'), search: str('Words to look for.'), include_finished: { type: 'boolean', description: 'Include Done tasks (default false).' }, limit: { type: 'number', description: 'Max tasks (default 50).' } } }, annotations: { title: 'List tasks', readOnlyHint: true } },
+  { name: 'search_archive', description: 'Search The Archive: every task the person finished before this week (Hodo files finished tasks there each week, by month). Use it for "what did I finish…", past work, or finding an old task, its references and outputs. Filters combine: words, month, a date range, project, person, area. Read-only.',
+    inputSchema: { type: 'object', properties: { search: str('Words to look for (all of them) in titles, notes, descriptions, steps, references and outputs.'), month: str('Only this month: YYYY-MM.'), from: str('Finished on or after this day: YYYY-MM-DD.'), to: str('Finished on or before this day: YYYY-MM-DD.'), project: str('Only this project.'), person: str('Only tasks with this person.'), area: str('Only this area.'), limit: { type: 'number', description: 'Max tasks (default 50, at most 300).' } } }, annotations: { title: 'Search The Archive', readOnlyHint: true } },
   { name: 'add_task', description: 'Add one task to Hodo (Pending by default, at the top). One task = one day of work: steps are for one sitting, never for other days. Keep the title short (under 90 characters), starting with a verb. Put context in description and concrete steps in steps. For a plan spread over days, use add_plan. It appears in Hodo at once, marked "by Claude".',
     inputSchema: { type: 'object', required: ['title'], properties: Object.assign({ title: str('Short task title, verb first.'), column: str('Column name (default Pending).'), description: str('Context and the finish line ("Done = …" as the first line if known). Files and links go in references, not here.'), steps: { type: 'array', items: { type: 'string' }, description: 'Sub-tasks, in order.' } }, FIELDS, LINKS) }, annotations: { title: 'Add a task', readOnlyHint: false, destructiveHint: false } },
   { name: 'update_task', description: 'Change a task: title, people, dates, priority, area, project, description, references and outputs (files and links: add, rename, remove), or steps (add, tick, untick, remove, reorder, or move them to another task). Only the fields you pass change. For many tasks at once, use update_tasks.',
@@ -350,6 +378,22 @@ const RUN = {
     const out = cols.flatMap(s => s.tasks).filter(t => !q || (t.title + ' ' + t.desc.join(' ')).toLowerCase().includes(q)).slice(0, lim).map(view);
     linkWrite({ seen: Date.now() });
     return { columns: boardCols(doc).map(s => ({ name: s.name, tasks: s.tasks.length })), tasks: out };
+  },
+  search_archive(a) {
+    if (!FOLDER) load();
+    const all = readArchive(), words = String(a.search || '').toLowerCase().split(/\s+/).filter(Boolean), lim = Math.min(300, a.limit || 50), lc = x => String(x || '').trim().toLowerCase();
+    const L = all.filter(t => {
+      if (a.month && t.month !== String(a.month).slice(0, 7)) return false;
+      if (a.from && t.done < String(a.from)) return false; if (a.to && t.done > String(a.to)) return false;
+      if (words.length) { const tx = arcText(t); if (!words.every(w => tx.includes(w))) return false; }
+      if (a.project || a.person || a.area) { const o = splitNote(t.note);
+        if (a.project && lc(o.project) !== lc(a.project)) return false;
+        if (a.person && ![o.who, o.waitOn].some(w => lc(w) === lc(a.person))) return false;
+        if (a.area && !(o.areas || []).some(w => lc(w) === lc(a.area))) return false; }
+      return true; });
+    const months = {}; all.forEach(t => { months[t.month] = (months[t.month] || 0) + 1; });
+    linkWrite({ seen: Date.now() });
+    return { archive: Object.keys(months).sort().reverse().map(m => ({ month: m, tasks: months[m] })), found: L.length, tasks: L.slice(0, lim).map(arcView), note: all.length ? undefined : 'The Archive is empty: nothing has been filed yet (Hodo files finished tasks each new week, once the Hodo Folder is connected).' };
   },
   add_task(a) {
     if (!allowed('canChange')) throw new Error('Adding and changing tasks is switched off in Hodo (Settings → Hodo Link).');
@@ -571,6 +615,7 @@ const INSTRUCTIONS = [
   'Dates: a task\'s planned day must be on or before its deadline, and both on or before its project\'s deadline. Hodo Link refuses anything else; fix the plan rather than forcing it.',
   'For many changes at once (re-sorting areas, moving dates, renaming), use update_tasks or manage_areas: one call, all or nothing, and the person can undo it in Hodo with one click. Say what changed in one or two lines afterwards.',
   'Files and links a task needs (a document to read, a sheet to check) go in references, each with a short name and its link or full file path; what a task produced goes in outputs. Hodo shows them as chips on the task. Never paste them into the description. To fix an older task that has a link in its description, update_task with references and the description without the link.',
+  'Finished tasks stay in the Done column until the week ends; then Hodo files them into The Archive (Archive/YYYY-MM.md in the Hodo folder). For anything finished before this week (what did I finish last month, an old task, its references or outputs), use search_archive; for this week, list_tasks with include_finished.',
   'Keep titles short and verb-first. Only set priority, dates or people the person actually gave. Ask before deleting anything. Never send messages on the person\'s behalf; nudge drafts are for them to send.'
 ].join('\n');
 // ---------- prompts: Hodo's rituals, ready to start from Claude's prompt menu ----------

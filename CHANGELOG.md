@@ -1,5 +1,13 @@
 # Hodo: what changed
 
+## Hodo 2.8 · Nov 06, 2026
+- NEW: Done stays light
+- NEW: See your month at a glance
+- NEW: Find anything you’ve ever finished
+- NEW: Bring a task back
+- NEW: Your past still adds up
+- NEW: Ask Claude what you finished
+
 ## Hodo 2.7 · Nov 04, 2026
 - NEW: The Pulse: Hodo’s journey, beat by beat
 - NEW: Remove a column you no longer need

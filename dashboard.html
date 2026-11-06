@@ -19,6 +19,9 @@
   - Settings, centred (Nov 3)                "===== Settings, centred (Nov 3)", "SETTINGS, CENTRED"
   - The Pulse (release notes, Nov 4)         "===== Release notes (Nov 4)", "RELEASE NOTES" (KOI_RELEASES: a date per version, a title per main one)
   - Columns: remove extra ones (Nov 4)       "===== Columns: no new ones", "COLUMNS (Nov 4)"
+  - The Archive (Nov 6)                      "===== The Archive (Nov 6)", "THE ARCHIVE" (Archive/YYYY-MM.md, arcFile, arcBack, arcRender)
+  - The Archive, step 2 (Nov 6)              "The Archive, step 2" (arcFilterRow, arcMenu, arcSuggest, arcPass, pickable days)
+  - The Archive, step 3 (Nov 6)              "The Archive, step 3" (calDayCell wrapper arc-cc chips, kf-arc in the search line, arc-pjg project glance)
   - Quick-action strip (board / list / cal)    "Quick-action strip inside board cards", "Quick-action strip in List view"
   - Two dates, capsules, field editors         "Two dates (Oct 3)", "CAPSULES", "FIELD EDITOR POPOVER"
   - Calendar                                   "/* ===== CALENDAR VIEW", "CALENDAR TASK CARD", "Calendar row: everything eases"
@@ -5381,6 +5384,299 @@
     .csp-rm-ask { background: color-mix(in srgb, var(--danger, #c0392b) 8%, var(--bg-card)); }
     .csp-rm-ask select { font: inherit; font-size: 12.5px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); }
     .csp-rm-ask button[data-csp="go"] { background: var(--danger, #c0392b); color: #fff; }
+    /* ===== THE ARCHIVE (Nov 6) ===== */
+    #arcPanel.tab-panel.active { display: flex; flex-direction: row; }
+    .arc-page { flex: 1; min-width: 0; min-height: 0; display: flex; background: var(--bg-primary); border-radius: 14px; overflow: hidden; border: 1px solid var(--border-light, var(--border)); }
+    .arc-side { width: 290px; flex: none; display: flex; flex-direction: column; gap: 16px; padding: 22px 16px; border-right: 1px solid var(--border-light, var(--border)); background: var(--bg-secondary); }
+    .arc-h { display: flex; gap: 10px; align-items: flex-start; padding: 0 6px; }
+    .arc-h svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--brand); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
+    .arc-h b { display: block; font-size: 19px; font-weight: 720; color: var(--text-primary); }
+    .arc-h span { font-size: 12.5px; color: var(--text-muted); }
+    .arc-find { position: relative; }
+    .arc-find > svg { position: absolute; left: 11px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); fill: none; stroke: var(--text-muted); stroke-width: 1.8; stroke-linecap: round; }
+    .arc-find input { width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; padding: 9px 10px 9px 33px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); }
+    .arc-find input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+    .arc-sug { position: absolute; left: 0; top: calc(100% + 6px); width: 440px; z-index: 5; padding: 8px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 44px var(--shadow-hover), 0 2px 6px var(--shadow); }
+    .arc-sg + .arc-sg { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border-light, var(--border)); }
+    .arc-sgh { display: flex; align-items: center; gap: 6px; padding: 4px 8px; font-size: 10.5px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); }
+    .arc-sgh em { font-style: normal; font-weight: 600; letter-spacing: 0; padding: 0 6px; border-radius: 99px; background: var(--bg-secondary); }
+    .arc-s { display: flex; justify-content: space-between; gap: 12px; padding: 6px 8px; border-radius: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+    .arc-s:first-of-type { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+    .arc-s span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .arc-s b { color: var(--text-primary); font-weight: 700; background: color-mix(in srgb, #f2c94c 35%, transparent); border-radius: 3px; }
+    .arc-s small { flex: none; font-size: 11.5px; color: var(--text-muted); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .arc-sall { padding: 8px 8px 2px; font-size: 11.5px; color: var(--text-muted); }
+    .arc-ms { display: flex; flex-direction: column; gap: 3px; }
+    .arc-m { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left; font: inherit; padding: 9px 12px; border: 0; border-radius: 11px; background: transparent; cursor: pointer; }
+    .arc-m b { font-size: 14px; font-weight: 650; color: var(--text-primary); }
+    .arc-m span { font-size: 12px; color: var(--text-muted); }
+    .arc-m:hover { background: color-mix(in srgb, var(--text-primary) 5%, transparent); }
+    .arc-m.on { background: var(--bg-card); box-shadow: 0 1px 3px var(--shadow); }
+    .arc-main { flex: 1; overflow-y: auto; padding: 26px 40px 60px; }
+    .arc-mh h2 { margin: 0; font-size: 26px; font-weight: 750; letter-spacing: -.015em; color: var(--text-primary); }
+    .arc-mh p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
+    .arc-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 16px 0 6px; }
+    .arc-filters button { font: inherit; font-size: 12.5px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; }
+    .arc-filters button.on { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--bg-card)); }
+    .arc-seg { display: inline-flex; padding: 2px; gap: 2px; border-radius: 999px; background: var(--bg-secondary); }
+    .arc-seg button { border: 0; background: transparent; padding: 4px 10px; }
+    .arc-seg button.on { background: var(--bg-card); box-shadow: 0 1px 2px var(--shadow); color: var(--text-primary); border: 0; }
+    .arc-w { margin-top: 22px; max-width: 780px; }
+    .arc-wh { display: flex; align-items: baseline; gap: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-light, var(--border)); }
+    .arc-wh b { font-size: 15px; font-weight: 750; color: var(--brand); }
+    .arc-wh span { font-size: 13px; color: var(--text-secondary); }
+    .arc-wh em { margin-left: auto; font-style: normal; font-size: 12px; color: var(--text-muted); }
+    .arc-d { padding: 8px 0 2px; }
+    .arc-dh { font-size: 11.5px; font-weight: 650; color: var(--text-muted); padding: 2px 0 4px; }
+    .arc-t { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; font: inherit; padding: 7px 10px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; }
+    .arc-t:hover { background: var(--bg-card); box-shadow: 0 1px 3px var(--shadow); }
+    .arc-ck { flex: none; width: 18px; height: 18px; display: grid; place-items: center; border-radius: 5px; font-style: normal; font-size: 11px; color: #fff; background: var(--st-done-edge, #3f9a6b); }
+    .arc-tt { font-size: 13.5px; color: var(--text-primary); }
+    .arc-meta { display: flex; gap: 5px; margin-left: auto; flex: none; }
+    .arc-meta span { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--bg-secondary); color: var(--text-secondary); }
+    .arc-meta .arc-pj { border: 1px solid var(--border); background: transparent; }
+    .arc-meta .arc-cl { color: #6b5bd2; background: color-mix(in srgb, #6b5bd2 10%, transparent); }
+    [data-theme="dark"] .arc-meta .arc-cl { color: #b3a8f5; }
+    .arc-glance { margin: 10px 2px 0; border-radius: 12px; border: 1px dashed var(--border); background: color-mix(in srgb, var(--bg-card) 60%, transparent); }
+    .arc-gh { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 9px 12px; cursor: pointer; font-size: 12.5px; color: var(--text-secondary); }
+    .arc-gh b { color: var(--text-primary); }
+    .arc-gh i { font-style: normal; transition: transform .15s; }
+    .arc-glance.open .arc-gh i { transform: rotate(90deg); }
+    .arc-gl { padding: 0 10px 10px; display: none; }
+    .arc-glance.open .arc-gl { display: block; }
+    .arc-gi { display: flex; align-items: center; gap: 8px; padding: 5px 2px; font-size: 12.5px; color: var(--text-secondary); border-top: 1px solid var(--border-light, var(--border)); }
+    .arc-gi i { font-style: normal; color: var(--st-done-edge, #3f9a6b); font-size: 11px; }
+    .arc-gi span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .arc-gi small { color: var(--text-muted); font-size: 11px; }
+    .arc-gall { display: block; padding-top: 8px; font-size: 12px; font-weight: 600; color: var(--accent); cursor: pointer; }
+
+    .arc-view { display: inline-flex; padding: 2px; gap: 2px; border-radius: 10px; background: var(--bg-secondary); margin-right: 6px; }
+    .arc-filters .arc-view button { border: 0; border-radius: 8px; background: transparent; padding: 5px 11px; }
+    .arc-filters .arc-view button.on { background: var(--bg-card); color: var(--text-primary); box-shadow: 0 1px 2px var(--shadow); border: 0; }
+    .arc-w { max-width: 1120px; }
+    /* list view: a real table */
+    .arl { margin-top: 8px; border: 1px solid var(--border-light, var(--border)); border-radius: 12px; overflow: hidden; background: var(--bg-card); }
+    .arl-h, .arl-r { display: grid; grid-template-columns: 34px minmax(240px, 1fr) 90px 150px 110px 64px 64px 130px 44px; align-items: center; gap: 8px; padding: 0 12px; }
+    .arl-h { height: 34px; font-size: 10.5px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); background: var(--bg-secondary); border-bottom: 1px solid var(--border-light, var(--border)); }
+    .arl-r { min-height: 52px; padding-top: 6px; padding-bottom: 6px; border-top: 1px solid var(--border-light, var(--border)); font-size: 12.5px; color: var(--text-secondary); }
+    .arl-h + .arl-r { border-top: 0; }
+    .arl-r:hover { background: color-mix(in srgb, var(--accent) 4%, var(--bg-card)); }
+    .arl-ck { width: 18px; height: 18px; display: grid; place-items: center; border-radius: 5px; font-size: 11px; color: #fff; background: var(--st-done-edge, #3f9a6b); }
+    .arl-t { display: flex; flex-direction: column; min-width: 0; }
+    .arl-t b { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+    .arl-t small { font-size: 11.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .arl-c { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .arl-c i { color: var(--text-muted); font-style: normal; opacity: .6; }
+    .arl-c .arc-area, .arl-c .arc-pj { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--bg-secondary); }
+    .arl-c .arc-pj { background: transparent; border: 1px solid var(--border); }
+    .arl-n { font-variant-numeric: tabular-nums; }
+    .arl-when { display: flex; flex-direction: column; } .arl-when small { font-size: 11px; color: var(--text-muted); }
+    .arl-act button, .arc-gb { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text-secondary); cursor: pointer; opacity: 0; transition: opacity .15s; }
+    .arl-r:hover .arl-act button, .arc-gi:hover .arc-gb, .arl-h + .arl-r .arl-act button { opacity: 1; }
+    .arl-act svg, .arc-gb svg, .arcc-back svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    /* cards view */
+    .arc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 10px; }
+    .arc-card { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border-light, var(--border)); box-shadow: 0 1px 3px var(--shadow); }
+    .arc-card:hover { box-shadow: 0 6px 18px var(--shadow-hover); }
+    .arcc-top { display: flex; align-items: center; gap: 8px; }
+    .arcc-when { font-size: 11.5px; color: var(--text-muted); }
+    .arcc-back { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 11.5px; font-weight: 600; padding: 4px 9px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; opacity: 0; transition: opacity .15s; }
+    .arc-card:hover .arcc-back, .arc-grid > .arc-card:first-child .arcc-back { opacity: 1; }
+    .arc-card h3 { margin: 0; font-size: 15px; font-weight: 650; color: var(--text-primary); line-height: 1.3; }
+    .arc-card p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .arc-card p.arcc-none { color: var(--text-muted); font-style: italic; }
+    .arcc-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+    .arcc-chips span { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--bg-secondary); color: var(--text-secondary); }
+    .arcc-chips .arc-pj { background: transparent; border: 1px solid var(--border); }
+    .arcc-chips .arc-cl { color: #6b5bd2; background: color-mix(in srgb, #6b5bd2 10%, transparent); }
+    .arcc-foot { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 8px; border-top: 1px solid var(--border-light, var(--border)); font-size: 11.5px; color: var(--text-muted); }
+    .arcc-ref { color: var(--accent); }
+    .arc-gi .arc-gb { width: 24px; height: 24px; flex: none; padding: 0; margin-left: 2px; }
+    .arc-gi .arc-gb svg { width: 13px; height: 13px; display: block; }
+    .arc-gi:nth-child(2) .arc-gb { opacity: 1; }
+
+    /* ===== accomplishment green (Nov 6 preview) ===== */
+    .arc-page.arc-green { --ag: var(--st-done-edge, #3f9a6b); background: linear-gradient(180deg, color-mix(in srgb, var(--ag) 7%, var(--bg-primary)) 0, var(--bg-primary) 420px); }
+    .arc-green .arc-side { background: color-mix(in srgb, var(--ag) 9%, var(--bg-secondary)); border-right-color: color-mix(in srgb, var(--ag) 22%, var(--border)); }
+    .arc-green .arc-h svg { stroke: var(--ag); }
+    .arc-green .arc-m.on { box-shadow: inset 3px 0 0 var(--ag), 0 1px 3px var(--shadow); }
+    .arc-green .arc-m span { color: color-mix(in srgb, var(--ag) 70%, var(--text-muted)); }
+    .arc-green .arc-wh b { color: var(--ag); }
+    .arc-green .arc-wh em { color: var(--ag); font-weight: 650; }
+    .arc-green .arl { border-color: color-mix(in srgb, var(--ag) 22%, var(--border)); }
+    .arc-green .arl-h { background: color-mix(in srgb, var(--ag) 10%, var(--bg-secondary)); color: color-mix(in srgb, var(--ag) 60%, var(--text-muted)); }
+    .arc-green .arc-card { border-color: color-mix(in srgb, var(--ag) 25%, var(--border)); box-shadow: inset 0 3px 0 color-mix(in srgb, var(--ag) 70%, transparent), 0 1px 3px var(--shadow); }
+    .arc-mh { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; max-width: 1120px; }
+    .arc-big { display: none; align-items: center; gap: 10px; }
+    .arc-green .arc-big { display: flex; }
+    .arc-big b { font-size: 40px; font-weight: 800; line-height: 1; color: var(--ag); letter-spacing: -.02em; }
+    .arc-big span { font-size: 12px; line-height: 1.35; color: var(--text-secondary); }
+    .arc-strip { display: none; gap: 3px; margin-top: 14px; max-width: 1120px; }
+    .arc-green .arc-strip { display: flex; }
+    .arc-strip i { flex: 1; height: 10px; border-radius: 3px; background: color-mix(in srgb, var(--ag) 8%, var(--bg-secondary)); }
+    .arc-strip i.we { opacity: .6; }
+    .arc-strip i.h1 { background: color-mix(in srgb, var(--ag) 40%, transparent); }
+    .arc-strip i.h2 { background: color-mix(in srgb, var(--ag) 70%, transparent); }
+    .arc-strip i.h3 { background: var(--ag); }
+    /* cards: the board's Done icon */
+    .arcc-st { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 7px; background: color-mix(in srgb, var(--st-done-edge, #3f9a6b) 14%, transparent); }
+    .arcc-st svg { width: 15px; height: 15px; fill: none; stroke: var(--st-done-edge, #3f9a6b); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    /* years */
+    .arc-yr { padding: 10px 12px 4px; font-size: 11px; font-weight: 750; letter-spacing: .08em; color: var(--text-muted); }
+    .arc-yr:first-child { padding-top: 0; }
+    .arc-m b em { font-style: normal; font-weight: 500; color: var(--text-muted); }
+    .arc-ms { overflow-y: auto; }
+    /* filters */
+    .arc-clear { border-style: dashed !important; }
+    .arc-filters .arc-f.on { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--bg-card)); }
+    .arc-menu { position: fixed; z-index: 60; min-width: 230px; padding: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 16px 40px var(--shadow-hover); }
+    .arc-mt { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 6px 6px; font-size: 12.5px; font-weight: 700; }
+    .arc-mt span { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+    .arc-opt { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 7px; font-size: 13px; cursor: pointer; }
+    .arc-opt:hover { background: var(--bg-secondary); }
+    .arc-opt input { accent-color: var(--accent); }
+    .arc-opt em { margin-left: auto; font-style: normal; font-size: 11.5px; color: var(--text-muted); }
+    .arc-mf { display: flex; justify-content: space-between; padding: 8px 4px 2px; border-top: 1px solid var(--border-light, var(--border)); margin-top: 4px; }
+    .arc-mf button { font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); }
+    .arc-mf .ok { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .arc-tri { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 6px; font-size: 13px; }
+    .arc-tri .arc-seg button { font: inherit; font-size: 12px; padding: 4px 10px; border: 0; border-radius: 999px; background: transparent; color: var(--text-secondary); }
+    .arc-tri .arc-seg button.on { background: var(--bg-card); color: var(--text-primary); box-shadow: 0 1px 2px var(--shadow); }
+    .arc-mnote { margin: 4px 6px 2px; font-size: 11px; color: var(--text-muted); }
+    .arc-ask { width: 330px; }
+    .arc-choice { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; text-align: left; font: inherit; padding: 9px 10px; margin-top: 4px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); cursor: pointer; }
+    .arc-choice:hover { border-color: var(--accent); }
+    .arc-choice b { font-size: 13.5px; color: var(--text-primary); }
+    .arc-choice span { font-size: 11.5px; color: var(--text-muted); }
+    .arc-rem { display: flex; align-items: center; gap: 7px; padding: 10px 4px 2px; font-size: 11.5px; color: var(--text-secondary); }
+    .arc-green .arc-filters .arc-f.on, .arc-green .arc-view button.on { border-color: var(--ag); color: var(--ag); background: color-mix(in srgb, var(--ag) 9%, var(--bg-card)); }
+    .arc-green .arc-view button.on { border: 0; }
+    .arc-green .arc-seg button.on { color: var(--ag); }
+    .arc-green .arc-find input:focus { border-color: var(--ag); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ag) 15%, transparent); }
+    .arc-green .arc-opt input { accent-color: var(--ag); }
+    .arc-green ~ .arc-menu .arc-mf .ok, body:has(.arc-green) .arc-mf .ok { background: var(--st-done-edge, #3f9a6b); border-color: var(--st-done-edge, #3f9a6b); }
+
+    /* week-grouped strip */
+    .arc-green .arc-strip { display: flex; gap: 14px; align-items: flex-start; }
+    .arc-sw { flex: 7 1 0; display: flex; flex-direction: column; gap: 5px; }
+    .arc-swd { display: flex; gap: 3px; padding: 4px; border-radius: 7px; background: color-mix(in srgb, var(--ag) 6%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ag) 18%, transparent); }
+    .arc-swd i { flex: 1; height: 10px; border-radius: 3px; background: color-mix(in srgb, var(--ag) 10%, var(--bg-secondary)); }
+    .arc-swd i.out { background: transparent; }
+    .arc-swd i.we { opacity: .6; }
+    .arc-swd i.h1 { background: color-mix(in srgb, var(--ag) 40%, transparent); }
+    .arc-swd i.h2 { background: color-mix(in srgb, var(--ag) 70%, transparent); }
+    .arc-swd i.h3 { background: var(--ag); }
+    .arc-sw small { display: flex; justify-content: space-between; padding: 0 4px; font-size: 10.5px; font-weight: 700; color: color-mix(in srgb, var(--ag) 75%, var(--text-muted)); }
+    .arc-sw small em { font-style: normal; font-weight: 500; color: var(--text-muted); }
+    /* years: a band you can fold */
+    .arc-yctl { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 4px; font-size: 11px; color: var(--text-muted); }
+    .arc-yctl .arc-seg button { font: inherit; font-size: 11px; padding: 3px 8px; border: 0; border-radius: 999px; background: transparent; color: var(--text-secondary); cursor: pointer; }
+    .arc-yctl .arc-seg button.on { background: var(--bg-card); color: var(--ag, var(--text-primary)); box-shadow: 0 1px 2px var(--shadow); }
+    .arc-yb { display: flex; align-items: center; gap: 8px; width: 100%; font: inherit; text-align: left; padding: 8px 12px; margin-top: 6px; border: 0; border-radius: 10px; cursor: pointer; background: color-mix(in srgb, var(--ag, #3f9a6b) 16%, var(--bg-secondary)); color: var(--text-primary); }
+    .arc-yb b { font-size: 14px; font-weight: 800; letter-spacing: .02em; }
+    .arc-yb span { margin-left: auto; font-size: 11px; color: var(--text-secondary); }
+    .arc-yb:not(.open) { background: color-mix(in srgb, var(--ag, #3f9a6b) 8%, var(--bg-secondary)); }
+    .arc-chev { display: inline-grid; place-items: center; width: 14px; height: 14px; transition: transform .15s; }
+    .arc-chev svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .arc-yb.open .arc-chev, .arc-wt:not(.shut) .arc-chev { transform: rotate(90deg); }
+    .arc-yg { padding: 4px 0 2px 8px; display: flex; flex-direction: column; gap: 3px; border-left: 2px solid color-mix(in srgb, var(--ag, #3f9a6b) 25%, transparent); margin: 4px 0 2px 12px; }
+    .arc-yg.shut { display: none; }
+    .arc-yr { display: none; }
+    /* weeks you can fold */
+    .arc-wt { all: unset; box-sizing: border-box; display: flex; align-items: baseline; gap: 10px; width: 100%; padding-bottom: 6px; border-bottom: 1px solid var(--border-light, var(--border)); cursor: pointer; }
+    .arc-wt .arc-chev { align-self: center; color: var(--text-muted); }
+    .arc-w.shut .arc-wt { opacity: .85; }
+
+    .arc-side { overflow-y: auto; }
+    .arc-main { min-height: 0; }
+    .arc-sw small { display: flex; justify-content: space-between; gap: 6px; white-space: nowrap; overflow: hidden; }
+    .arc-sw small > span { overflow: hidden; text-overflow: ellipsis; color: var(--text-muted); font-weight: 500; }
+    .arc-sw small b { color: var(--ag); font-weight: 750; }
+    .arc-swd { align-items: flex-end; }
+    .arc-swd i { height: 12px; }
+    .arc-swd i.we { height: 12px; opacity: 1; background-image: repeating-linear-gradient(135deg, transparent 0 2.5px, color-mix(in srgb, var(--text-muted) 75%, transparent) 2.5px 4.5px); }   /* Nov 6: same height as workdays, clearer stripes */
+    .arc-swd i.we.h1, .arc-swd i.we.h2, .arc-swd i.we.h3 { background-color: color-mix(in srgb, var(--ag) 70%, transparent); background-image: repeating-linear-gradient(135deg, transparent 0 2.5px, color-mix(in srgb, var(--bg-card) 70%, transparent) 2.5px 4.5px); }
+    .arc-wt { color: inherit; }
+    .arc-wt:focus-visible, .arl-r:focus-visible, .arc-card:focus-visible { outline: 2px solid color-mix(in srgb, var(--ag, #3f9a6b) 55%, transparent); outline-offset: 2px; }
+    .arl-r { cursor: pointer; }
+    .arc-card { cursor: pointer; }
+    .arc-empty { max-width: 460px; margin: 80px auto; text-align: center; color: var(--text-secondary); }
+    .arc-empty svg { width: 40px; height: 40px; fill: none; stroke: var(--ag, #3f9a6b); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .arc-empty h2 { margin: 10px 0 6px; font-size: 20px; color: var(--text-primary); }
+    .arc-empty p { margin: 0; font-size: 13.5px; line-height: 1.55; }
+    .park-btn.arc-place .pk-ic svg path { stroke-width: 1.9; }
+    /* read-only details */
+    .arc-det-scrim { position: fixed; inset: 0; z-index: 2550; display: flex; align-items: center; justify-content: center; padding: 24px; background: color-mix(in srgb, #1d1a16 28%, transparent); backdrop-filter: blur(2px); }
+    [data-theme="dark"] .arc-det-scrim { background: rgba(6, 8, 14, .5); }
+    .arc-det { width: min(560px, 100%); max-height: calc(100vh - 48px); overflow-y: auto; padding: 18px 22px 16px; border-radius: 16px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); box-shadow: inset 0 3px 0 color-mix(in srgb, var(--st-done-edge, #3f9a6b) 70%, transparent), 0 24px 60px rgba(0, 0, 0, .22); }
+    .arc-det-top { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+    .arc-det-x { margin-left: auto; width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+    .arc-det-x:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .arc-det h2 { margin: 8px 0 8px; font-size: 20px; font-weight: 700; line-height: 1.3; }
+    .arc-det .arcc-chips { margin-bottom: 12px; }
+    .arc-det-desc { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); padding: 10px 12px; border-radius: 10px; background: var(--bg-secondary); }
+    .arc-det-desc.none { font-style: italic; color: var(--text-muted); }
+    .arc-det-h { margin: 14px 0 6px; font-size: 11px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .arc-det-st { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+    .arc-det-st li { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); }
+    .arc-det-st li i { width: 16px; height: 16px; display: grid; place-items: center; border-radius: 4px; border: 1.5px solid var(--border); font-style: normal; font-size: 10px; color: #fff; }
+    .arc-det-st li.ok i { background: var(--st-done-edge, #3f9a6b); border-color: var(--st-done-edge, #3f9a6b); }
+    .arc-det-l { display: flex; flex-wrap: wrap; gap: 8px; }
+    .arc-det-l a { font-size: 13px; color: var(--accent); text-decoration: none; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); }
+    .arc-det-l a:hover { border-color: var(--accent); }
+    .arc-det-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-light, var(--border)); font-size: 12px; color: var(--text-muted); }
+    .arc-det-back { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); cursor: pointer; }
+    .arc-det-back:hover { border-color: var(--st-done-edge, #3f9a6b); color: var(--st-done-edge, #3f9a6b); }
+    .arc-det-back svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .arc-ask { z-index: 2600; }
+    .arc-glance { margin: 8px 10px 2px; }
+    .arc-gh .arc-chev { color: var(--text-muted); }
+    .arc-glance.open .arc-gh .arc-chev { transform: rotate(90deg); }
+    .arc-gi { cursor: pointer; }
+    .arc-gall { all: unset; display: block; padding-top: 8px; font-size: 12px; font-weight: 600; color: var(--accent); cursor: pointer; }
+    .arc-gi:nth-child(2) .arc-gb { opacity: 0; }
+    .arc-gi:hover .arc-gb, .arc-gi .arc-gb:focus-visible { opacity: 1; }
+    .arl-h + .arl-r .arl-act button { opacity: 0; }
+    .arl-r:hover .arl-act button, .arl-r:focus-within .arl-act button { opacity: 1; }
+    .arc-grid > .arc-card:first-child .arcc-back { opacity: 0; }
+    .arc-card:hover .arcc-back, .arc-card:focus-within .arcc-back { opacity: 1; }
+    @media (max-width: 760px) { .arc-page { flex-direction: column; } .arc-side { width: auto; max-height: 40vh; border-right: 0; border-bottom: 1px solid var(--border-light, var(--border)); } .arc-main { padding: 16px; } .arl-h, .arl-r { grid-template-columns: 30px 1fr 110px 36px; } .arl-h > :nth-child(n+3):nth-child(-n+7), .arl-r > :nth-child(n+3):nth-child(-n+7) { display: none; } .arc-big { display: none !important; } }
+
+    /* ===== THE ARCHIVE, step 2 (Nov 6): search, filters, pickable days ===== */
+    .arc-side .arc-find { margin: 2px 2px 4px; }
+    .arc-sug { position: fixed; left: 0; top: 0; width: min(440px, calc(100vw - 16px)); max-height: min(70vh, 560px); overflow-y: auto; z-index: 2500; --ag: var(--st-done-edge, #3f9a6b); color: var(--text-primary); }
+    .arc-sug .arc-s { all: unset; box-sizing: border-box; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; width: 100%; padding: 6px 8px; border-radius: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+    .arc-sug .arc-s:hover, .arc-sug .arc-s:focus-visible { background: color-mix(in srgb, var(--ag) 10%, var(--bg-secondary)); color: var(--text-primary); }
+    .arc-sug .arc-sall { all: unset; box-sizing: border-box; display: block; width: 100%; margin-top: 6px; padding: 8px; border-top: 1px solid var(--border-light, var(--border)); font-size: 12px; font-weight: 600; color: var(--ag); cursor: pointer; text-align: center; }
+    .arc-sug .arc-sall:hover { background: color-mix(in srgb, var(--ag) 8%, transparent); border-radius: 0 0 8px 8px; }
+    .arc-smore { padding: 2px 8px 4px; font-size: 11.5px; color: var(--text-muted); }
+    .arc-sug .arc-none { padding: 10px 8px; font-size: 13px; color: var(--text-muted); }
+    .arc-showing { margin: 2px 0 4px; font-size: 12.5px; color: var(--text-muted); }
+    .arc-showing b { color: var(--text-primary); }
+    .arc-none { margin: 22px 0; padding: 22px; border-radius: 14px; border: 1px dashed var(--border); text-align: center; font-size: 13.5px; color: var(--text-muted); }
+    .arc-link { all: unset; color: var(--ag, var(--accent)); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+    .arc-strip i.arc-pk { cursor: pointer; }
+    .arc-strip i.arc-pk:hover { outline: 2px solid color-mix(in srgb, var(--ag) 55%, transparent); outline-offset: 1px; }
+    .arc-strip i.arc-sel { outline: 2px solid var(--text-primary); outline-offset: 1px; }
+    .arc-strip { user-select: none; -webkit-user-select: none; touch-action: none; }
+    .arc-wpick { cursor: pointer; border-radius: 4px; padding: 0 2px; margin: 0 -2px; }
+    .arc-wpick:hover { background: color-mix(in srgb, var(--ag) 14%, transparent); }
+    .arc-fmenu { z-index: 2500; --ag: var(--st-done-edge, #3f9a6b); max-height: 60vh; overflow-y: auto; }
+    .arc-fmenu .arc-opt input { accent-color: var(--ag); }
+    .arc-fmenu .arc-mf button { cursor: pointer; }
+    .arc-fmenu .arc-mf .ok { background: var(--ag); border-color: var(--ag); }
+    .arc-fmenu .arc-tri .arc-seg button { cursor: pointer; }
+    .arc-fmenu .arc-tri .arc-seg button.on { color: var(--ag); }
+    .arc-filters .arc-clear { color: var(--text-muted); }
+    /* ===== THE ARCHIVE, step 3 (Nov 6): Calendar chips, board search, project glance ===== */
+    .cal-chip.arc-cc { cursor: pointer; border-left-style: dashed; }
+    .cal-chip.arc-cc .cm-arc { display: inline-flex; align-items: center; gap: 4px; }
+    .cal-chip.arc-cc .cm-arc svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+    .kf-arc { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 12.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--st-done-edge, #3f9a6b) 40%, var(--border)); background: color-mix(in srgb, var(--st-done-edge, #3f9a6b) 8%, var(--bg-card)); color: var(--st-done-edge, #3f9a6b); cursor: pointer; }
+    .kf-arc svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+    .kf-arc b { font-weight: 700; }
+    .column:has(> .arc-glance.open) { max-height: none; }
+    .kf-arc:hover { background: color-mix(in srgb, var(--st-done-edge, #3f9a6b) 14%, var(--bg-card)); }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -7710,7 +8006,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.7';
+    const KOI_VERSION = '2.8';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -15762,6 +16058,14 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.8': [
+        { k: 'new', t: 'Done stays light', d: 'Each new week, Hodo files the tasks you finished the week before into <b>The Archive</b> (in the header, after the Waste Yard), so your Done column only holds this week. Everything comes along: description, sub-tasks, references and outputs. The first time, everything finished before this week is filed, with <b>Undo</b> right there. The end of your Done column shows <i>“Last week · n done”</i> for a quick look back. Needs your Hodo Folder.' },
+        { k: 'new', t: 'See your month at a glance', d: 'The Archive is organised by year, month and week. Each month shows a big count, like <i>“26 things done on 23 of 31 days”</i>, and a strip of its days. View tasks as a <b>List</b> or as <b>Cards</b>, and click any task to see all its details.' },
+        { k: 'new', t: 'Find anything you’ve ever finished', d: 'Search shows suggestions as you type, grouped by where your words were found; press <b>Enter</b> to see every result. Filter by area, project, person, who did it (you or with Claude) and files. In the day strip, click days, a whole week, or drag across a run of days to see just those.' },
+        { k: 'new', t: 'Bring a task back', d: 'Use ↩ on any filed task to send it back to Done or Pending. Choose how it works in <b>Settings → Your week → Bringing a task back</b>.' },
+        { k: 'new', t: 'Your past still adds up', d: 'Filed tasks still show on the Calendar’s past days. Searching your tasks also offers <i>“Also in The Archive”</i>. A project’s Done column lists everything of it that’s been filed, and projects and the Weekly reset still count filed tasks.' },
+        { k: 'new', t: 'Ask Claude what you finished', d: 'Hodo Link can now search The Archive, like <i>“what did I finish in October?”</i>. It updates itself.' }
+      ],
       '2.7': [
         { k: 'new', t: 'The Pulse: Hodo’s journey, beat by beat', d: 'Every Hodo update in one place: what changed, when, and who inspired it. Read back through the last six releases any time in <b>Settings</b> (your picture, top right) → <b>The Pulse</b>. When there’s something you haven’t read yet, its little heartbeat lights up.', inspired: 'You5ef' },
         { k: 'new', t: 'Remove a column you no longer need', d: 'Open a column’s ⚙ and choose <b>Remove column</b>. If it still holds tasks, Hodo asks where they should go first, so nothing is lost, and <b>Undo</b> puts it all back. Pending, In Progress, Waiting On and Done always stay.', forYou: 'You5ef' },
@@ -19795,6 +20099,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // People see main numbers only ("Hodo 2.6 · Nov 3"); a fix release (2.6.1) shows inside its release under "Fixed on
     // <date>". The list keeps the 6 newest releases. Open from Settings → Help, the Guide's What's new, or New stuff!.
     const KOI_RELEASES = {
+      '2.8': { title: 'Archive your DONEs', date: '2026-11-06' },
       '2.7': { title: 'Follow the journey', date: '2026-11-05' },
       '2.6': { title: 'Your day, in plain sight', date: '2026-11-03' },
       '2.6.1': { date: '2026-11-03' },
@@ -19948,6 +20253,582 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
         new MutationObserver(fix).observe(pop, { childList: true });
         return r;
       }; }
+    // ===== The Archive (Nov 6): finished work, filed by month =====
+    // Each new week, the first time Hodo opens (and while it stays open), every task in a Done column finished before
+    // this week starts (the week follows the Work week setting) is filed into the Hodo Folder: Archive/YYYY-MM.md, one
+    // file per month of finishing, the same format as TASKS.md; everything is kept, and the task line's note carries
+    // <!-- id:… done:YYYY-MM-DD filed:YYYY-MM-DD from:<column> -->. "Last week: 12 done, filed in The Archive · Undo".
+    // Needs the Hodo Folder (browser-only trial: nothing is filed). The Archive is a place after the Waste Yard: years
+    // (bands that fold; Default = this year open), months, then weeks (fold) and days; List or Cards; a green look, a big
+    // count and the month's days by week. A task opens read-only; Bring it back (Settings → Your week: Always ask /
+    // Back to Done / Back to Pending). The Done column shows "Last week · n done". Projects still count archived tasks,
+    // and the Weekly reset still sees last week's finished tasks.
+    const ARC = { recs: [], loaded: false, busy: false, ym: null, view: 'list', yMode: 'default', yOpen: new Set(), wShut: new Set(), glance: false };
+    try { const v = localStorage.getItem('koi-arc-view'); if (v === 'cards' || v === 'list') ARC.view = v; } catch (e) {}
+    const ARC_MF = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const ARC_MS = ARC_MF.map(m => m.slice(0, 3));
+    const ARC_IC = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5h17v4.2h-17z"/><path d="M5 9.2v9.3a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5V9.2"/><path d="M10 13.2h4"/></svg>';
+    const ARC_CHEV = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>';
+    const ARC_BACK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4.5 3 7.5l3 3"/><path d="M3.5 7.5h6a3.5 3.5 0 0 1 0 7H8"/></svg>';
+    const arcYM = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const arcISO = d => ymd(d);
+    const arcDay0 = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+    const arcFromISO = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+    const arcWk0 = d => arcDay0(startOfWeek(d));
+    const arcWNum = d => Math.round((arcWk0(d) - arcWk0(new Date(d.getFullYear(), d.getMonth(), 1))) / 6048e5) + 1;
+    const arcDayTxt = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const arcByClaude = r => /(?:^|·\s*)by Claude\b/i.test(r.note || '');
+    // ---- the files ----
+    async function arcDir(create) { if (typeof memoryDirHandle === 'undefined' || !memoryDirHandle) return null; try { return await memoryDirHandle.getDirectoryHandle('Archive', { create: !!create }); } catch (e) { return null; } }
+    function arcSer(ym, recs) {
+      const [y, m] = ym.split('-').map(Number), name = `${ARC_MF[m - 1]} ${y}`;
+      let md = `# Hodo Archive · ${name}\nEverything finished in ${name}, filed by Hodo each week. Same format as TASKS.md.\n\n## Done\n`;
+      recs.slice().sort((a, b) => a.done - b.done).forEach(r => {
+        md += `- [x] **${r.title}**${r.note ? ' - ' + r.note : ''} <!-- id:${r.uid} done:${arcISO(r.done)} filed:${arcISO(r.filed)} from:${encodeURIComponent(r.from || 'Done')} -->\n`;
+        if (r.description) r.description.split('\n').forEach(dl => { md += `  > ${dl}\n`; });
+        (r.links || []).forEach(l => { md += `  > 📎 ${l.kind === 'output' ? 'Output' : 'Reference'}: [${String(l.label || '').replace(/[\[\]\n]/g, ' ').trim()}](${String(l.url).replace(/\s/g, '%20')})\n`; });
+        (r.subtasks || []).forEach(st => { md += `  - [${st.checked ? 'x' : ' '}] ${st.text}\n`; });
+      });
+      return md;
+    }
+    function arcParse(text) {
+      const out = []; let cur = null;
+      String(text || '').replace(/\r\n/g, '\n').split('\n').forEach(l => {
+        const m = l.match(/^- \[(?:x|X| )\] \*\*(.+?)\*\*(?: - (.*?))?\s*<!--\s*id:([\w-]+)([^>]*)-->\s*$/);
+        if (m) { const a = m[4] || '', g = k => { const x = new RegExp('\\b' + k + ':(\\S+)').exec(a); return x ? x[1] : ''; };
+          const done = arcFromISO(g('done')); if (!done) { cur = null; return; }
+          cur = { uid: m[3], title: m[1], note: m[2] || '', description: '', links: [], subtasks: [], done, filed: arcFromISO(g('filed')) || done, from: decodeURIComponent(g('from') || 'Done'), ym: arcYM(done) };
+          out.push(cur); return; }
+        if (!cur) return; let x;
+        if ((x = l.match(/^ {2}> 📎\s*(?:(reference|ref|output|out)\s*:\s*)?\[([^\]]*)\]\((.+)\)\s*$/i))) cur.links.push({ kind: /^out/i.test(x[1] || '') ? 'output' : 'reference', label: x[2].trim(), url: x[3].trim() });
+        else if ((x = l.match(/^ {2}> ?(.*)$/))) cur.description += (cur.description || cur._d ? '\n' : '') + x[1], cur._d = true;
+        else if ((x = l.match(/^ {2}- \[( |x|X)\] (.*)$/))) cur.subtasks.push({ text: x[2], checked: x[1] !== ' ' });
+      });
+      out.forEach(r => { delete r._d; });
+      return out;
+    }
+    async function arcLoad() {
+      const dir = await arcDir(false), recs = [];
+      if (dir) { try { for await (const [name, h] of dir.entries()) { if (h.kind !== 'file' || !/^\d{4}-\d{2}\.md$/.test(name)) continue; try { recs.push(...arcParse(await (await h.getFile()).text())); } catch (e) {} } } catch (e) {} }
+      const seen = new Set(); ARC.recs = recs.filter(r => !seen.has(r.uid) && seen.add(r.uid)); ARC.loaded = true;
+    }
+    async function arcWrite(ym) {
+      const dir = await arcDir(true); if (!dir) throw new Error('no Hodo Folder');
+      const fh = await dir.getFileHandle(ym + '.md', { create: true }), w = await fh.createWritable(); await w.write(arcSer(ym, ARC.recs.filter(r => r.ym === ym))); await w.close();
+    }
+    async function arcRead(ym) { try { const dir = await arcDir(false); if (!dir) return ''; return await (await (await dir.getFileHandle(ym + '.md')).getFile()).text(); } catch (e) { return ''; } }
+    // ---- filing ----
+    function arcRec(t, done, now, from) {
+      if (!t.uid) t.uid = koiUidNew();
+      return { uid: t.uid, title: t.title, note: t.note || '', description: t.description || '', links: (t.links || []).map(l => ({ ...l })), subtasks: (t.subtasks || []).map(s => ({ text: s.text, checked: !!s.checked })), done: arcDay0(done), filed: arcDay0(now), from, ym: arcYM(done) };
+    }
+    function arcDue() {
+      const w0 = arcWk0(new Date()), c = [];
+      sections.forEach(s => { if (!isDoneSection(s.id)) return; (tasks[s.id] || []).forEach(t => { const d = pfDoneDate(t); if (d && d < w0) c.push({ t, s, d }); }); });
+      return c;
+    }
+    async function arcFile() {
+      if (ARC.busy || !ARC.loaded || typeof memoryDirHandle === 'undefined' || !memoryDirHandle || !sections.length || document.body.classList.contains('wb-on')) return;
+      const cand = arcDue(); if (!cand.length) return;
+      ARC.busy = true;
+      try {
+        const now = new Date(), recs = cand.map(c => arcRec(c.t, c.d, now, c.s.name)), months = [...new Set(recs.map(r => r.ym))];
+        try { await koiBackupWrite(`TASKS before filing ${koiStamp(true)}.md`, toMarkdown()); } catch (e) {}
+        for (const ym of months) { const old = await arcRead(ym); if (old) try { await koiBackupWrite(`Archive ${ym} before filing ${koiStamp(true)}.md`, old); } catch (e) {} }
+        const before = ARC.recs.slice(), uids = new Set(recs.map(r => r.uid));
+        ARC.recs = ARC.recs.filter(r => !uids.has(r.uid)).concat(recs);
+        try { for (const ym of months) await arcWrite(ym); } catch (e) { ARC.recs = before; showStatus('Hodo couldn’t file last week’s tasks in The Archive. Nothing was moved.'); return; }
+        const snap = cand.map(c => ({ t: c.t, sid: c.s.id, i: (tasks[c.s.id] || []).indexOf(c.t) }));
+        cand.forEach(c => { tasks[c.s.id] = (tasks[c.s.id] || []).filter(x => x !== c.t); });
+        markChanged(); renderTasks(); arcPaint();
+        const w0 = arcWk0(now), last = new Date(w0); last.setDate(last.getDate() - 7);
+        const n = recs.length, lastN = recs.filter(r => r.done >= last).length;
+        tdUndoToast(n === lastN ? `Last week: ${n} done, filed in The Archive` : `${n} done task${n === 1 ? '' : 's'} filed in The Archive`, () => arcUnfile(snap, recs, months));
+      } finally { ARC.busy = false; }
+    }
+    async function arcUnfile(snap, recs, months) {
+      const uids = new Set(recs.map(r => r.uid));
+      snap.slice().sort((a, b) => a.i - b.i).forEach(x => { if (!sections.some(s => s.id === x.sid)) return; const L = tasks[x.sid] = tasks[x.sid] || []; if (L.includes(x.t)) return; L.splice(Math.min(Math.max(0, x.i), L.length), 0, x.t); });
+      ARC.recs = ARC.recs.filter(r => !uids.has(r.uid));
+      try { for (const ym of months) await arcWrite(ym); } catch (e) {}
+      markChanged(); renderTasks(); arcPaint();
+    }
+    // ---- bringing a task back ----
+    function arcBackMode() { try { const v = localStorage.getItem('koi-arc-back'); return v === 'done' || v === 'pending' ? v : 'ask'; } catch (e) { return 'ask'; } }
+    function arcNoteFor(note, where) {
+      const info = splitNoteCapsules(note || ''), t = arcDay0(new Date());
+      info.restParts = (info.restParts || []).filter(r => !/^completed\s/i.test(r));
+      if (where === 'pending') { if (info.date && info.date.kind === 'done') info.date = null; return composeNote(info, false); }
+      if (!info.date || info.date.kind === 'done' || info.date.kind === 'none') info.date = { kind: 'done', date: t }; else info.restParts.push('completed ' + koiShortDate(t));
+      return composeNote(info, true);
+    }
+    async function arcBack(rec, where) {
+      const target = where === 'pending' ? sections.find(s => s.id === hzPendingId()) : koiDoneTarget();
+      if (!target) { showStatus(`There’s no ${where === 'pending' ? 'Pending' : 'Done'} column`); return; }
+      const t = { id: Date.now() + Math.random(), uid: rec.uid, uidNew: false, title: rec.title, note: arcNoteFor(rec.note, where), checked: where !== 'pending', subtasks: rec.subtasks.map(s => ({ ...s })), description: rec.description, links: rec.links.map(l => ({ ...l })), section: target.id };
+      ARC.recs = ARC.recs.filter(r => r !== rec);
+      try { await arcWrite(rec.ym); } catch (e) { ARC.recs.push(rec); showStatus('Hodo couldn’t update The Archive. Nothing was changed.'); return; }
+      tasks[target.id] = [t, ...(tasks[target.id] || [])]; markChanged(); renderTasks(); arcPaint(); arcDetailClose();
+      tdUndoToast(`“${rec.title}” is back in ${target.name}`, async () => {
+        tasks[target.id] = (tasks[target.id] || []).filter(x => x !== t); ARC.recs.push(rec);
+        try { await arcWrite(rec.ym); } catch (e) {} markChanged(); renderTasks(); arcPaint();
+      });
+    }
+    let arcAskEl = null;
+    function arcAskClose() { if (arcAskEl) { arcAskEl.remove(); arcAskEl = null; } }
+    function arcBring(rec, anchor) {
+      const mode = arcBackMode(); if (mode !== 'ask') { arcBack(rec, mode); return; }
+      arcAskClose(); const r = anchor.getBoundingClientRect(), m = document.createElement('div'); m.className = 'arc-menu arc-ask'; arcAskEl = m;
+      m.innerHTML = `<div class="arc-mt">Bring “${escapeHtml(rec.title)}” back to…</div>
+        <button type="button" class="arc-choice" data-to="done"><b>Done</b><span>Counts as finished this week; filed again next week</span></button>
+        <button type="button" class="arc-choice" data-to="pending"><b>Pending</b><span>Not really finished: back on your list, finish date removed</span></button>
+        <label class="arc-rem"><input type="checkbox" data-rem="1"> Always do this (change it in Settings → Your week)</label>`;
+      document.body.appendChild(m);
+      const w = 330, x = Math.max(8, Math.min(innerWidth - w - 8, r.right - w)), below = r.bottom + 6 + m.offsetHeight < innerHeight;
+      m.style.left = x + 'px'; m.style.top = (below ? r.bottom + 6 : Math.max(8, r.top - 6 - m.offsetHeight)) + 'px';
+      m.querySelectorAll('[data-to]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const to = b.dataset.to; if (m.querySelector('[data-rem]').checked) { try { localStorage.setItem('koi-arc-back', to); } catch (x) {} arcSettingSync(); } arcAskClose(); arcBack(rec, to); }));
+    }
+    KOI_FLOATS.push({ open: () => arcAskEl, inside: '.arc-ask', close: arcAskClose });
+    // ---- the read-only details ----
+    let arcDetEl = null;
+    function arcDetailClose() { if (arcDetEl) { arcDetEl.remove(); arcDetEl = null; } }
+    function arcDetail(rec) {
+      arcDetailClose();
+      const info = splitNoteCapsules(rec.note || ''), refs = rec.links.filter(l => l.kind !== 'output'), outs = rec.links.filter(l => l.kind === 'output');
+      const lk = l => `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">📎 ${escapeHtml(l.label || l.url)}</a>`;
+      const el = document.createElement('div'); el.className = 'arc-det-scrim'; arcDetEl = el;
+      el.innerHTML = `<div class="arc-det" role="dialog" aria-modal="true" aria-label="${escapeHtml(rec.title)}">
+        <div class="arc-det-top"><span class="arcc-st">${(window.koiQA && koiQA.ICON && koiQA.ICON.done) || ''}</span><span>Finished ${arcDayTxt(rec.done)} · filed ${arcDayTxt(rec.filed)}</span><button type="button" class="arc-det-x" aria-label="Close">×</button></div>
+        <h2>${escapeHtml(rec.title)}</h2>
+        <div class="arcc-chips">${arcChips(rec, info)}</div>
+        ${rec.description ? `<div class="arc-det-desc">${escapeHtml(rec.description).replace(/\n/g, '<br>')}</div>` : '<div class="arc-det-desc none">No description</div>'}
+        ${rec.subtasks.length ? `<div class="arc-det-h">Sub-tasks · ${rec.subtasks.filter(s => s.checked).length}/${rec.subtasks.length}</div><ul class="arc-det-st">${rec.subtasks.map(s => `<li class="${s.checked ? 'ok' : ''}"><i>${s.checked ? '✓' : ''}</i>${escapeHtml(s.text)}</li>`).join('')}</ul>` : ''}
+        ${refs.length ? `<div class="arc-det-h">References</div><div class="arc-det-l">${refs.map(lk).join('')}</div>` : ''}
+        ${outs.length ? `<div class="arc-det-h">Outputs</div><div class="arc-det-l">${outs.map(lk).join('')}</div>` : ''}
+        <div class="arc-det-foot"><span>From ${escapeHtml(rec.from || 'Done')}</span><button type="button" class="arc-det-back">${ARC_BACK}Bring it back</button></div></div>`;
+      document.body.appendChild(el);
+      el.querySelector('.arc-det-x').onclick = arcDetailClose;
+      el.addEventListener('click', e => { if (e.target === el) arcDetailClose(); });
+      el.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); arcDetailClose(); } });
+      const b = el.querySelector('.arc-det-back'); b.onclick = e => { e.stopPropagation(); arcBring(rec, b); };
+      b.focus();
+    }
+    function arcChips(r, info) {
+      info = info || splitNoteCapsules(r.note || '');
+      const who = info.who || '', pj = info.project || '', ar = (info.workstreams || [])[0] || '';
+      return `${ar ? `<span class="arc-area">${escapeHtml(ar)}</span>` : ''}${pj ? `<span class="arc-pj">${escapeHtml(pj)}</span>` : ''}${who ? `<span class="arc-who">${escapeHtml(who)}</span>` : ''}${arcByClaude(r) ? '<span class="arc-cl">by Claude</span>' : ''}`;
+    }
+    // ---- the page ----
+    const arcBtn = document.createElement('button'); arcBtn.type = 'button'; arcBtn.id = 'arcBtn';
+    { const bin = document.getElementById('binBtn'); arcBtn.className = 'park-btn bin-place arc-place'; arcBtn.innerHTML = `<span class="pk-ic arc-ic">${ARC_IC}</span><span>The Archive</span>`; arcBtn.title = 'The Archive: everything you finished, filed by month'; if (bin) bin.after(arcBtn); }
+    const arcPanel = document.createElement('section'); arcPanel.id = 'arcPanel'; arcPanel.className = 'tab-panel arc-panel'; tasksPanel.after(arcPanel);
+    function arcYears() { return [...new Set(ARC.recs.map(r => r.done.getFullYear()))].sort((a, b) => b - a); }
+    function arcMonths() { return [...new Set(ARC.recs.map(r => r.ym))].sort().reverse(); }
+    function arcProjClosed(ym) { try { return (pjList || []).filter(p => p.closed && String(p.closed).slice(0, 7) === ym).length; } catch (e) { return 0; } }
+    function arcSum(ym) { const n = ARC.recs.filter(r => r.ym === ym).length, p = arcProjClosed(ym); return `${n} done${p ? ` · ${p} project${p === 1 ? '' : 's'} closed` : ''}`; }
+    function arcYearOpen(y) { const cy = new Date().getFullYear(); if (ARC.yMode === 'all') return true; if (ARC.yMode === 'none') return ARC.yOpen.has(y); return ARC.yOpen.has(y) || (y === cy && !ARC.yOpen.has(-y)); }
+    function arcSideHtml() {
+      const ms = arcMonths();
+      return `<div class="arc-h">${ARC_IC}<div><b>The Archive</b><span>Everything you finished, filed by month.</span></div></div>
+        ${ms.length ? `<div class="arc-yctl"><span>Years</span><span class="arc-seg">${[['default', 'Default'], ['all', 'Expand all'], ['none', 'Collapse all']].map(([k, l]) => `<button type="button" data-ym="${k}" class="${ARC.yMode === k ? 'on' : ''}">${l}</button>`).join('')}</span></div>` : ''}
+        <div class="arc-ms">${arcYears().map(y => { const yms = ms.filter(m => +m.slice(0, 4) === y), open = arcYearOpen(y), n = ARC.recs.filter(r => r.done.getFullYear() === y).length;
+          return `<button type="button" class="arc-yb${open ? ' open' : ''}" data-y="${y}" aria-expanded="${open}"><i class="arc-chev">${ARC_CHEV}</i><b>${y}</b><span>${n} done · ${yms.length} month${yms.length === 1 ? '' : 's'}</span></button>
+            <div class="arc-yg${open ? '' : ' shut'}">${yms.map(m => `<button type="button" class="arc-m${m === ARC.ym ? ' on' : ''}" data-m="${m}"><b>${ARC_MF[+m.slice(5) - 1]} <em>${m.slice(0, 4)}</em></b><span>${arcSum(m)}</span></button>`).join('')}</div>`; }).join('')}</div>`;
+    }
+    function arcStrip(ym, recs) {
+      const [y, m] = ym.split('-').map(Number), dim = new Date(y, m, 0).getDate(), per = {};
+      recs.forEach(r => { const d = r.done.getDate(); per[d] = (per[d] || 0) + 1; });
+      const wk = {}; for (let d = 1; d <= dim; d++) { const w = arcWNum(new Date(y, m - 1, d)); (wk[w] = wk[w] || []).push(d); }
+      return Object.keys(wk).map(w => { const ds = wk[w], a = ds[0], b = ds[ds.length - 1], n = ds.reduce((s, d) => s + (per[d] || 0), 0);
+        const cells = ds.map(d => { const dt = new Date(y, m - 1, d), c = per[d] || 0; return `<i class="h${Math.min(3, c)}${isWeekend(dt) ? ' we' : ''}" title="${arcDayTxt(dt)} · ${c} done"></i>`; }).join('');
+        return `<span class="arc-sw" style="flex:${ds.length} 1 0" title="W${w} · ${ARC_MS[m - 1]} ${a}${a !== b ? '–' + b : ''} · ${n} done"><span class="arc-swd">${cells}</span><small><span><b>W${w}</b> ${ARC_MS[m - 1]} ${a}${a !== b ? '–' + b : ''}${ds.length < 7 ? ` · ${ds.length} day${ds.length === 1 ? '' : 's'}` : ''}</span><em>${n}</em></small></span>`; }).join('');
+    }
+    const arcTime = r => '';
+    function arcListRow(r) {
+      const info = splitNoteCapsules(r.note || ''), refs = r.links.length, st = r.subtasks.length, ar = (info.workstreams || [])[0] || '';
+      return `<div class="arl-r" data-u="${escapeHtml(r.uid)}" tabindex="0"><span class="arl-ck">✓</span><span class="arl-t"><b>${escapeHtml(r.title)}</b>${r.description ? `<small>${escapeHtml(r.description.split('\n')[0])}</small>` : ''}</span><span class="arl-c">${ar ? `<span class="arc-area">${escapeHtml(ar)}</span>` : '<i>—</i>'}</span><span class="arl-c">${info.project ? `<span class="arc-pj">${escapeHtml(info.project)}</span>` : '<i>—</i>'}</span><span class="arl-c">${info.who ? escapeHtml(info.who) : '<i>—</i>'}</span><span class="arl-c arl-n">${st ? `${r.subtasks.filter(s => s.checked).length}/${st}` : '<i>—</i>'}</span><span class="arl-c arl-n">${refs ? `📎 ${refs}` : '<i>—</i>'}</span><span class="arl-c arl-when">${arcDayTxt(r.done)}<small>${arcByClaude(r) ? 'by Claude' : '&nbsp;'}</small></span><span class="arl-act"><button type="button" data-back="${escapeHtml(r.uid)}" title="Bring it back">${ARC_BACK}</button></span></div>`;
+    }
+    function arcCard(r) {
+      const info = splitNoteCapsules(r.note || ''), names = r.links.map(l => l.label || l.url), st = r.subtasks.length;
+      return `<article class="arc-card" data-u="${escapeHtml(r.uid)}" tabindex="0"><div class="arcc-top"><span class="arcc-st" title="Done">${(window.koiQA && koiQA.ICON && koiQA.ICON.done) || ''}</span><span class="arcc-when">${arcDayTxt(r.done)}</span><button type="button" class="arcc-back" data-back="${escapeHtml(r.uid)}" title="Bring it back">${ARC_BACK}<span>Bring back</span></button></div>
+        <h3>${escapeHtml(r.title)}</h3>${r.description ? `<p>${escapeHtml(r.description)}</p>` : '<p class="arcc-none">No description</p>'}
+        <div class="arcc-chips">${arcChips(r, info)}</div>
+        ${st || names.length ? `<div class="arcc-foot">${st ? `<span>☑ ${r.subtasks.filter(s => s.checked).length}/${st} sub-tasks</span>` : ''}${names.slice(0, 2).map(n => `<span class="arcc-ref">📎 ${escapeHtml(n)}</span>`).join('')}${names.length > 2 ? `<span>+${names.length - 2}</span>` : ''}</div>` : ''}</article>`;
+    }
+    function arcMainHtml() {
+      const ym = ARC.ym, recs = ARC.recs.filter(r => r.ym === ym);
+      if (!recs.length) return `<div class="arc-empty">${ARC_IC}<h2>Nothing filed yet</h2><p>${typeof memoryDirHandle !== 'undefined' && memoryDirHandle ? 'Each new week, Hodo files the tasks you finished the week before here, by month, so Done stays light and nothing is lost.' : 'The Archive lives in your Hodo Folder. Connect it, and each new week Hodo files what you finished the week before here.'}</p></div>`;
+      const [y, m] = ym.split('-').map(Number), dim = new Date(y, m, 0).getDate(), days = new Set(recs.map(r => r.done.getDate())).size;
+      const weeks = {}; recs.forEach(r => { const w = arcWNum(r.done); (weeks[w] = weeks[w] || []).push(r); });
+      return `<div class="arc-mh"><div class="arc-mh-l"><h2>${ARC_MF[m - 1]} ${y}</h2><p>${arcSum(ym)}</p></div><div class="arc-big"><b>${recs.length}</b><span>thing${recs.length === 1 ? '' : 's'} done<br>on ${days} of ${dim} days</span></div></div>
+        <div class="arc-strip" aria-hidden="true">${arcStrip(ym, recs)}</div>
+        <div class="arc-filters"><span class="arc-view"><button type="button" class="${ARC.view === 'list' ? 'on' : ''}" data-view="list">☰ List</button><button type="button" class="${ARC.view === 'cards' ? 'on' : ''}" data-view="cards">▦ Cards</button></span></div>
+        ${Object.keys(weeks).sort((a, b) => b - a).map(w => { const ts = weeks[w].sort((a, b) => b.done - a.done), s = arcWk0(ts[0].done), e = new Date(s); e.setDate(e.getDate() + 6);
+          const key = ym + ':' + w, shut = ARC.wShut.has(key);
+          const head = `<button type="button" class="arc-wh arc-wt${shut ? ' shut' : ''}" data-w="${key}" aria-expanded="${!shut}"><i class="arc-chev">${ARC_CHEV}</i><b>W${w}</b><span>${ARC_MS[s.getMonth()]} ${s.getDate()} – ${ARC_MS[e.getMonth()]} ${e.getDate()}</span><em>${ts.length} done</em></button>`;
+          if (shut) return `<section class="arc-w shut">${head}</section>`;
+          if (ARC.view === 'cards') return `<section class="arc-w">${head}<div class="arc-grid">${ts.map(arcCard).join('')}</div></section>`;
+          return `<section class="arc-w">${head}<div class="arl"><div class="arl-h"><span></span><span>Task</span><span>Area</span><span>Project</span><span>With</span><span>Steps</span><span>Refs</span><span>Finished</span><span></span></div>${ts.map(arcListRow).join('')}</div></section>`; }).join('')}`;
+    }
+    function arcRender() {
+      const ms = arcMonths(); if (!ARC.ym || !ms.includes(ARC.ym)) ARC.ym = ms[0] || arcYM(new Date());
+      arcPanel.innerHTML = `<div class="arc-page arc-green"><aside class="arc-side">${arcSideHtml()}</aside><main class="arc-main">${arcMainHtml()}</main></div>`;
+    }
+    function arcPaint() { arcGlancePaint(); if (activeMainTab === 'archive') { const sc = arcPanel.querySelector('.arc-main'), top = sc ? sc.scrollTop : 0; arcRender(); const sc2 = arcPanel.querySelector('.arc-main'); if (sc2) sc2.scrollTop = top; } }
+    arcPanel.addEventListener('click', e => {
+      const yb = e.target.closest('[data-ym]'); if (yb) { ARC.yMode = yb.dataset.ym; ARC.yOpen.clear(); arcRender(); return; }
+      const y = e.target.closest('.arc-yb'); if (y) { const n = +y.dataset.y, open = arcYearOpen(n); if (open) { ARC.yOpen.delete(n); if (ARC.yMode !== 'none') ARC.yOpen.add(-n); if (ARC.yMode === 'all') ARC.yMode = 'default'; } else { ARC.yOpen.add(n); ARC.yOpen.delete(-n); } arcRender(); return; }
+      const mb = e.target.closest('.arc-m'); if (mb) { ARC.ym = mb.dataset.m; arcRender(); return; }
+      const v = e.target.closest('[data-view]'); if (v) { ARC.view = v.dataset.view; try { localStorage.setItem('koi-arc-view', ARC.view); } catch (x) {} arcPaint(); return; }
+      const wt = e.target.closest('.arc-wt'); if (wt) { const k = wt.dataset.w; if (ARC.wShut.has(k)) ARC.wShut.delete(k); else ARC.wShut.add(k); arcPaint(); return; }
+      const bk = e.target.closest('[data-back]'); if (bk) { e.stopPropagation(); const r = ARC.recs.find(x => x.uid === bk.dataset.back); if (r) arcBring(r, bk); return; }
+      const it = e.target.closest('[data-u]'); if (it) { const r = ARC.recs.find(x => x.uid === it.dataset.u); if (r) arcDetail(r); }
+    });
+    arcPanel.addEventListener('keydown', e => { if (e.key !== 'Enter') return; const it = e.target.closest('[data-u]'); if (it && e.target === it) { const r = ARC.recs.find(x => x.uid === it.dataset.u); if (r) arcDetail(r); } });
+    // the place in the header
+    { const _swA = switchMainTab; switchMainTab = function (tab) {
+        if (tab === 'archive') {
+          _swA.call(this, 'tasks');
+          tasksPanel.classList.remove('active'); tasksTabBtn.classList.remove('active');
+          try { memoryPanel.classList.remove('active'); memoryTabBtn.classList.remove('active'); } catch (e) {}
+          try { taskViewToggle.style.display = 'none'; } catch (e) {}
+          activeMainTab = 'archive'; arcPanel.classList.add('active'); arcBtn.classList.add('open');
+          try { sessionStorage.setItem('koi-tab', 'archive'); } catch (e) {}
+          arcRender(); return;
+        }
+        if (activeMainTab === 'archive') { arcPanel.classList.remove('active'); arcBtn.classList.remove('open'); arcDetailClose(); }
+        return _swA.apply(this, arguments);
+      }; }
+    arcBtn.addEventListener('click', () => switchMainTab('archive'));
+    // ---- the Done column: a glance at last week ----
+    function arcLastWeek() { const w0 = arcWk0(new Date()), a = new Date(w0); a.setDate(a.getDate() - 7); return ARC.recs.filter(r => r.done >= a && r.done < w0).sort((x, y) => x.done - y.done); }
+    function arcGlancePaint() {
+      document.querySelectorAll('.arc-glance').forEach(g => g.remove());
+      const done = koiDoneTarget(); if (!done) return;
+      const col = document.querySelector(`.column .cards[data-column="${CSS.escape(String(done.id))}"]`); if (!col) return;
+      const L = arcLastWeek(); if (!L.length) return;
+      const g = document.createElement('div'); g.className = 'arc-glance' + (ARC.glance ? ' open' : '');
+      g.innerHTML = `<button type="button" class="arc-gh" aria-expanded="${ARC.glance}"><span>Last week · <b>${L.length} done</b></span><i class="arc-chev">${ARC_CHEV}</i></button>
+        <div class="arc-gl">${L.map(r => `<div class="arc-gi" data-u="${escapeHtml(r.uid)}"><i>✓</i><span>${escapeHtml(r.title)}</span><small>${r.done.toLocaleDateString('en-US', { weekday: 'short' })}</small><button type="button" class="arc-gb" data-back="${escapeHtml(r.uid)}" title="Bring it back">${ARC_BACK}</button></div>`).join('')}<button type="button" class="arc-gall">Open The Archive ›</button></div>`;
+      col.after(g);
+      g.addEventListener('click', e => {
+        e.stopPropagation();
+        if (e.target.closest('.arc-gh')) { ARC.glance = !ARC.glance; g.classList.toggle('open', ARC.glance); g.querySelector('.arc-gh').setAttribute('aria-expanded', ARC.glance); return; }
+        if (e.target.closest('.arc-gall')) { switchMainTab('archive'); return; }
+        const bk = e.target.closest('[data-back]'); if (bk) { const r = ARC.recs.find(x => x.uid === bk.dataset.back); if (r) arcBring(r, bk); return; }
+        const it = e.target.closest('[data-u]'); if (it) { const r = ARC.recs.find(x => x.uid === it.dataset.u); if (r) arcDetail(r); }
+      });
+    }
+    { const _rtA = renderTasks; renderTasks = function () { const r = _rtA.apply(this, arguments); try { arcGlancePaint(); } catch (e) {} return r; }; }
+    // ---- projects keep counting archived tasks; the Weekly reset still sees last week ----
+    { const _pjSA = pjStats; pjStats = function (name) {
+        const s = _pjSA.apply(this, arguments), k = pjKey(name); if (!k) return s;
+        const a = ARC.recs.filter(r => { const m = /(?:^|·\s*)project\s+([^·]+?)\s*(?:·|$)/i.exec(r.note || ''); return m && pjKey(m[1]) === k; }).length;
+        return a ? Object.assign({}, s, { n: s.n + a, k: s.k + a, archived: a }) : s;
+      }; }
+    { const _wkLA = wkLedger; wkLedger = function () {
+        const L = _wkLA.apply(this, arguments); try { const b = hzWeek0(), a = new Date(b); a.setDate(a.getDate() - 7);
+          ARC.recs.filter(r => r.done >= a && r.done < b).forEach(r => { if (!L.done.some(d => d.t.uid === r.uid)) L.done.push({ t: { id: 'arc-' + r.uid, uid: r.uid, title: r.title, note: r.note }, promise: (() => { const i = splitNoteCapsules(r.note || ''); return !!(i.pick && i.pick.date >= a && i.pick.date < b); })() }); });
+          L.done.sort((x, y) => y.promise - x.promise); } catch (e) {}
+        return L;
+      }; }
+    // ---- Settings → Your week: bringing a task back ----
+    function arcSettingSync() { const s = document.getElementById('arcBackSel'); if (s) s.value = arcBackMode(); }
+    (function arcSetting() {
+      const wk = document.querySelector('#spBody .so-sec[data-g="week"]'); if (!wk) return;
+      const r = document.createElement('div'); r.className = 'sp-row'; r.dataset.t = 'Bringing a task back';
+      r.innerHTML = `<div class="sp-rl"><span class="sp-rt">Bringing a task back</span><span class="sp-hint">What the ↩ button does on a task in The Archive</span></div><select id="arcBackSel" class="sp-select"><option value="ask">Always ask</option><option value="done">Back to Done</option><option value="pending">Back to Pending</option></select>`;
+      wk.appendChild(r); arcSettingSync();
+      r.querySelector('select').addEventListener('change', e => { try { if (e.target.value === 'ask') localStorage.removeItem('koi-arc-back'); else localStorage.setItem('koi-arc-back', e.target.value); } catch (x) {} });
+    })();
+    // ---- when it runs: once the tasks and the Hodo Folder are both in, then every 10 minutes (a new week can start
+    // while Hodo stays open) ----
+    let arcBootT = null;
+    function arcBoot() { clearTimeout(arcBootT); arcBootT = setTimeout(async () => { if (typeof memoryDirHandle === 'undefined' || !memoryDirHandle) return; if (!ARC.loaded) await arcLoad(); arcPaint(); arcFile(); }, 1500); }
+    { const _ltA = loadTaskHandle; loadTaskHandle = async function () { const r = await _ltA.apply(this, arguments); arcBoot(); return r; }; }
+    { const _lmA = loadMemoryHandle; loadMemoryHandle = async function () { ARC.loaded = false; const r = await _lmA.apply(this, arguments); arcBoot(); return r; }; }
+    setInterval(() => { if (document.visibilityState !== 'visible' || (typeof tpEl !== 'undefined' && tpEl)) return; if (!ARC.loaded) arcBoot(); else arcFile(); }, 600000);
+    window.koiArchive = { ARC, arcLoad, arcFile, arcParse, arcSer, arcBack, arcBoot };
+    if (!GUIDE_ITEMS.some(x => x.id === 'archive')) GUIDE_ITEMS.push({ id: 'archive', g: 'views', t: 'The Archive', d: 'Everything you finished, kept forever and filed by month. Each new week, Hodo files the tasks you finished the week before, so Done stays light. Months sit under their year; inside a month, weeks and days. Switch between List and Cards; open any task to read it, or bring it back.', how: 'The Archive, in the header after the Waste Yard. In Done, “Last week · n done” shows last week at a glance. What ↩ does: Settings → Your week → Bringing a task back. The files are in your Hodo Folder, in Archive (one per month).', kw: 'archive done finished history filed old completed month week' });
+    // ===== The Archive, step 2 (Nov 6): search, filters and the clickable day strip =====
+    // Search (left, above the years) looks through everything filed: suggestions appear as you type, grouped by where the
+    // words were found (Title, Description, Sub-tasks, References, Outputs, People, Project, Area), the match in bold; a
+    // click opens that task; Enter lists every result by month (Esc or × goes back). Filters (they combine): Area, Project
+    // and Person (pick any number), By (Anyone · Me · With Claude, one), Files (References and Outputs: Any · With ·
+    // Without), Clear. The day strip: point at a day for its count and first titles; each click adds or removes a day (only
+    // days with something finished); a week's label picks the whole week; dragging picks a run; a "Days · n" chip shows it.
+    ARC.f = { area: new Set(), proj: new Set(), who: new Set(), by: 'any', refs: 'any', outs: 'any', days: new Set() };
+    ARC.q = ''; ARC.results = false;
+    const arcI = r => r._i || (r._i = splitNoteCapsules(r.note || ''));
+    const arcAreas = r => arcI(r).workstreams || [];
+    const arcProj = r => arcI(r).project || '';
+    const arcWho = r => { const i = arcI(r); return [i.who, i.waitOn].filter(Boolean).map(x => String(x).trim()); };
+    function arcPass(r, noDays) {
+      const f = ARC.f;
+      if (f.area.size && !arcAreas(r).some(a => f.area.has(a))) return false;
+      if (f.proj.size && !f.proj.has(arcProj(r))) return false;
+      if (f.who.size && !arcWho(r).some(w => f.who.has(w))) return false;
+      if (f.by === 'claude' && !arcByClaude(r)) return false;
+      if (f.by === 'me' && arcByClaude(r)) return false;
+      const hasR = r.links.some(l => l.kind !== 'output'), hasO = r.links.some(l => l.kind === 'output');
+      if (f.refs === 'with' && !hasR) return false; if (f.refs === 'without' && hasR) return false;
+      if (f.outs === 'with' && !hasO) return false; if (f.outs === 'without' && hasO) return false;
+      if (!noDays && f.days.size && !(r.ym === ARC.ym && f.days.has(r.done.getDate()))) return false;
+      return true;
+    }
+    const arcFiltered = () => { const f = ARC.f; return f.area.size || f.proj.size || f.who.size || f.by !== 'any' || f.refs !== 'any' || f.outs !== 'any' || f.days.size; };
+    function arcMatch(r, q) {
+      const ql = q.toLowerCase(), i = arcI(r);
+      return [r.title, r.description, ...r.subtasks.map(s => s.text), ...r.links.map(l => l.label || ''), i.who || '', i.waitOn || '', i.project || '', ...(i.workstreams || [])].some(x => String(x || '').toLowerCase().includes(ql));
+    }
+    // the filter row
+    function arcFilterRow() {
+      const f = ARC.f, chip = (k, label, n) => `<button type="button" class="arc-f${n ? ' on' : ''}" data-fm="${k}">${label}${n ? ` · ${n}` : ''} ▾</button>`;
+      const files = f.refs === 'any' && f.outs === 'any' ? '📎 Files' : `📎 ${[f.refs !== 'any' ? `Refs: ${f.refs}` : '', f.outs !== 'any' ? `Outputs: ${f.outs}` : ''].filter(Boolean).join(' · ')}`;
+      return `<div class="arc-filters"><span class="arc-view"><button type="button" class="${ARC.view === 'list' ? 'on' : ''}" data-view="list">☰ List</button><button type="button" class="${ARC.view === 'cards' ? 'on' : ''}" data-view="cards">▦ Cards</button></span>
+        ${arcFiltered() ? '<button type="button" class="arc-clear" data-fclear="1">Clear</button>' : ''}
+        ${f.days.size ? `<button type="button" class="arc-f on" data-fdays="1" title="Clear the picked days">Days · ${f.days.size} ×</button>` : ''}
+        ${chip('area', 'Area', f.area.size)}${chip('proj', 'Project', f.proj.size)}${chip('who', 'Person', f.who.size)}
+        <span class="arc-seg">${[['any', 'Anyone'], ['me', 'Me'], ['claude', 'With Claude']].map(([k, l]) => `<button type="button" class="${f.by === k ? 'on' : ''}" data-fby="${k}">${l}</button>`).join('')}</span>
+        <button type="button" class="arc-f${f.refs !== 'any' || f.outs !== 'any' ? ' on' : ''}" data-fm="files">${files} ▾</button></div>`;
+    }
+    let arcMenuEl = null;
+    function arcMenuClose() { if (arcMenuEl) { arcMenuEl.remove(); arcMenuEl = null; } }
+    function arcMenu(k, btn) {
+      arcMenuClose(); const m = document.createElement('div'); m.className = 'arc-menu arc-fmenu'; arcMenuEl = m; m.dataset.k = k;
+      const pool = ARC.results ? arcResultRecs(true) : ARC.recs.filter(r => r.ym === ARC.ym);
+      const paint = () => {
+        if (k === 'files') { m.innerHTML = `<div class="arc-mt">Files</div>${[['refs', 'References'], ['outs', 'Outputs']].map(([key, n]) => `<div class="arc-tri"><span>${n}</span><span class="arc-seg">${['any', 'with', 'without'].map(o => `<button type="button" class="${ARC.f[key] === o ? 'on' : ''}" data-tri="${key}" data-v="${o}">${o[0].toUpperCase() + o.slice(1)}</button>`).join('')}</span></div>`).join('')}<p class="arc-mnote">References: what a task needed. Outputs: what it produced.</p>`; return; }
+        const get = k === 'area' ? arcAreas : k === 'proj' ? (r => arcProj(r) ? [arcProj(r)] : []) : arcWho, cnt = new Map();
+        pool.forEach(r => new Set(get(r)).forEach(v => cnt.set(v, (cnt.get(v) || 0) + 1)));
+        ARC.f[k].forEach(v => { if (!cnt.has(v)) cnt.set(v, 0); });
+        const opts = [...cnt.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+        m.innerHTML = `<div class="arc-mt">${{ area: 'Areas', proj: 'Projects', who: 'People' }[k]} <span>choose any</span></div>${opts.length ? opts.map(([v, n]) => `<label class="arc-opt"><input type="checkbox" data-opt="${escapeHtml(v)}"${ARC.f[k].has(v) ? ' checked' : ''}><span>${escapeHtml(v)}</span><em>${n}</em></label>`).join('') : `<p class="arc-mnote">None in this ${ARC.results ? 'search' : 'month'}.</p>`}<div class="arc-mf"><button type="button" data-mclear="1">Clear</button><button type="button" class="ok" data-mdone="1">Done</button></div>`;
+      };
+      paint(); document.body.appendChild(m);
+      const r = btn.getBoundingClientRect(); m.style.left = Math.max(8, Math.min(innerWidth - m.offsetWidth - 8, r.left)) + 'px'; m.style.top = (r.bottom + 6) + 'px';
+      m.addEventListener('click', e => {
+        e.stopPropagation();
+        const t = e.target.closest('[data-tri]'); if (t) { ARC.f[t.dataset.tri] = t.dataset.v; paint(); arcPaintKeep(); return; }
+        if (e.target.closest('[data-mclear]')) { ARC.f[k].clear(); paint(); arcPaintKeep(); return; }
+        if (e.target.closest('[data-mdone]')) { arcMenuClose(); return; }
+      });
+      m.addEventListener('change', e => { const c = e.target.closest('[data-opt]'); if (!c) return; if (c.checked) ARC.f[k].add(c.dataset.opt); else ARC.f[k].delete(c.dataset.opt); arcPaintKeep(); });
+    }
+    KOI_FLOATS.push({ open: () => arcMenuEl, inside: '.arc-fmenu, .arc-filters', close: arcMenuClose });
+    function arcPaintKeep() { const k = arcMenuEl && arcMenuEl.dataset.k; arcPaint(); if (k && arcMenuEl) { const b = arcPanel.querySelector(`[data-fm="${k}"]`); if (b) { const r = b.getBoundingClientRect(); arcMenuEl.style.left = Math.max(8, Math.min(innerWidth - arcMenuEl.offsetWidth - 8, r.left)) + 'px'; arcMenuEl.style.top = (r.bottom + 6) + 'px'; } } }
+    // the side: search above the years
+    { const _side = arcSideHtml; arcSideHtml = function () {
+        const h = _side.apply(this, arguments), find = `<div class="arc-find"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="search" id="arcFind" placeholder="Search everything you finished" autocomplete="off" spellcheck="false" value="${escapeHtml(ARC.q)}" aria-label="Search The Archive"></div>`;
+        return h.replace('</div></div>', () => '</div></div>' + find);
+      }; }
+    // the strip: pickable days
+    { const _strip = arcStrip; arcStrip = function (ym, recs) {
+        let h = _strip.apply(this, arguments); const [y, m] = ym.split('-').map(Number), per = {};
+        recs.forEach(r => { const d = r.done.getDate(); (per[d] = per[d] || []).push(r.title); });
+        let day = 0;   // the cells come in day order
+        h = h.replace(/<i class="([^"]*)" title="[^"]*"><\/i>/g, (all, cls) => { day++; const dt = new Date(y, m - 1, day), L = per[day] || [];
+          const tip = `${arcDayTxt(dt)} · ${L.length} done${L.length ? '\n' + L.slice(0, 3).map(t => '• ' + t).join('\n') + (L.length > 3 ? `\n+ ${L.length - 3} more` : '') : ''}`;
+          return `<i class="${cls}${L.length ? ' arc-pk' : ''}${ARC.f.days.has(day) ? ' arc-sel' : ''}" data-day="${day}" title="${escapeHtml(tip)}"></i>`; });
+        h = h.replace(/<small><span><b>W(\d+)<\/b>/g, (all, n) => `<small><span><b class="arc-wpick" data-wk="${n}" title="Pick the whole week">W${n}</b>`);
+        return h;
+      }; }
+    function arcWeekDays(n) { const [y, m] = ARC.ym.split('-').map(Number), dim = new Date(y, m, 0).getDate(), out = []; for (let d = 1; d <= dim; d++) if (arcWNum(new Date(y, m - 1, d)) === +n) out.push(d); return out; }
+    const arcHasDay = d => ARC.recs.some(r => r.ym === ARC.ym && r.done.getDate() === d);
+    // results across every month (Enter in the search)
+    function arcResultRecs(noFilter) { const q = ARC.q.trim(); return ARC.recs.filter(r => (!q || arcMatch(r, q)) && (noFilter || arcPass(r, true))).sort((a, b) => b.done - a.done); }
+    function arcWeekBlock(key, label, ts, shut) {
+      const head = `<button type="button" class="arc-wh arc-wt${shut ? ' shut' : ''}" data-w="${key}" aria-expanded="${!shut}"><i class="arc-chev">${ARC_CHEV}</i>${label}<em>${ts.length} done</em></button>`;
+      if (shut) return `<section class="arc-w shut">${head}</section>`;
+      if (ARC.view === 'cards') return `<section class="arc-w">${head}<div class="arc-grid">${ts.map(arcCard).join('')}</div></section>`;
+      return `<section class="arc-w">${head}<div class="arl"><div class="arl-h"><span></span><span>Task</span><span>Area</span><span>Project</span><span>With</span><span>Steps</span><span>Refs</span><span>Finished</span><span></span></div>${ts.map(arcListRow).join('')}</div></section>`;
+    }
+    arcMainHtml = function () {
+      if (ARC.results && ARC.q.trim()) {
+        const all = arcResultRecs(true), L = arcResultRecs(false), by = {};
+        L.forEach(r => (by[r.ym] = by[r.ym] || []).push(r));
+        return `<div class="arc-mh"><div class="arc-mh-l"><h2>“${escapeHtml(ARC.q.trim())}”</h2><p>${L.length} of ${all.length} result${all.length === 1 ? '' : 's'} across The Archive · <button type="button" class="arc-link" data-qclear="1">Back to ${ARC_MF[+ARC.ym.slice(5) - 1]}</button></p></div></div>
+          ${arcFilterRow()}
+          ${L.length ? Object.keys(by).sort().reverse().map(ym => { const [y, m] = ym.split('-').map(Number), k = 'q:' + ym; return arcWeekBlock(k, `<b>${ARC_MF[m - 1]}</b><span>${y}</span>`, by[ym], ARC.wShut.has(k)); }).join('') : '<div class="arc-none">Nothing matches. Try another word, or clear a filter.</div>'}`;
+      }
+      const ym = ARC.ym, recs = ARC.recs.filter(r => r.ym === ym);
+      if (!recs.length) return `<div class="arc-empty">${ARC_IC}<h2>Nothing filed yet</h2><p>${typeof memoryDirHandle !== 'undefined' && memoryDirHandle ? 'Each new week, Hodo files the tasks you finished the week before here, by month, so Done stays light and nothing is lost.' : 'The Archive lives in your Hodo Folder. Connect it, and each new week Hodo files what you finished the week before here.'}</p></div>`;
+      const [y, m] = ym.split('-').map(Number), dim = new Date(y, m, 0).getDate(), days = new Set(recs.map(r => r.done.getDate())).size;
+      const shown = recs.filter(r => arcPass(r)), weeks = {}; shown.forEach(r => { const w = arcWNum(r.done); (weeks[w] = weeks[w] || []).push(r); });
+      const showing = arcFiltered() ? `<div class="arc-showing">Showing ${ARC.f.days.size ? `${ARC.f.days.size} day${ARC.f.days.size === 1 ? '' : 's'} · ` : ''}<b>${shown.length}</b> of ${recs.length} done</div>` : '';
+      return `<div class="arc-mh"><div class="arc-mh-l"><h2>${ARC_MF[m - 1]} ${y}</h2><p>${arcSum(ym)}</p></div><div class="arc-big"><b>${recs.length}</b><span>thing${recs.length === 1 ? '' : 's'} done<br>on ${days} of ${dim} days</span></div></div>
+        <div class="arc-strip" role="group" aria-label="Pick days">${arcStrip(ym, recs)}</div>
+        ${arcFilterRow()}${showing}
+        ${shown.length ? Object.keys(weeks).sort((a, b) => b - a).map(w => { const ts = weeks[w].sort((a, b) => b.done - a.done), s = arcWk0(ts[0].done), e = new Date(s); e.setDate(e.getDate() + 6), key = ym + ':' + w;
+          return arcWeekBlock(key, `<b>W${w}</b><span>${ARC_MS[s.getMonth()]} ${s.getDate()} – ${ARC_MS[e.getMonth()]} ${e.getDate()}</span>`, ts, ARC.wShut.has(key)); }).join('') : '<div class="arc-none">Nothing matches these filters. <button type="button" class="arc-link" data-fclear="1">Clear them</button></div>'}`;
+    };
+    // a new month starts with no picked days (the other filters stay)
+    { const _rnd = arcRender; arcRender = function () { const before = ARC.ym; const r = _rnd.apply(this, arguments); if (before && before !== ARC.ym) ARC.f.days.clear(); return r; }; }
+    arcPanel.addEventListener('click', e => {
+      if (e.target.closest('.arc-m')) { ARC.f.days.clear(); ARC.results = false; }
+      const c = e.target.closest('[data-fclear]'); if (c) { e.stopPropagation(); Object.assign(ARC.f, { area: new Set(), proj: new Set(), who: new Set(), by: 'any', refs: 'any', outs: 'any', days: new Set() }); arcMenuClose(); arcPaint(); return; }
+      const dd = e.target.closest('[data-fdays]'); if (dd) { e.stopPropagation(); ARC.f.days.clear(); arcPaint(); return; }
+      const by = e.target.closest('[data-fby]'); if (by) { e.stopPropagation(); ARC.f.by = by.dataset.fby; arcPaint(); return; }
+      const fm = e.target.closest('[data-fm]'); if (fm) { e.stopPropagation(); if (arcMenuEl && arcMenuEl.dataset.k === fm.dataset.fm) arcMenuClose(); else arcMenu(fm.dataset.fm, fm); return; }
+      const wk = e.target.closest('[data-wk]'); if (wk) { e.stopPropagation(); const ds = arcWeekDays(wk.dataset.wk).filter(arcHasDay), all = ds.length && ds.every(d => ARC.f.days.has(d)); ds.forEach(d => all ? ARC.f.days.delete(d) : ARC.f.days.add(d)); arcPaint(); return; }
+      const qc = e.target.closest('[data-qclear]'); if (qc) { e.stopPropagation(); ARC.q = ''; ARC.results = false; arcSugClose(); arcRender(); return; }
+    }, true);
+    // dragging across the strip picks a run; a plain click adds or removes one day
+    let arcDrag = null;
+    arcPanel.addEventListener('pointerdown', e => {
+      const c = e.target.closest('.arc-strip i[data-day]'); if (!c || e.button !== 0) return;
+      const d = +c.dataset.day; if (!arcHasDay(d)) return;
+      e.preventDefault(); arcDrag = { a: d, b: d, add: !ARC.f.days.has(d), base: new Set(ARC.f.days), moved: false };
+      const apply = () => { const lo = Math.min(arcDrag.a, arcDrag.b), hi = Math.max(arcDrag.a, arcDrag.b), s = new Set(arcDrag.base); for (let x = lo; x <= hi; x++) { if (!arcHasDay(x)) continue; if (arcDrag.add) s.add(x); else s.delete(x); } ARC.f.days = s;
+        arcPanel.querySelectorAll('.arc-strip i[data-day]').forEach(i => i.classList.toggle('arc-sel', s.has(+i.dataset.day))); };
+      apply();
+      const move = ev => { const el = document.elementFromPoint(ev.clientX, ev.clientY), i = el && el.closest && el.closest('.arc-strip i[data-day]'); if (i && +i.dataset.day !== arcDrag.b) { arcDrag.b = +i.dataset.day; arcDrag.moved = true; apply(); } };
+      const up = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', up); arcDrag = null; arcPaint(); };
+      addEventListener('pointermove', move); addEventListener('pointerup', up);
+    });
+    // search: suggestions as you type, grouped by where the words were found
+    let arcSugEl = null, arcSugT = null;
+    function arcSugClose() { if (arcSugEl) { arcSugEl.remove(); arcSugEl = null; } }
+    KOI_FLOATS.push({ open: () => arcSugEl, inside: '.arc-sug, #arcFind', close: arcSugClose });
+    function arcSnip(text, q) {
+      const s = String(text || '').replace(/\s+/g, ' '), i = s.toLowerCase().indexOf(q.toLowerCase()); if (i < 0) return escapeHtml(s.slice(0, 80));
+      const a = Math.max(0, i - 28), b = Math.min(s.length, i + q.length + 40);
+      return (a ? '…' : '') + escapeHtml(s.slice(a, i)) + '<b>' + escapeHtml(s.slice(i, i + q.length)) + '</b>' + escapeHtml(s.slice(i + q.length, b)) + (b < s.length ? '…' : '');
+    }
+    function arcSuggest() {
+      const inp = document.getElementById('arcFind'); if (!inp) return; const q = inp.value.trim(); ARC.q = inp.value;
+      if (q.length < 2) { arcSugClose(); return; }
+      const ql = q.toLowerCase(), G = { Title: [], Description: [], 'Sub-tasks': [], References: [], Outputs: [], People: [], Project: [], Area: [] }, seen = new Set();
+      const when = r => `${ARC_MS[r.done.getMonth()]} ${r.done.getDate()}${r.done.getFullYear() !== new Date().getFullYear() ? ', ' + r.done.getFullYear() : ''}`;
+      const add = (g, r, html, ctx, key) => { if (seen.has(g + key)) return; seen.add(g + key); G[g].push(`<button type="button" class="arc-s" data-u="${escapeHtml(r.uid)}"><span>${html}</span><small>${escapeHtml(ctx)}</small></button>`); };
+      ARC.recs.slice().sort((a, b) => b.done - a.done).forEach(r => { const i = arcI(r);
+        if (r.title.toLowerCase().includes(ql)) add('Title', r, arcSnip(r.title, q), when(r), r.uid);
+        r.description.split('\n').forEach(l => { if (l.toLowerCase().includes(ql)) add('Description', r, arcSnip(l, q), r.title, r.uid + l); });
+        r.subtasks.forEach(s => { if (s.text.toLowerCase().includes(ql)) add('Sub-tasks', r, arcSnip(s.text, q), r.title, r.uid + s.text); });
+        r.links.forEach(l => { if ((l.label || '').toLowerCase().includes(ql)) add(l.kind === 'output' ? 'Outputs' : 'References', r, '📎 ' + arcSnip(l.label, q), r.title, r.uid + l.label); });
+        arcWho(r).forEach(w => { if (w.toLowerCase().includes(ql)) add('People', r, arcSnip(w, q), r.title, r.uid + w); });
+        if (i.project && i.project.toLowerCase().includes(ql)) add('Project', r, arcSnip(i.project, q), r.title, r.uid);
+        (i.workstreams || []).forEach(a => { if (a.toLowerCase().includes(ql)) add('Area', r, arcSnip(a, q), r.title, r.uid + a); }); });
+      const total = ARC.recs.filter(r => arcMatch(r, q)).length;
+      const html = Object.entries(G).filter(([, a]) => a.length).map(([h, a]) => `<div class="arc-sg"><div class="arc-sgh">${h}<em>${a.length}</em></div>${a.slice(0, 3).join('')}${a.length > 3 ? `<div class="arc-smore">+ ${a.length - 3} more</div>` : ''}</div>`).join('');
+      if (!arcSugEl) { arcSugEl = document.createElement('div'); arcSugEl.className = 'arc-sug'; document.body.appendChild(arcSugEl);
+        arcSugEl.addEventListener('click', e => { const s = e.target.closest('[data-u]'); if (s) { const r = ARC.recs.find(x => x.uid === s.dataset.u); arcSugClose(); if (r) arcDetail(r); return; } if (e.target.closest('[data-all]')) { ARC.results = true; arcSugClose(); arcRender(); } }); }
+      arcSugEl.innerHTML = (html || '<div class="arc-none">Nothing found.</div>') + (total ? `<button type="button" class="arc-sall" data-all="1">Press Enter to see all ${total} task${total === 1 ? '' : 's'}</button>` : '');
+      const r = inp.getBoundingClientRect(); arcSugEl.style.left = r.left + 'px'; arcSugEl.style.top = (r.bottom + 6) + 'px';
+    }
+    arcPanel.addEventListener('input', e => { if (e.target.id !== 'arcFind') return; clearTimeout(arcSugT); arcSugT = setTimeout(arcSuggest, 80); if (!e.target.value.trim() && ARC.results) { ARC.q = ''; ARC.results = false; arcRender(); setTimeout(() => { const i = document.getElementById('arcFind'); if (i) i.focus(); }, 0); } });
+    arcPanel.addEventListener('keydown', e => {
+      if (e.target.id !== 'arcFind') return;
+      if (e.key === 'Enter' && e.target.value.trim()) { e.preventDefault(); ARC.q = e.target.value; ARC.results = true; arcSugClose(); arcRender(); const i = document.getElementById('arcFind'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
+      else if (e.key === 'Escape') { e.stopPropagation(); if (arcSugEl) { arcSugClose(); return; } if (e.target.value) { e.target.value = ''; ARC.q = ''; ARC.results = false; arcRender(); } }
+      else if (e.key === 'ArrowDown' && arcSugEl) { e.preventDefault(); const f = arcSugEl.querySelector('.arc-s'); if (f) f.focus(); }
+    });
+    { const _swA2 = switchMainTab; switchMainTab = function (tab) { if (tab !== 'archive') { arcSugClose(); arcMenuClose(); } return _swA2.apply(this, arguments); }; }
+    window.koiArchive.arcPass = arcPass; window.koiArchive.arcSuggest = arcSuggest;
+    { const g = GUIDE_ITEMS.find(x => x.id === 'archive'); if (g) { g.d += ' Search everything you finished (suggestions appear as you type), filter by area, project, person, who made it and files, or click days in the month’s strip to see just those days.'; g.kw += ' search filter day strip'; } }
+    // ===== The Archive, step 3 (Nov 6): the Calendar, the board search, projects =====
+    // Calendar: past days show what was filed in The Archive, as finished chips (read-only; a click opens the task;
+    // with too many, the day's "+n more" counts them and opens the week). Board search: "Also in The Archive · n ›"
+    // in the search line opens those results in The Archive. A project's Done column ends with
+    // "In The Archive · n done ›" (all the project's filed tasks; "See them in The Archive ›" opens them filtered).
+    const arcOnDay = key => ARC.recs.filter(r => ymd(r.done) === key);
+    function arcAsTask(r) { return { title: r.title, description: r.description, note: r.note, subtasks: r.subtasks, checked: true, links: r.links }; }
+    function arcKfOk(r) { try { if (!kfActive()) return true; return kfMatch(arcAsTask(r), koiDoneTarget() && koiDoneTarget().id); } catch (e) { return false; } }
+    function arcCalChip(r, rich, we) {
+      const c = document.createElement('div'); c.className = 'cal-chip done st-done arc-cc' + (rich ? ' rich' : ''); c.dataset.arc = r.uid;
+      c.style.setProperty('--dot', 'var(--st-done-edge, #3f9a6b)');
+      if (we) c.dataset.we = WEEKDAYS[r.done.getDay()];
+      c.title = `${r.title}\nFinished ${arcDayTxt(r.done)} · in The Archive`;
+      c.innerHTML = rich ? `<span class="cm-title">${escapeHtml(r.title)}</span><span class="cm-meta"><span class="cm-arc">${ARC_IC}The Archive</span></span>` : escapeHtml(r.title);
+      if (!arcKfOk(r)) c.classList.add('kf-hide');
+      c.addEventListener('click', e => { e.stopPropagation(); arcDetail(r); });
+      return c;
+    }
+    { const _cdc = calDayCell; calDayCell = function (d, o) {
+        const cell = _cdc.apply(this, arguments);
+        try {
+          if (!ARC.recs.length) return cell;
+          const isOpen = cell.classList.contains('row-open'), isSmall = cell.classList.contains('row-small'), rich = !!(o.week || isOpen);
+          let L = arcOnDay(ymd(d)).map(r => [r, false]);
+          if (calHideWeekend && d.getDay() === koiLastWorkday()) WEEKEND_DAYS.forEach(n => arcOnDay(ymd(addDays(d, (n - d.getDay() + 7) % 7))).forEach(r => L.push([r, true])));
+          if (!L.length) return cell;
+          const before = cell.querySelector(':scope > .cal-dl, :scope > .cal-we-pill, :scope > .cal-we-box'), put = el => cell.insertBefore(el, before);
+          const more = cell.querySelector(':scope > .cal-more');
+          const MAX = rich ? Infinity : isSmall ? 2 : (calHideWeekend ? 5 : 4), room = more ? 0 : MAX - cell.querySelectorAll(':scope > .cal-chip').length;
+          const fit = L.length <= room ? L.length : Math.max(0, room - 1);
+          L.slice(0, fit).forEach(([r, we]) => put(arcCalChip(r, rich, we)));
+          const left = L.length - fit;
+          if (left) {
+            if (more) more.textContent = `+${(parseInt(more.textContent.replace(/\D/g, ''), 10) || 0) + left} more`;
+            else { const m = document.createElement('div'); m.className = 'cal-more'; m.textContent = `+${left} more`; m.title = 'Open this week to see everything';
+              const rowKey = ymd(startOfWeek(d)); m.addEventListener('click', e => { e.stopPropagation(); calOpenRow = rowKey; renderCalendar(); }); put(m); }
+          }
+          cell.classList.remove('empty');
+        } catch (e) {}
+        return cell;
+      }; }
+    // the board search: also in The Archive
+    { const _afA = applyFilter; applyFilter = function () {
+        const r = _afA.apply(this, arguments);
+        try {
+          document.querySelectorAll('#calendarView .arc-cc').forEach(c => { const x = ARC.recs.find(y => y.uid === c.dataset.arc); c.classList.toggle('kf-hide', !!x && !arcKfOk(x)); });
+          const bn = document.getElementById('kfBanner'), q = (kf.q || '').trim();
+          if (bn && !bn.hidden && q && ARC.recs.length) {
+            const n = ARC.recs.filter(x => arcMatch(x, q) || kfWords().every(w => [x.title, x.description, x.note, ...x.subtasks.map(s => s.text), ...x.links.map(l => l.label || '')].join('\n').toLowerCase().includes(w))).length;
+            if (n) { const b = document.createElement('button'); b.type = 'button'; b.className = 'kf-arc'; b.dataset.kfarc = '1'; b.title = 'Finished tasks filed in The Archive';
+              b.innerHTML = `${ARC_IC}Also in The Archive · <b>${n}</b> ›`; const cl = bn.querySelector('.kf-clear'); bn.insertBefore(b, cl); }
+          }
+        } catch (e) {}
+        return r;
+      }; }
+    function arcOpenResults(q, proj) {
+      Object.assign(ARC.f, { area: new Set(), proj: new Set(proj || []), who: new Set(), by: 'any', refs: 'any', outs: 'any', days: new Set() });
+      ARC.q = q || ''; ARC.results = true; switchMainTab('archive');
+    }
+    document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-kfarc]'); if (!b) return; e.stopPropagation(); arcOpenResults((kf.q || '').trim()); }, true);
+    // results with no words (a project's filed tasks): "Across The Archive"
+    { const _mh3 = arcMainHtml; arcMainHtml = function () {
+        if (ARC.results && !ARC.q.trim() && arcFiltered()) {
+          const all = ARC.recs, L = all.filter(r => arcPass(r, true)).sort((a, b) => b.done - a.done), by = {};
+          L.forEach(r => (by[r.ym] = by[r.ym] || []).push(r));
+          const name = ARC.f.proj.size === 1 && !ARC.f.area.size && !ARC.f.who.size ? [...ARC.f.proj][0] : '';
+          return `<div class="arc-mh"><div class="arc-mh-l"><h2>${name ? escapeHtml(name) : 'Across The Archive'}</h2><p>${L.length} of ${all.length} finished task${all.length === 1 ? '' : 's'} across The Archive · <button type="button" class="arc-link" data-qclear="1">Back to ${ARC_MF[+ARC.ym.slice(5) - 1]}</button></p></div></div>
+            ${arcFilterRow()}
+            ${L.length ? Object.keys(by).sort().reverse().map(ym => { const [y, m] = ym.split('-').map(Number), k = 'q:' + ym; return arcWeekBlock(k, `<b>${ARC_MF[m - 1]}</b><span>${y}</span>`, by[ym], ARC.wShut.has(k)); }).join('') : '<div class="arc-none">Nothing matches these filters. <button type="button" class="arc-link" data-fclear="1">Clear them</button></div>'}`;
+        }
+        if (ARC.results && !ARC.q.trim()) ARC.results = false;
+        return _mh3.apply(this, arguments);
+      }; }
+    // Back to the month also clears the filters a project brought
+    arcPanel.addEventListener('click', e => { if (e.target.closest('[data-qclear]') && ARC.f.proj.size) ARC.f.proj = new Set(); }, true);
+    // a project's Done column: everything of it filed in The Archive
+    const arcProjRecs = name => { const k = pjKey(name); return ARC.recs.filter(r => k && pjKey(arcProj(r)) === k).sort((a, b) => b.done - a.done); };
+    ARC.pjGlance = false;
+    { const _gpA = arcGlancePaint; arcGlancePaint = function () {
+        if (!pjOpen) return _gpA.apply(this, arguments);
+        document.querySelectorAll('.arc-glance').forEach(g => g.remove());
+        const done = koiDoneTarget(); if (!done) return;
+        const col = document.querySelector(`.column .cards[data-column="${CSS.escape(String(done.id))}"]`); if (!col) return;
+        const L = arcProjRecs(pjOpen); if (!L.length) return;
+        const g = document.createElement('div'); g.className = 'arc-glance arc-pjg' + (ARC.pjGlance ? ' open' : '');
+        const dt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        g.innerHTML = `<button type="button" class="arc-gh" aria-expanded="${ARC.pjGlance}"><span>In The Archive · <b>${L.length} done</b></span><i class="arc-chev">${ARC_CHEV}</i></button>
+          <div class="arc-gl">${L.slice(0, 30).map(r => `<div class="arc-gi" data-u="${escapeHtml(r.uid)}"><i>✓</i><span>${escapeHtml(r.title)}</span><small>${dt(r.done)}</small><button type="button" class="arc-gb" data-back="${escapeHtml(r.uid)}" title="Bring it back">${ARC_BACK}</button></div>`).join('')}${L.length > 30 ? `<div class="arc-smore">+ ${L.length - 30} more</div>` : ''}<button type="button" class="arc-gall">See them in The Archive ›</button></div>`;
+        col.after(g);
+        g.addEventListener('click', e => {
+          e.stopPropagation();
+          if (e.target.closest('.arc-gh')) { ARC.pjGlance = !ARC.pjGlance; g.classList.toggle('open', ARC.pjGlance); g.querySelector('.arc-gh').setAttribute('aria-expanded', ARC.pjGlance); return; }
+          if (e.target.closest('.arc-gall')) { arcOpenResults('', [...new Set(L.map(arcProj))]); return; }
+          const bk = e.target.closest('[data-back]'); if (bk) { const r = ARC.recs.find(x => x.uid === bk.dataset.back); if (r) arcBring(r, bk); return; }
+          const it = e.target.closest('[data-u]'); if (it) { const r = ARC.recs.find(x => x.uid === it.dataset.u); if (r) arcDetail(r); }
+        });
+      }; }
+    // repaint the Calendar when The Archive changes (filed, brought back, loaded)
+    { const _apA = arcPaint; arcPaint = function () { const r = _apA.apply(this, arguments); try { if (typeof calendarView !== 'undefined' && calendarView.offsetParent) renderCalendar(); } catch (e) {} return r; }; }
+    // opening a project from The Archive leaves The Archive
+    { const _pgA = pjGo; pjGo = function () { if (activeMainTab === 'archive') { arcPanel.classList.remove('active'); arcBtn.classList.remove('open'); arcSugClose(); arcMenuClose(); } return _pgA.apply(this, arguments); }; }
+    Object.assign(window.koiArchive, { arcOnDay, arcProjRecs, arcOpenResults });
+    { const g = GUIDE_ITEMS.find(x => x.id === 'archive'); if (g) { g.d += ' Filed tasks still show on the Calendar’s past days, the board search offers “Also in The Archive”, and a project’s Done column lists everything of it filed in The Archive.'; g.kw += ' calendar project'; } }
     applyWaitRail();
   </script>
 </body>
