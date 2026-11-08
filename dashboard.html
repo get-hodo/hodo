@@ -1424,7 +1424,6 @@
     @keyframes calChipIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
     .cal-more:hover { color: var(--accent); }
     html.cs-min .cal-day.row-open { background: var(--bg-card); box-shadow: inset 0 2px 0 var(--text-muted); }
-    @media (prefers-reduced-motion: reduce) { .cal-day.row-open, .cal-day.row-open .cal-chip.rich { animation: none; } }
     .cal-side { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; min-height: 0; background: var(--bg-secondary); border-radius: 12px; padding: 14px; }
     .cal-side h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
     .cal-side p { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
@@ -1608,9 +1607,6 @@
     }
     html.theme-fading .checkbox.checked::after {
       transition: border-color var(--fade-dur, 1s) ease-in-out !important;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html.theme-fading, html.theme-fading * { transition: none !important; }
     }
 
     /* ===== LIST VIEW: status panels (inspired by the board columns) ===== */
@@ -1872,7 +1868,6 @@
     .expr-btn:hover .expr-spark { transform: rotate(20deg) scale(1.15); }
     [data-theme="dark"] .expr-btn .expr-text, [data-theme="dark"] .expr-btn .expr-spark { background-image: linear-gradient(90deg, #a78bfa, #f472b6, #fbbf24, #34d399); }
     @keyframes exprShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-    @media (prefers-reduced-motion: reduce) { .expr-btn .expr-text, .expr-btn .expr-spark { animation: none; } }
 
     /* ===== TOOLBAR: workstream progress + overall at far right ===== */
     .task-toolbar { justify-content: flex-start; }
@@ -3450,8 +3445,6 @@
     html.cs-min #settingsPanel .sp-col { padding-bottom: 0; }
     html.cs-min .sp-toggle { margin: -16px -4px 0; padding: 16px 4px; width: calc(100% + 8px); border-radius: 0; }
     html.cs-min #settingsPanel .sp-col .sp-gbi > :last-child { margin-bottom: 8px; }
-    @media (prefers-reduced-motion: reduce) { .sp-gb, .sp-chev { transition: none; } }
-    @media (prefers-reduced-motion: reduce) { #settingsPanel.settings-panel { transition: none; } }
 
     @keyframes tdIn { from { opacity: 0; transform: translateY(-4px); } }
     /* the Undo toast (kept from the Rundown) */
@@ -3482,7 +3475,6 @@
     :is(.st-row, .lv-sub, .tp-sub, .fc-sub-row):has(.checkbox.checked) .sx { background-size: 100% 1.25px; color: var(--text-muted); }
     .tp-sub-tw { flex: 1; min-width: 0; cursor: text; }
     .tp-sub-tw .tp-sub-t { display: inline; }
-    @media (prefers-reduced-motion: reduce) { .sx { transition: none; } }
     /* Parked, wider (Oct 2): 720px drawer; row actions get their own column (space kept, shown on hover) so they never sit on the title */
     .pk { width: min(720px, 94vw); }
     .pk-line { gap: 10px; }
@@ -4069,7 +4061,6 @@
 .gs-replay { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0 12px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-secondary); }
 .gs-replay button { all: unset; cursor: pointer; font-weight: 600; color: var(--brand, var(--accent)); white-space: nowrap; }
 .gs-replay button:hover { text-decoration: underline; }
-@media (prefers-reduced-motion: reduce) { .gs, .gs.out, .gs-it.pop .gs-ck, .gs-spot { animation: none; } }
 
 /* Safety question: a gentle shake when you try to act behind it (Oct 14) */
 .kg-box.kg-nudge { animation: kgNudge .36s ease; }
@@ -4214,7 +4205,6 @@
     .ns-meteor b { position: absolute; left: -2.5px; top: -2.5px; width: 5px; height: 5px; border-radius: 50%; background: #fffdf5; box-shadow: 0 0 6px 2px rgba(255,240,210,.9), 0 0 14px 4px color-mix(in srgb, var(--brand, var(--accent)) 55%, transparent); }
     .ns-twinkle { position: fixed; z-index: 9500; width: 18px; height: 18px; margin: -9px 0 0 -9px; pointer-events: none; }
     .ns-twinkle path { fill: #fff8e6; }
-    @media (prefers-reduced-motion: reduce) { .ns-pill *, .ns-ink * { animation: none !important; opacity: 1 !important; clip-path: none !important; transform: none !important; } .ns-ink .drop { display: none; } }
 
     .ns-scrim { position: fixed; inset: 0; z-index: 2400; background: color-mix(in srgb, #000 22%, transparent); display: grid; place-items: center; padding: 20px; animation: nsFade .2s ease-out both; }
     [data-theme="dark"] .ns-scrim { background: color-mix(in srgb, #000 45%, transparent); }
@@ -5006,7 +4996,6 @@
     .wb-app [data-wb="noapp"] { flex: none; border: 0; background: none; padding: 4px 6px; color: var(--text-muted); cursor: pointer; font-size: 13px; }
     body.wb-back .tab-panel.active, body.wb-back #dayPanel.active { animation: wbIn .45s ease both; }
     @media (max-width: 560px) { .wb { padding: 28px 20px 22px; } .wb-app { flex-wrap: wrap; } }
-    @media (prefers-reduced-motion: reduce) { .wb, .wb-app, body.wb-back .tab-panel.active, body.wb-back #dayPanel.active { animation: none; } .wb-wrap.wb-out { transition: none; } }
     /* Hodo Link setup steps and nudge (Nov 1) */
     .lk-fn { color: var(--text-primary); }
     .lk-copy { margin-left: 6px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font: inherit; font-size: 11.5px; cursor: pointer; vertical-align: 1px; }
@@ -5078,7 +5067,6 @@
     .dy-card.ds-ghost { opacity: .35; border-style: dashed; animation: none; }
     .ds-lift { position: fixed; z-index: 6000; pointer-events: none; margin: 0 !important; transform: rotate(-1.5deg); box-shadow: 0 26px 50px -16px rgba(0,0,0,.35) !important; opacity: .97; animation: none !important; }
     .dy-ring circle.ds-seg { stroke-width: 4; }
-    @media (prefers-reduced-motion: reduce) { .dy-card.ds-progress { animation: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--st-progress-edge) 16%, transparent); } .ds-drops { transition: none; } }
     /* Nov 2 (2.4.1): status icons and swap sit top-right, level with the title; no Done button (the ✓ does it); click opens details */
     .dy-card.ds-pending .acts, .dy-card.ds-progress .acts, .dy-card.ds-wait .acts { align-self: flex-start; flex-wrap: nowrap; max-width: none; }
     .dy-card.ds-pending, .dy-card.ds-progress, .dy-card.ds-wait, .dy-card.kept { cursor: pointer; }
@@ -5178,7 +5166,6 @@
     .pj-done .bt button.pri { background: var(--st-done-edge); border-color: var(--st-done-edge); color: #fff; }
     .wk-pj { display: flex; align-items: center; gap: 8px; margin: 6px 0 10px; padding: 9px 12px; border-radius: 10px; background: color-mix(in srgb, var(--st-done-bg) 55%, var(--bg-card)); font-size: 13px; color: var(--text-secondary); } .wk-pj b { color: var(--text-primary); }
     @media (max-width: 760px) { .pjb { grid-template-columns: 1fr; } .pjb .rt { justify-content: flex-start; } }
-    @media (prefers-reduced-motion: reduce) { .pjd, .pj-done, .pj-done-ov { animation: none; } .pj-card { transition: none; } }
     /* New stuff shout-outs (Nov 3) */
     .ns-shout { display: inline-flex; align-items: center; gap: 7px; margin: 12px 8px 0 0; padding: 6px 12px; border-radius: 999px; font-size: 13px; color: var(--text-secondary); background: color-mix(in srgb, var(--brand) 9%, var(--bg-card)); border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent); }
     .ns-shout b { color: var(--text-primary); font-weight: 650; }
@@ -5198,7 +5185,6 @@
     .tl .nib svg { display: block; width: 14px; height: 14px; overflow: visible; }
     .tl .nib path { fill: var(--ink); } .tl .nib .cut { fill: none; stroke: var(--bg-primary); stroke-width: .8; stroke-linecap: round; } .tl .nib .hole { fill: var(--bg-primary); }
     .tl-tip { position: absolute; top: 12px; transform: translateX(-50%); white-space: nowrap; padding: 6px 10px; border-radius: 8px; background: #2b2622; color: #fff; font-size: 12px; font-weight: 500; pointer-events: none; z-index: 60; }
-    @media (prefers-reduced-motion: reduce) { .tl b, .tl i, .tl .nib { transition: none; } }
     /* ===== SETTINGS, CENTRED (Nov 3): a centred window with a side menu, one section at a time, search, previews on hover ===== */
     .so-scrim { position: fixed; inset: 0; z-index: 2419; background: color-mix(in srgb, #1d1a16 30%, transparent); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); display: none; }
     body:has(#settingsPanel.so:not([hidden])) .so-scrim { display: block; }
@@ -5294,7 +5280,6 @@
     .so-pv-day u { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--accent); text-decoration: none; }
     .so-pv-hrs { position: absolute; left: 12px; right: 12px; top: 62px; display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
     .so-pv-lbl { position: absolute; left: 12px; top: 10px; font-size: 10.5px; font-weight: 650; color: var(--text-secondary); }
-    @media (prefers-reduced-motion: reduce) { .so-pv-box, .so-pv-box::after, .so-pv-task span, .so-pv-ink i, .so-pv-star { animation-iteration-count: 1; animation-duration: .01s; animation-fill-mode: forwards; } }
     /* Minimalist */
     html.cs-min #settingsPanel.so { border-radius: 12px; }
     html.cs-min .so-nav button.on { color: var(--text-primary); box-shadow: inset 0 0 0 1px var(--border); }
@@ -5371,7 +5356,6 @@
     .beat .pb .pb-base { stroke: var(--brand, var(--accent)); opacity: .5; }
     .beat .pb .pb-run { display: inline; stroke: var(--brand, var(--accent)); stroke-width: 2.2; stroke-dasharray: .3 1; stroke-dashoffset: .3; animation: pbRun 3.4s cubic-bezier(.45, 0, .25, 1) infinite; }
     @keyframes pbRun { 0% { stroke-dashoffset: .3; opacity: 1; } 42% { stroke-dashoffset: -1; opacity: 1; } 43%, 100% { stroke-dashoffset: -1; opacity: 0; } }
-    @media (prefers-reduced-motion: reduce) { .beat .pb .pb-run { display: none; } .beat .pb .pb-base { opacity: 1; } }
     .rn-beat { display: inline-flex; line-height: 0; }
     .rn-beat svg { width: 16px; height: 16px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .so-nav .so-pulse:hover { background: color-mix(in srgb, var(--text-primary) 6%, transparent); color: var(--text-primary); }
@@ -6604,7 +6588,7 @@
       if (!el) return;
       if (!all.length) { el.style.display = 'none'; return; }
       const slices = sections.map(sec => {
-        const n = (tasks[sec.id] || []).length;
+        const n = (tasks[sec.id] || []).filter(t => !window.koiProgCounts || window.koiProgCounts({ task: t, sectionId: sec.id })).length;   // Nov 8: this week only
         const k = statusKey(sec.id);
         return { name: sec.name, n, color: k ? `var(--pie-${k})` : 'var(--pie-other)' };
       });
@@ -6700,7 +6684,7 @@
     function updateOverallProgress() {
       const el = document.getElementById('overallProgress');
       if (!el) return;
-      const all = allTasksFlat();
+      const all = allTasksFlat().filter(x => !window.koiProgCounts || window.koiProgCounts(x));   // Nov 8: only what's in this week (Coming up left out)
       const bar = document.getElementById('taskToolbar');
       if (bar) bar.style.display = all.length ? 'flex' : 'none';
       if (!all.length) { el.style.display = 'none'; return; }
@@ -8006,7 +7990,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.8';
+    const KOI_VERSION = '2.9';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -8081,7 +8065,7 @@
       const from = currentTheme();
       if (from === name) return;
       // Early Bird ↔ Night Owl: a sunrise or a sunset instead of a fade (where the browser supports view transitions)
-      const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const calm = false;   // Nov 7: full animations for everyone
       if (document.startViewTransition && !calm && ((from === 'dark' && name === 'default') || (from === 'default' && name === 'dark'))) {
         const cls = name === 'dark' ? 'vt-sunset' : 'vt-sunrise';
         root.classList.remove('vt-sunrise', 'vt-sunset'); root.classList.add(cls);
@@ -9285,7 +9269,7 @@
       const w = parseInt(localStorage.getItem('pd-focus-work'), 10); if (w > 0) prefs.workMin = Math.min(180, w);
       const b = parseInt(localStorage.getItem('pd-focus-break'), 10); if (b > 0) prefs.breakMin = Math.min(60, b);
     } catch (e) {}
-    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduceMotion = false;   // Nov 7: full animations for everyone; Hodo ignores the computer's "reduce motion" setting
     var celebSnap = null;
     var celebPending = false;
     function taskIsDone(x) { return x.task.checked || isDoneSection(x.sectionId); }
@@ -12704,7 +12688,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       const navOn = g => nav.querySelectorAll('[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === g));
       nav.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
         const sec = body.querySelector(`.sp-group[data-g="${b.dataset.go}"]`); if (!sec) return;
-        lockNav = Date.now() + 900; body.scrollTo({ top: sec.offsetTop - body.offsetTop - 10, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); navOn(b.dataset.go);
+        lockNav = Date.now() + 900; body.scrollTo({ top: sec.offsetTop - body.offsetTop - 10, behavior: 'smooth' }); navOn(b.dataset.go);
       }));
       let lockNav = 0;   // a tapped tab stays lit while the sheet scrolls to it
       body.addEventListener('wheel', () => { lockNav = 0; }, { passive: true });
@@ -14184,7 +14168,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
         if (holding) setTimeout(() => { if (!pb.dataset.counting) { document.getElementById('progPct').textContent = (+pb.dataset.cur || 0) + '%'; progPieCopy(); } }, 150);
         else if (!pb.dataset.counting) { document.getElementById('progPct').textContent = pct + '%'; progPieCopy(); }
         const cnt = (document.getElementById('overallCount') || {}).textContent || '';
-        pb.title = `Overall ${pct}%${cnt ? ' · ' + cnt : ''}. Click for Performance (beta)`;
+        pb.title = `This week ${pct}%${cnt ? ' · ' + cnt : ''} (Coming up not counted)`;
         if (!onTasks && typeof pfClose === 'function') pfClose();
       };
       const _uop = updateOverallProgress; updateOverallProgress = function () { const r = _uop.apply(this, arguments); try { sync(); } catch (e) {} return r; };
@@ -15388,6 +15372,7 @@ Rewrite the text as clear task context in English: 2 to 6 short lines covering w
       { id: 'dates', g: 'concepts', t: 'Planned day and deadline', d: 'A task has a planned day, the day you plan to work on it (yours to move), and an optional hard deadline (⚑), when it must be done. Only a passed deadline is late.', kw: 'planned day due date deadline flag overdue late' },
       { id: 'carry', g: 'concepts', t: 'Carry over', d: 'When a planned day passes, the date turns amber (“from Tue”) instead of red. It isn’t late, it just carried over.', kw: 'amber overdue yesterday' },
       { id: 'areas', g: 'concepts', t: 'Areas', d: 'One coloured area per task, with its own progress in the header.', kw: 'workstream colour category tag' },
+      { id: 'weekprog', g: 'concepts', t: 'This week’s progress', d: 'The % button in the header shows how much of this week is done. It counts what’s on the board this week: In Progress, Waiting On, Done and the Pending tasks in This week. Coming up isn’t counted until you promise it to this week.', kw: 'progress percent header week coming up pie' },
       { id: 'people', g: 'concepts', t: 'For, With and Waiting on', d: 'One person per task, with a role: you do it for them, with them, or you’re waiting on them.', kw: 'person who assign owner' },
       { id: 'links', g: 'concepts', t: 'References and Outputs', d: 'Links a task needs (References) and links it produced (Outputs).', kw: 'link url file attachment' },
       { id: 'focus', g: 'concepts', t: 'Focus', d: 'A timed session: 45 minutes of work, then a 10-minute break.', how: 'Press F to focus on today’s tasks, or click the focus icon (◎) on a card’s strip to focus on that one task.', keys: ['F'], kw: 'timer pomodoro session card' },
@@ -16058,6 +16043,10 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.9': [
+        { k: 'reworked', t: 'See how this week is really going', d: 'The % button in the header now counts only this week: In Progress, Waiting On, Done and the Pending tasks in This week. Tasks in Coming up aren’t counted until you promise them to this week, so the number shows what you’ve actually signed up for.' },
+        { k: 'solved', t: 'Celebrations missing on some computers', d: 'Now Hodo’s celebrations, the sunrise and sunset, and all its other animations play on every computer.', inspired: 'Abdullah Abbas' }
+      ],
       '2.8': [
         { k: 'new', t: 'Done stays light', d: 'Each new week, Hodo files the tasks you finished the week before into <b>The Archive</b> (in the header, after the Waste Yard), so your Done column only holds this week. Everything comes along: description, sub-tasks, references and outputs. The first time, everything finished before this week is filed, with <b>Undo</b> right there. The end of your Done column shows <i>“Last week · n done”</i> for a quick look back. Needs your Hodo Folder.' },
         { k: 'new', t: 'See your month at a glance', d: 'The Archive is organised by year, month and week. Each month shows a big count, like <i>“26 things done on 23 of 31 days”</i>, and a strip of its days. View tasks as a <b>List</b> or as <b>Cards</b>, and click any task to see all its details.' },
@@ -16610,7 +16599,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       timers.push(setTimeout(finish, KOI_NEON.total));
     }
     { const _ft = fadeToTheme; fadeToTheme = function (name) {
-        const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const calm = false;   // Nov 7: full animations for everyone
         if (window.__koiNeon) window.__koiNeon.finish();
         if (name === 'dark' && currentTheme() === 'default' && !calm) { koiNeonDark(); return; }
         return _ft.apply(this, arguments);
@@ -16946,6 +16935,8 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       if (info.date && info.date.kind === 'due' && info.date.date && info.date.date <= end) return 'week';
       return 'cu';
     }
+    // Nov 8: the header's progress (%, outline, breakdown) counts only this week: a Pending task in Coming up is left out
+    window.koiProgCounts = x => { try { const pid = hzPendingId(); return !(pid && String(x.sectionId) === String(pid) && hzZone(x.task) === 'cu'); } catch (e) { return true; } };
     const hzForced = t => { const info = splitNoteCapsules(t.note || ''); return !!(info.deadline && info.deadline <= hzWeekEnd()); };
     function hzSet(t, zone) {
       const info = splitNoteCapsules(t.note || ''), w0 = hzWeek0();
@@ -20099,6 +20090,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // People see main numbers only ("Hodo 2.6 · Nov 3"); a fix release (2.6.1) shows inside its release under "Fixed on
     // <date>". The list keeps the 6 newest releases. Open from Settings → Help, the Guide's What's new, or New stuff!.
     const KOI_RELEASES = {
+      '2.9': { title: 'Count what counts', date: '2026-11-08' },
       '2.8': { title: 'Archive your DONEs', date: '2026-11-06' },
       '2.7': { title: 'Follow the journey', date: '2026-11-05' },
       '2.6': { title: 'Your day, in plain sight', date: '2026-11-03' },

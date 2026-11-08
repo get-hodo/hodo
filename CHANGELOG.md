@@ -1,5 +1,9 @@
 # Hodo: what changed
 
+## Hodo 2.9 · Nov 08, 2026
+- REWORKED: See how this week is really going
+- SOLVED: Celebrations missing on some computers
+
 ## Hodo 2.8 · Nov 06, 2026
 - NEW: Done stays light
 - NEW: See your month at a glance
