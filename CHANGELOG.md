@@ -1,5 +1,10 @@
 # Hodo: what changed
 
+## Hodo 2.10 · Nov 09, 2026
+- NEW: Tell Hodo’s creator what you think
+- NEW: Stoic Winner is back
+- REWORKED: Music, dressed to impress
+
 ## Hodo 2.9 · Nov 08, 2026
 - REWORKED: See how this week is really going
 - SOLVED: Celebrations missing on some computers
