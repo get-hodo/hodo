@@ -26,6 +26,7 @@
   - Duna (Nov 9)                             "Duna: feedback chat" (dnOpen/dnText/dnAct/dnSend, #dunaBtn next to Settings, DN_URL Apps Script)
   - Music player, new look (Nov 9)          "Music player, new look" (MU_ART covers + credits, muPlayerHtml, muRender wrapper, .m2-* CSS)
   - New stuff pictures for Duna (Nov 9)     ".ns-fig[data-fig]" placeholders in KOI_NOTES filled by a MutationObserver (duna-hi, duna-btn)
+  - Header + Duna fixes (Nov 9, take 2)     Settings/Music wrappers flex-centred, #dunaBtn 38 px, .dn-x svg, centred chips, dunaPush/dunaRender wrapped for the 3 s "thinking" wait (window.koiDunaThink)
   - Quick-action strip (board / list / cal)    "Quick-action strip inside board cards", "Quick-action strip in List view"
   - Two dates, capsules, field editors         "Two dates (Oct 3)", "CAPSULES", "FIELD EDITOR POPOVER"
   - Calendar                                   "/* ===== CALENDAR VIEW", "CALENDAR TASK CARD", "Calendar row: everything eases"
@@ -5782,6 +5783,16 @@
     .nsf-me svg { width: 18px; height: 18px; fill: currentColor; }
     .nsf-wrap { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .nsf-cap { font-size: 13px; color: var(--brand); font-weight: 600; }
+    /* ===== Header + Duna fixes (Nov 9, take 2) ===== */
+    .settings-wrap, .mu-wrap { display: flex; align-items: center; }   /* a photo avatar used to sit on the text baseline and lift Settings */
+    #dunaBtn { width: 38px; padding: 0; justify-content: center; }
+    .dn-x { display: grid; place-items: center; padding: 0; line-height: 0; flex: none; }
+    .dn-x svg { width: 16px; height: 16px; display: block; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; fill: none; }
+    .dn-chips { justify-content: center; margin: 4px 0 8px; }
+    .dn-think { display: inline-flex; align-items: center; gap: 4px; padding: 12px 14px !important; }
+    .dn-think i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); opacity: .35; animation: dnThink 1.2s ease-in-out infinite; }
+    .dn-think i:nth-child(2) { animation-delay: .2s; } .dn-think i:nth-child(3) { animation-delay: .4s; }
+    @keyframes dnThink { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: .9; transform: translateY(-3px); } }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -20953,7 +20964,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // solo, a coda), served next to Hodo as music/stoic-winner.ogg (Opus, 6:15). It plays on the file engine above:
     // endless, with a 3-second crossfade from the coda back into the quiet intro; it resumes where it left off, ducks under
     // the celebration sounds like the others. It's first in the list, so someone who never picked a mood starts with it.
-    if (!MU.some(t => t.id === 'stoic-winner')) MU.unshift({ id: 'stoic-winner', name: 'Stoic Winner', vibe: 'Neo-noir jazz-hop · bass, blues guitar', c: '#8a5a3c', file: 'music/stoic-winner.ogg', trimStart: 0.3, trimEnd: 373 });
+    if (!MU.some(t => t.id === 'stoic-winner')) MU.unshift({ id: 'stoic-winner', name: 'Stoic Winner', vibe: 'Neo-noir jazz-hop · bass, blues guitar', c: '#8a5a3c', file: 'music/stoic-winner.ogg', trimStart: 0.3, trimEnd: 381 });
     // a recording that can't load (offline before it was ever played, or a slow connection) says so plainly
     muFileFail = function () {
       if (!muFile.on) return;
@@ -21285,6 +21296,38 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       };
       const fill = root => root && root.querySelectorAll('.ns-fig[data-fig]').forEach(el => { const f = figs[el.dataset.fig]; if (f && !el.childElementCount) el.innerHTML = f(); });
       new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) fill(n); }))).observe(document.body, { childList: true, subtree: true });
+    }
+
+    // ----- Duna takes a moment (Nov 9, take 2): after you say something, her reply waits ~3 s behind a "thinking" bubble
+    // (three soft dots) instead of appearing at once. window.koiDunaThink sets the wait in ms (the checks set 0).
+    {
+      window.koiDunaThink = 3000;
+      const _push = dunaPush;
+      dunaPush = function (who, html, extra) {
+        const r = _push.apply(this, arguments);
+        if (who === 'me' && dn && window.koiDunaThink > 0) { dn.gate = dn.log.length; dn.gateAt = Date.now() + window.koiDunaThink; }
+        return r;
+      };
+      const _render = dunaRender;
+      dunaRender = function () {
+        if (!dn) return _render.apply(this, arguments);
+        const wait = dn.gate != null ? dn.gateAt - Date.now() : 0;
+        const held = wait > 0 ? dn.log.slice(dn.gate) : [];
+        if (!held.length) { dn.gate = null; return _render.apply(this, arguments); }
+        const full = dn.log, sending = dn.sending;
+        dn.log = full.slice(0, dn.gate);
+        try { _render.apply(this, arguments); } finally { dn.log = full; dn.sending = sending; }
+        const body = dnEl && dnEl.querySelector('.dn-body');
+        if (body) body.querySelectorAll('.dn-chips').forEach(c => c.remove());   // already answered: no old options while she thinks
+        if (body && held.some(x => x.who === 'duna')) {
+          const lastSide = (dn.log[dn.gate - 1] || {}).who === 'duna' ? 'duna' : 'me';
+          body.insertAdjacentHTML('beforeend', `<div class="dn-row duna${lastSide === 'duna' ? '' : ' first'}" data-dnthink="1">${dunaAv('sm')}<div class="dn-b dn-think" aria-label="Duna is thinking"><i></i><i></i><i></i></div></div>`);
+          body.scrollTop = body.scrollHeight;
+        }
+        clearTimeout(dn.gateT); const me = dn; dn.gateT = setTimeout(() => { if (dn === me && dnEl) dunaRender(); }, wait + 20);
+      };
+      const _x = () => { if (dnEl) { const x = dnEl.querySelector('.dn-x'); if (x && !x.querySelector('svg')) x.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>'; } };
+      const _r2 = dunaRender; dunaRender = function () { const r = _r2.apply(this, arguments); _x(); return r; };
     }
     applyWaitRail();
   </script>
