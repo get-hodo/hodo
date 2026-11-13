@@ -1,6 +1,10 @@
 # Hodo: what changed
 
-## Hodo 2.10 · Nov 09, 2026
+## Hodo 2.11 · Nov 13, 2026
+- NEW: Coming back is easy now
+- NEW: Parked tasks find you
+
+## Hodo 2.10 · Nov 11, 2026
 - NEW: Tell Hodo’s creator what you think
 - NEW: Stoic Winner is back
 - REWORKED: Music, dressed to impress

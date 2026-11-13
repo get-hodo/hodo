@@ -27,6 +27,8 @@
   - Music player, new look (Nov 9)          "Music player, new look" (MU_ART covers + credits, muPlayerHtml, muRender wrapper, .m2-* CSS)
   - New stuff pictures for Duna (Nov 9)     ".ns-fig[data-fig]" placeholders in KOI_NOTES filled by a MutationObserver (duna-hi, duna-btn)
   - Header + Duna fixes (Nov 9, take 2)     Settings/Music wrappers flex-centred, #dunaBtn 38 px, .dn-x svg, centred chips, dunaPush/dunaRender wrapped for the 3 s "thinking" wait (window.koiDunaThink)
+  - Duna's quick fix (Nov 11)              DN_TOPICS "ask" + DN_HODO words; dunaTopic/dunaLine/dunaText/dunaAct wrapped ("who:creator" / "who:me" chips)
+  - Coming back (Nov 13)                     "Coming back (Nov 13)" (cbCheck after 5+ days away, cbWelcome, cbSlate/cbPark/cbFreshOpen, cbCatch, cbMatch bring-back in every Add box, Settings → Your week, window.koiComeback; CSS "COMING BACK")
   - Quick-action strip (board / list / cal)    "Quick-action strip inside board cards", "Quick-action strip in List view"
   - Two dates, capsules, field editors         "Two dates (Oct 3)", "CAPSULES", "FIELD EDITOR POPOVER"
   - Calendar                                   "/* ===== CALENDAR VIEW", "CALENDAR TASK CARD", "Calendar row: everything eases"
@@ -5793,6 +5795,71 @@
     .dn-think i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); opacity: .35; animation: dnThink 1.2s ease-in-out infinite; }
     .dn-think i:nth-child(2) { animation-delay: .2s; } .dn-think i:nth-child(3) { animation-delay: .4s; }
     @keyframes dnThink { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: .9; transform: translateY(-3px); } }
+    /* ===== COMING BACK (Nov 13): welcome back, clean slate, catch up ===== */
+    .cb-scrim { position: fixed; inset: 0; z-index: 2650; display: grid; place-items: center; padding: 24px; background: color-mix(in srgb, #1d1a16 24%, transparent); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: cbIn .3s ease both; }
+    [data-theme="dark"] .cb-scrim { background: rgba(6, 8, 14, .55); }
+    @keyframes cbIn { from { opacity: 0; } to { opacity: 1; } }
+    .cb-panel { position: relative; width: min(640px, 100%); max-height: calc(100vh - 48px); overflow: auto; padding: 34px 36px 28px; border-radius: 20px; background: var(--bg-primary); border: 1px solid var(--border); box-shadow: 0 24px 60px var(--shadow-hover); color: var(--text-primary); animation: cbUp .4s cubic-bezier(.2,.8,.3,1) both; }
+    .cb-panel.wide { width: min(940px, 100%); }
+    @keyframes cbUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .cb-x { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: var(--text-muted); display: grid; place-items: center; cursor: pointer; }
+    .cb-x:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .cb-x svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; fill: none; display: block; }
+    .cb-wave { font-size: 38px; line-height: 1; margin-bottom: 12px; }
+    .cb-panel h2 { font-size: 25px; letter-spacing: -.02em; margin: 0 0 8px; font-weight: 700; }
+    .cb-sub { color: var(--text-secondary); font-size: 15px; line-height: 1.55; margin: 0 0 22px; }
+    .cb-sub.tight { margin-bottom: 12px; }
+    .cb-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .cb-btn { border: 0; border-radius: 12px; padding: 12px 20px; font: inherit; font-weight: 600; font-size: 14.5px; cursor: pointer; }
+    .cb-btn.main { background: var(--brand); color: #fff; }
+    [data-theme="dark"] .cb-btn.main { color: #22242a; }
+    .cb-btn.soft { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
+    .cb-link { border: 0; background: none; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 3px; padding: 8px 4px; font: inherit; cursor: pointer; }
+    .cb-link.small { font-size: 13px; padding: 8px 0 0; }
+    .cb-stays { margin-top: 18px; font-size: 13px; color: var(--text-muted); }
+    .cb-stays b { color: var(--text-secondary); font-weight: 600; }
+    .cb-steps { display: flex; gap: 6px; margin-bottom: 14px; } .cb-steps i { height: 4px; flex: 1; border-radius: 4px; background: var(--border); } .cb-steps i.on { background: var(--brand); }
+    .cb-k { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .cb-legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; font-size: 12.5px; color: var(--text-muted); }
+    .cb-legend span { background: var(--bg-secondary); border-radius: 8px; padding: 5px 9px; } .cb-legend b { color: var(--text-primary); font-weight: 600; }
+    .cb-grp { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 13px 15px; margin-bottom: 10px; }
+    .cb-gt { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .cb-gt b { font-size: 15px; } .cb-gt b.t { font-size: 14px; font-weight: 550; }
+    .cb-peek { color: var(--text-muted); font-size: 12.5px; margin-top: 3px; }
+    .cb-pick { display: inline-flex; flex-wrap: wrap; background: var(--bg-secondary); border-radius: 10px; padding: 3px; gap: 2px; }
+    .cb-pick button { border: 0; background: transparent; color: var(--text-secondary); padding: 6px 10px; border-radius: 8px; font: inherit; font-size: 12.5px; cursor: pointer; white-space: nowrap; }
+    .cb-pick button:hover { color: var(--text-primary); }
+    .cb-pick button.on { background: var(--bg-card); color: var(--brand); font-weight: 650; box-shadow: 0 1px 3px var(--shadow-hover); }
+    .cb-one { margin-top: 10px; border-top: 1px solid var(--border-light, var(--border)); padding-top: 6px; }
+    .cb-it { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
+    .cb-date { margin-top: 10px; font-size: 13px; color: var(--text-secondary); }
+    .cb-date input { margin-left: 8px; font: inherit; padding: 5px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); }
+    .cb-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; gap: 10px; }
+    .cb-sum { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .cb-sum span { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 11px; font-size: 13px; color: var(--text-secondary); } .cb-sum b { color: var(--text-primary); }
+    .cb-fresh { display: grid; grid-template-columns: 1fr 290px; gap: 22px; }
+    @media (max-width: 760px) { .cb-fresh { grid-template-columns: 1fr; } }
+    .cb-add { display: flex; gap: 8px; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 6px 6px 6px 14px; }
+    .cb-add:focus-within { border-color: color-mix(in srgb, var(--brand) 50%, var(--border)); }
+    .cb-in { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 15px; color: var(--text-primary); outline: none; padding: 8px 0; }
+    .cb-mini { white-space: nowrap; border: 0; border-radius: 9px; padding: 7px 12px; font: inherit; font-weight: 600; font-size: 12.5px; cursor: pointer; }
+    .cb-mini.main { background: var(--brand); color: #fff; } [data-theme="dark"] .cb-mini.main { color: #22242a; }
+    .cb-mini.soft { background: var(--bg-secondary); color: var(--text-secondary); }
+    .cb-sug { margin-top: 10px; background: color-mix(in srgb, var(--brand) 8%, var(--bg-card)); border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border)); border-radius: 12px; padding: 12px 14px; animation: cbUp .25s both; }
+    .cb-sug .q { font-size: 13.5px; margin-bottom: 4px; } .cb-sug .det { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .cb-sugbox .cb-sug { margin: 6px 0 4px; padding: 10px 12px; }
+    .cb-main .cb-k { margin-top: 18px; }
+    .cb-list { display: grid; gap: 8px; }
+    .cb-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--st-pending-edge); border-radius: 10px; padding: 9px 12px; font-size: 13.5px; }
+    .cb-card small { display: block; margin-top: 3px; font-size: 11.5px; color: var(--text-muted); }
+    .cb-empty { font-size: 13px; color: var(--text-muted); padding: 6px 2px; }
+    .cb-side { min-width: 0; margin-top: 26px; }
+    @media (max-width: 760px) { .cb-side { margin-top: 0; } }
+    .cb-pk { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--bg-card); border: 1px dashed color-mix(in srgb, var(--brand) 50%, var(--border)); color: var(--text-secondary); border-radius: 12px; padding: 9px 12px; font: inherit; font-size: 13px; cursor: pointer; text-align: left; }
+    .cb-pk b { color: var(--text-primary); } .cb-pk i { font-style: normal; }
+    .cb-drawer { margin-top: 8px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; max-height: 420px; overflow: auto; }
+    .cb-dh { font-size: 13px; font-weight: 650; } .cb-dn { font-size: 12px; color: var(--text-muted); margin: 6px 2px; line-height: 1.45; }
+    .cb-drawer .cb-it { border-top: 1px solid var(--border-light, var(--border)); color: var(--text-secondary); font-size: 12.5px; }
     .cp-pop { position: fixed; z-index: 2700; min-width: 200px; padding: 4px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow-hover), 0 2px 6px var(--shadow); font-size: 12.5px; animation: nsFade .12s ease-out both; }
     .cp-pop .cp-l { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); padding: 5px 8px 3px; }
     .cp-pop button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
@@ -8122,7 +8189,7 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
     document.getElementById('openFolderLarge')?.addEventListener('click', () => loadMemoryDirectory());
     // ---- version (bumped by tools/build_release.py) ----
-    const KOI_VERSION = '2.10';
+    const KOI_VERSION = '2.11';
     { const v = document.getElementById('koiVer'); if (v) v.textContent = 'Hodo ' + KOI_VERSION; }
 
     saveBtn.addEventListener('click', async () => {
@@ -16175,6 +16242,10 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // website; reloads), then "See what's new" (opens the panel). The panel lists every change with a NEW / REVAMP /
     // FIX tag before it; the selected one shows its description and Guide clip on the right. Guide changes never appear here.
     const KOI_NOTES = {
+      '2.11': [
+        { k: 'new', t: 'Coming back is easy now', d: '<p>Life happens, and sometimes Hodo sits untouched for a week or more. Coming back shouldn’t mean facing a wall of overdue tasks. Now, when you’ve been away for a few days, Hodo welcomes you back and helps you start fresh.</p><p><b>Clean slate</b> moves your open tasks to Parked in one tap. Nothing is deleted, and anything due in the next 7 days or that you’re waiting on stays on your board. Then add what matters now, or bring back what you still need. Prefer to sort through things? <b>Catch up</b> takes three short steps instead.</p><p>It appears on its own after 5 days away. You can also start fresh any time from <b>Settings → Your week → Clean slate</b>.</p>', inspired: 'Sherzod Gafar' },
+        { k: 'new', t: 'Parked tasks find you', d: '<p>Start typing a new task, and if it matches one waiting in Parked, Hodo offers to bring that one back, with its notes and steps just as you left them. No retyping.</p><p>Works in every <b>+ Add task</b> box.</p>' }
+      ],
       '2.10': [
         { k: 'new', t: 'Tell Hodo’s creator what you think', d: '<span class="ns-fig" data-fig="duna-hi"></span><p>You can now send feedback straight to Hodo’s creator, and <b>Duna</b> is here to help you do it.</p><p>She’s Hodo’s feedback helper: a friendly script (not a person, not an AI) who asks the right questions so your message lands clearly. Share an idea, tell her about something that isn’t working (add pictures or a short screen recording), ask how something works and she’ll answer right there, or just say what you love. Leave your email if you’d like a reply.</p><p>Nothing leaves your computer until you press <b>Send</b>.</p><p><b>Where to find her:</b> the speech bubble with a heart in the header, right next to Settings.</p><span class="ns-fig" data-fig="duna-btn"></span>' },
         { k: 'new', t: 'Stoic Winner is back', d: '<p>Stoic Winner, one of the tracks in Hodo’s <b>Music</b>, stepped away for a while for some fine-tuning. Now it’s back as a full studio recording: neo-noir jazz-hop with a walking bass and a smoky blues guitar.</p><p>Put it on when you need to walk into the work like you own the room: calm, sharp, with a quiet edge of confidence. May you be the Stoic Winner of your own story.</p><p>Open <b>Music</b> in the header, or press <kbd>B</kbd>.</p>' },
@@ -20227,6 +20298,7 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
     // People see main numbers only ("Hodo 2.6 · Nov 3"); a fix release (2.6.1) shows inside its release under "Fixed on
     // <date>". The list keeps the 6 newest releases. Open from Settings → Help, the Guide's What's new, or New stuff!.
     const KOI_RELEASES = {
+      '2.11': { title: 'Welcome back', date: '2026-11-13' },
       '2.10': { title: 'Meet Duna', date: '2026-11-09' },
       '2.9': { title: 'Count what counts', date: '2026-11-08' },
       '2.8': { title: 'Archive your DONEs', date: '2026-11-06' },
@@ -21328,6 +21400,324 @@ The areas your tasks belong to (Settings → Areas & people → Areas). "Suggest
       };
       const _x = () => { if (dnEl) { const x = dnEl.querySelector('.dn-x'); if (x && !x.querySelector('svg')) x.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>'; } };
       const _r2 = dunaRender; dunaRender = function () { const r = _r2.apply(this, arguments); _x(); return r; };
+    }
+
+    // ----- Duna's quick fix (Nov 11): requests aimed at her ("can you make me a sandwich?") get a playful no instead of
+    // being filed as feedback, and a short first message she can't place gets "for Hodo's creator, or just for me?"
+    // instead of an assumption. Everything stays scripted (the AI version is a separate step, see the brief).
+    {
+      const DN_HODO = /\b(hodo|tasks?|cards?|columns?|projects?|weeks?|today|tomorrow|music|tracks?|songs?|archive|calendar|list|board|focus|timer|pomodoro|capture|link|claude|settings?|guide|theme|dark|light|park(ed)?|waste|pending|done|deadlines?|areas?|people|nudges?|rundown|pulse|header|button|sub-?tasks?|bug|crash(es|ed)?|broken|error|slow|freez|feature|idea|love|sync|folder|backup|app|update|version|notif)/;
+      DN_TOPICS.push({ k: 'hi', any: [/^(hi|hey|hello|hiya|yo|salam|salaam|marhaba|good (morning|afternoon|evening))( there| duna)?$/] });
+      DN_SAY.hi = ['Hey there 👋 What’s on your mind?', 'Hello again 😄 What can I take to Hodo’s creator?'];
+      DN_TOPICS.push({ k: 'ask', any: [/\b(can|could|would|will|wanna|want to) (you|u) (please )?(make|bring|get|order|cook|buy|give|send|fetch|grab|sing|dance|marry|drive|clean|wash|pay|walk|feed|kiss|hug)\b/, /^(please )?(make|bring|get|order|cook|buy|fetch|grab) me\b/, /\b(sandwich|pizza|coffee|tea|burger|shawarma|food|lunch|dinner|breakfast|beer)\b/] });
+      DN_SAY.ask = ['I would, but I’m all code and no hands 😄 Anything for Hodo’s creator?', 'Tempting! Sadly, no hands here, just code. Got something for Hodo’s creator instead?'];
+      DN_SAY.food = ['If I had hands, you’d have one by now 🥪 Sadly I’m all code. Anything for Hodo’s creator?', 'No hands, just code, so the kitchen’s closed 😄 Got something for Hodo’s creator instead?'];
+      DN_SAY.unsure = ['Was that for Hodo’s creator, or just for me?'];
+      DN_SAY.chat = ['Fair enough 😄 I’m better at feedback than chit-chat, but I’m right here whenever something comes up.', 'Ha, noted 😄 I’m around whenever you’ve got something for Hodo.'];
+      const _topic = dunaTopic;
+      dunaTopic = function (text) {
+        const k = _topic(text);
+        if (k === 'ask' && DN_HODO.test(dunaTidy(text).replace(/\b(sandwich|pizza|coffee|tea|burger|food|lunch|dinner|breakfast|beer)\b/g, ''))) return null;   // "can you make the calendar…" is feedback
+        return k;
+      };
+      const _line = dunaLine;
+      dunaLine = function (k) { return _line(k === 'ask' && dn && dn.lastText && /\b(sandwich|pizza|coffee|tea|burger|shawarma|food|lunch|dinner|breakfast|beer)\b/i.test(dn.lastText) ? 'food' : k); };
+      const typeChips = () => Object.entries(DN_TYPES).map(([k, l]) => ({ l, a: 'type:' + k }));
+      const _text = dunaText;
+      dunaText = function (text) {
+        const t = String(text || '').trim();
+        if (dn) dn.lastText = t;
+        if (!t || !dn || dn.sent || dn.step !== 'type' || dunaTopic(t)) return _text.apply(this, arguments);
+        const words = t.split(/\s+/).length, sure = DN_HODO.test(dunaTidy(t)) || words >= 8;
+        if (sure) return _text.apply(this, arguments);
+        dunaMe(t); dn.maybe = t; dn.notUnderstood.push(t);
+        dunaSay(dunaLine('unsure'), { chips: [{ l: 'For Hodo’s creator', a: 'who:creator' }, { l: 'Just chatting', a: 'who:me' }] });
+      };
+      const _act = dunaAct;
+      dunaAct = function (a) {
+        if (dn && a === 'who:creator') { dunaMe('For Hodo’s creator'); if (dn.maybe) dn.details.push(dn.maybe); dn.maybe = ''; return dunaSay('Got it! Is this an idea, a problem, a question, or something you love?', { chips: typeChips() }); }
+        if (dn && a === 'who:me') { dunaMe('Just chatting'); dn.maybe = ''; return dunaSay(dunaLine('chat'), { chips: typeChips() }); }
+        return _act.apply(this, arguments);
+      };
+    }
+
+    // ----- Coming back (Nov 13): after 5+ days away, Hodo greets you and offers a clean slate (your open tasks move to
+    // Parked as one dated group; nothing is deleted; bring anything back as you type or from the panel) or a short catch-up
+    // (what's on your plate · coming up soon · captured). Today's Three stays separate. Either one counts as this week's
+    // Weekly reset. The clean-slate group comes back for review in two weeks (its "until" date). Also: Settings → Your week.
+    {
+      const CB_AWAY = 5, CB_KEY = 'koi-last-day';
+      const cbT0 = () => hzDay(new Date());
+      const cbE = s => escapeHtml(String(s == null ? '' : s));
+      const cbN = (n, one, many) => `${n} ${n === 1 ? one : (many || one + 's')}`;
+      const CB_X = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
+      let cbEl = null, cbS = null, cbC = null, cbMode = '';
+      function cbStamp() { try { localStorage.setItem(CB_KEY, ymd(new Date())); } catch (e) {} }
+      function cbDaysAway() { let v = null; try { v = localStorage.getItem(CB_KEY); } catch (e) {} if (!v) return 0; const d = new Date(v + 'T00:00:00'); return isNaN(d) ? 0 : daysBetween(d, new Date()); }
+      // ---- what's on the board ----
+      const cbInfo = t => splitNoteCapsules(t.note || '');
+      const cbOpen = () => allTasksFlat().filter(x => !x.task.checked && !isDoneSection(x.sectionId) && !isWaitSection(x.sectionId));
+      const cbDue = t => cbInfo(t).deadline || null;
+      const cbSoon = x => { const d = cbDue(x.task); return !!d && hzDay(d) >= cbT0() && hzDay(d) < new Date(cbT0().getTime() + 8 * 864e5); };
+      const cbMissed = x => { const d = cbDue(x.task); return !!d && hzDay(d) < cbT0(); };
+      const cbProg = x => statusKey(x.sectionId) === 'progress';
+      const cbPend = x => { const pid = hzPendingId(); return !!pid && String(x.sectionId) === String(pid); };
+      const cbCarried = t => { const i = cbInfo(t); return !!(i.date && i.date.kind === 'due' && i.date.date && hzDay(i.date.date) < cbT0()); };
+      // a clean slate moves: what was promised (this week or earlier), In Progress, missed deadlines. It never moves
+      // anything due in the next 7 days, Waiting On, Done or Coming up.
+      function cbSlateList() { return cbOpen().filter(x => !cbSoon(x) && (cbMissed(x) || cbProg(x) || (cbPend(x) && hzZone(x.task) !== 'cu'))); }
+      function cbKeptList() { return allTasksFlat().filter(x => !x.task.checked && !isDoneSection(x.sectionId) && (isWaitSection(x.sectionId) || cbSoon(x))); }
+      // ---- moving things (quietly: one sound, one toast) ----
+      function cbQuiet(fn) {
+        const play = koiSound.play, st = showStatus; koiSound.play = () => {}; showStatus = () => {};
+        try { fn(); } finally { koiSound.play = play; showStatus = st; }
+      }
+      const cbTagFor = d => 'clean slate ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
+      const CB_TAG_RE = /\s*·?\s*clean slate [A-Z][a-z]{2} \d{1,2}\b/g;
+      function cbPark(list, tag) {
+        cbQuiet(() => list.forEach(x => sinkTask(x.task, null)));
+        if (tag) { const lab = cbTagFor(new Date()), back = new Date(cbT0().getTime() + 14 * 864e5);
+          list.forEach(x => { const t = deepFind(x.task.id); if (!t) return; const m = deepMeta(t); if (!m.rest.includes(lab)) m.rest.push(lab); if (!m.resurface && !m.after) m.resurface = back; deepSetMeta(t, m); }); }
+        markChanged(); renderTasks();
+      }
+      function cbLetGo(t) {
+        try { koiBinAdd([String(t.id)]); } catch (e) {}
+        for (const s of sections) { const a = tasks[s.id] || []; const i = a.indexOf(t); if (i >= 0) { a.splice(i, 1); break; } }
+      }
+      function cbFresh(t) { const i = cbInfo(t); if (i.date && i.date.kind === 'due' && i.date.date && hzDay(i.date.date) < cbT0()) { i.date = null; t.note = composeNote(i, t.checked); } }
+      function cbToPending(x) { const pid = hzPendingId(); if (!pid || String(x.sectionId) === String(pid)) return; const a = tasks[x.sectionId] || [], i = a.indexOf(x.task); if (i >= 0) a.splice(i, 1); x.task.section = pid; (tasks[pid] = tasks[pid] || []).unshift(x.task); x.sectionId = pid; }
+      function cbApply(x, c) {
+        if (!c || c === 'keep') { cbFresh(x.task); if (c === 'keep' && cbPend(x)) hzSet(x.task, 'week'); return; }
+        if (c === 'week') { cbFresh(x.task); if (cbPend(x)) hzSet(x.task, 'week'); return; }
+        if (c === 'cu') { cbFresh(x.task); cbToPending(x); hzSet(x.task, 'cu'); return; }
+        if (c === 'park') { cbPark([x], false); return; }
+        if (c === 'go') cbLetGo(x.task);
+      }
+      function cbWeekDone() { try { wkLS.set('koi-wk', { week: wkKey(), state: 'done', at: Date.now() }); } catch (e) {} }
+      function cbRestore(md) { const r = parseTaskMarkdown(md); sections = r.sections; tasks = r.tasks; markChanged(); renderTasks(); }
+      // ---- bring back from Parked while typing (here and in every "+ Add task" box) ----
+      const CB_STOP = /^(the|and|for|with|from|this|that|into|about|your|my|our|a|an|to|of|on|in|at|it|is)$/i;
+      function cbMatch(text) {
+        const words = String(text || '').toLowerCase().split(/[^a-z0-9؀-ۿ]+/).filter(w => w.length >= 3 && !CB_STOP.test(w));
+        if (!words.length || String(text).trim().length < 4) return null;
+        let best = null, bs = 0;
+        (deep.items || []).forEach(t => {
+          const tw = cleanTitle(t.title || '').toLowerCase().split(/[^a-z0-9؀-ۿ]+/).filter(Boolean);
+          const hits = words.filter(w => tw.some(x => x.startsWith(w))).length;
+          if (hits === words.length && hits > bs) { bs = hits; best = t; }
+        });
+        return best;
+      }
+      function cbBringBack(t) {
+        if (!t || deep.items.indexOf(t) < 0) return null;
+        cbQuiet(() => deepBringUp(t, null, null));
+        t.note = (t.note || '').replace(CB_TAG_RE, '').replace(/^\s*·\s*/, '').trim();
+        const f = findTaskById(t.id); if (f && cbPend(f)) hzSet(t, 'week');
+        try { koiSound.play('resume'); } catch (e) {}
+        markChanged(); renderTasks(); return t;
+      }
+      function cbSugHtml(t) {
+        if (!t) return '';
+        const bits = [t.description ? 'notes' : '', (t.subtasks || []).length ? cbN(t.subtasks.length, 'step') : ''].filter(Boolean);
+        return `<div class="cb-sug"><div class="q">Bring back <b>${cbE(cleanTitle(t.title))}</b> from Parked?</div><div class="det">${bits.length ? 'With its ' + bits.join(' and ') + ', just as you left it.' : 'Just as you left it.'}</div><button type="button" class="cb-mini main" data-cbback="${t.id}">Bring it back</button> <button type="button" class="cb-mini soft" data-cbnew="1">Add as new</button></div>`;
+      }
+      // every "+ Add task" box on the board
+      document.addEventListener('input', e => {
+        const inp = e.target; if (!inp.classList || !inp.classList.contains('new-task-input')) return;
+        let box = inp.parentElement.querySelector('.cb-sugbox'); const t = cbMatch(inp.value);
+        if (!t) { if (box) box.remove(); return; }
+        if (!box) { box = document.createElement('div'); box.className = 'cb-sugbox'; inp.insertAdjacentElement('afterend', box); }
+        if (box.dataset.id !== String(t.id)) { box.dataset.id = String(t.id); box.innerHTML = cbSugHtml(t); try { box.scrollIntoView({ block: 'nearest' }); } catch (x) {} }
+      });
+      document.addEventListener('mousedown', e => {
+        const b = e.target.closest && e.target.closest('.cb-sugbox [data-cbback], .cb-sugbox [data-cbnew]'); if (!b) return;
+        e.preventDefault(); e.stopPropagation();
+        const box = b.closest('.cb-sugbox'), inp = box.parentElement.querySelector('.new-task-input');
+        if (b.dataset.cbnew) { box.remove(); if (inp) inp.focus(); return; }
+        const t = deepFind(b.dataset.cbback); box.remove(); if (inp) { inp.value = ''; inp.blur(); inp.remove(); }
+        cbBringBack(t); showStatus('Brought back from Parked');
+      }, true);
+      // ---- the window ----
+      function cbClose() { if (cbEl) { cbEl.remove(); cbEl = null; } cbMode = ''; }
+      function cbShow(html, wide) {
+        const pnl = cbEl && cbEl.querySelector('.cb-panel');
+        if (pnl && pnl.classList.contains('wide') === !!wide) { const st = pnl.scrollTop; pnl.innerHTML = html; pnl.scrollTop = st; return; }   // same window: just repaint
+        if (cbEl) cbEl.remove();
+        cbEl = document.createElement('div'); cbEl.className = 'cb-scrim';
+        cbEl.innerHTML = `<div class="cb-panel${wide ? ' wide' : ''}" role="dialog" aria-modal="true" aria-label="Welcome back">${html}</div>`;
+        document.body.appendChild(cbEl);
+        cbEl.addEventListener('click', cbClick); cbEl.addEventListener('input', cbInput); cbEl.addEventListener('keydown', cbKey);
+        const f = cbEl.querySelector('.cb-in, .cb-btn.main'); if (f) setTimeout(() => f.focus(), 40);
+      }
+      const cbX = what => `<button type="button" class="cb-x" data-cb="${what}" aria-label="Close" title="Close · Esc">${CB_X}</button>`;
+      function cbWelcome(fromSettings) {
+        cbMode = 'welcome';
+        const st = { soon: cbOpen().filter(cbSoon).length, wait: allTasksFlat().filter(x => !x.task.checked && isWaitSection(x.sectionId)).length };
+        const stays = [st.soon ? `<b>${cbN(st.soon, 'task')} due in the next 7 days</b>` : '', st.wait ? `<b>${st.wait} you’re waiting on</b>` : ''].filter(Boolean).join(' and ');
+        cbShow(`${cbX('close')}<div class="cb-wave">${fromSettings ? '✨' : '👋'}</div><h2>${fromSettings ? 'Want a fresh start?' : 'Welcome back. Want a fresh start?'}</h2>
+          <p class="cb-sub">One tap moves your open tasks to <b>Parked</b>, out of sight. Nothing is deleted: you can bring any of them back whenever you want, from the next screen or from <b>Parked</b> in the header.</p>
+          <div class="cb-row"><button type="button" class="cb-btn main" data-cb="slate">Clean slate</button><button type="button" class="cb-link" data-cb="catch">or catch up first</button></div>
+          ${stays ? `<div class="cb-stays">Staying on your board: ${stays}.</div>` : ''}`);
+      }
+      // ---- clean slate ----
+      function cbSlate() {
+        const list = cbSlateList(); cbClose();
+        if (!list.length) { tdUndoToast('Your board is already clear ✨', null); return; }
+        cbS = { snap: toMarkdown(), n: list.length, back: [], added: [], drawer: false, typed: '' };
+        const cards = list.map(x => document.querySelector(`.task-card[data-id="${x.task.id}"]`)).filter(c => c && isVisibleEl(c)).slice(0, 14);
+        if (!reduceMotion) cards.forEach((c, i) => setTimeout(() => { try { koiSink(c, () => {}); } catch (e) {} }, i * 45));
+        setTimeout(() => {
+          try { koiSound.play('park'); } catch (e) {}
+          cbPark(list, true); cbWeekDone();
+          tdUndoToast(`${cbN(list.length, 'task')} moved to Parked. Nothing deleted.`, cbUndo);
+          cbFreshOpen();
+        }, cards.length && !reduceMotion ? 520 + cards.length * 45 : 0);
+      }
+      function cbUndo() { if (!cbS) return; cbRestore(cbS.snap); cbS = null; cbClose(); try { localStorage.removeItem('koi-wk'); } catch (e) {} showStatus('Clean slate undone. Everything is back.'); }
+      const cbGroupList = () => { const lab = cbTagFor(new Date()); return (deep.items || []).filter(t => deepMeta(t).rest.includes(lab)); };
+      function cbFreshHtml() {
+        const grp = cbGroupList(), kept = cbKeptList();
+        const row = (t, lab) => `<div class="cb-card"><span>${cbE(cleanTitle(t.title))}</span>${lab ? `<small>${lab}</small>` : ''}</div>`;
+        const mine = [...cbS.back, ...cbS.added].map(id => findTaskById(id)).filter(Boolean);
+        return `${cbX('set')}<div class="cb-fresh"><div class="cb-main"><h2>Fresh start ✨</h2><p class="cb-sub">What matters now? Add a few things, or bring back what you still need.</p>
+          <div class="cb-add"><input class="cb-in" placeholder="Add a task…" maxlength="300" autocomplete="off" value="${cbE(cbS.typed)}"><button type="button" class="cb-mini main" data-cb="add">Add</button></div>
+          <div class="cb-sugwrap">${cbSugHtml(cbMatch(cbS.typed))}</div>
+          <div class="cb-k">On your week</div><div class="cb-list">
+            ${mine.map(x => row(x.task, cbS.back.includes(String(x.task.id)) ? 'Brought back' : 'New')).join('')}
+            ${kept.filter(x => !mine.some(y => y.task === x.task)).map(x => row(x.task, isWaitSection(x.sectionId) ? 'Kept: you’re waiting on this' : `Kept: due ${fmtDue(cbDue(x.task))}`)).join('')}
+            ${!mine.length && !kept.length ? '<div class="cb-empty">Nothing yet. A blank page is a fine place to start.</div>' : ''}</div>
+          <div class="cb-foot"><button type="button" class="cb-link" data-cb="undo">Undo clean slate</button><button type="button" class="cb-btn main" data-cb="set">I’m set</button></div></div>
+          <aside class="cb-side"><button type="button" class="cb-pk" data-cb="drawer"><span><b>In Parked</b> · ${grp.length} from your clean slate</span><i>${cbS.drawer ? '▴' : '▾'}</i></button>
+          ${cbS.drawer ? `<div class="cb-drawer"><div class="cb-dh">Parked by your clean slate · ${MONTHS[new Date().getMonth()]} ${new Date().getDate()}</div><div class="cb-dn">They stay together in Parked, under this date. Bring back what you need.</div>${grp.map(t => `<div class="cb-it"><span>${cbE(cleanTitle(t.title))}</span><button type="button" class="cb-mini soft" data-cbback="${t.id}">Bring back</button></div>`).join('') || '<div class="cb-dn">All brought back.</div>'}</div>` : '<div class="cb-dn">Everything you parked is here, one tap away. It’s also in Parked, in the header.</div>'}</aside></div>`;
+      }
+      function cbFreshOpen() { cbMode = 'fresh'; cbShow(cbFreshHtml(), true); }
+      function cbFreshPaint(keepFocus) {
+        if (!cbEl || cbMode !== 'fresh') return;
+        const inp = cbEl.querySelector('.cb-in'), pos = inp ? inp.selectionStart : 0, had = inp && document.activeElement === inp;
+        cbEl.querySelector('.cb-panel').innerHTML = cbFreshHtml();
+        const n = cbEl.querySelector('.cb-in'); if (n && (had || keepFocus)) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} }
+      }
+      function cbAdd() {
+        const v = (cbS.typed || '').trim(); if (!v) return;
+        const pid = hzPendingId(); if (!pid) return;
+        let p = { title: v }; try { p = koiParse(v) || p; } catch (e) {}
+        let note = ''; try { note = koiNote(p) || ''; } catch (e) {}
+        const t = { id: Date.now() + Math.random(), title: (p.title || v).trim(), note, checked: false, subtasks: [], description: '', section: pid };
+        (tasks[pid] = tasks[pid] || []).unshift(t); hzSet(t, 'week');
+        cbS.added.push(String(t.id)); cbS.typed = ''; markChanged(); renderTasks(); cbFreshPaint(true);
+      }
+      function cbSet() { cbClose(); tdUndoToast('Fresh start, done ✨ Set today’s Three on Today when you’re ready.', null); }
+      // ---- catch up ----
+      function cbCatchData() {
+        const o = cbOpen(), lw = new Date(hzWeek0().getTime() - 7 * 864e5);
+        const dated = o.filter(x => cbSoon(x) || cbMissed(x));
+        const rest = o.filter(x => !dated.includes(x) && (cbProg(x) || (cbPend(x) && (hzZone(x.task) === 'left' || cbCarried(x.task)))));
+        const g = { last: [], older: [], prog: [] };
+        rest.forEach(x => { const i = cbInfo(x.task), ref = i.week || (i.date && i.date.kind === 'due' ? i.date.date : null);
+          if (cbProg(x) && !ref) g.prog.push(x); else if (ref && hzDay(ref) >= lw) g.last.push(x); else g.older.push(x); });
+        const cap = (typeof koiTray !== 'undefined' ? koiTray : []).filter(t => !(typeof capReading !== 'undefined' && capReading.has(String(t.id))));
+        return { g, dated, cap };
+      }
+      const CB_OPTS = { week: 'This week', cu: 'Coming up', park: 'Park', go: 'Let go', keep: 'Keep', date: 'New date' };
+      const CB_TIPS = { week: 'Stays on this week’s plan', cu: 'Stays on your board, just not this week', park: 'Moves to Parked: out of sight, back whenever you want', go: 'Sends it to the Waste Yard, where you can still restore it', keep: 'Stays as it is', date: 'Pick a new date' };
+      const cbPick = (attr, id, keys, cur) => `<span class="cb-pick" ${attr}="${id}">${keys.map(k => `<button type="button" data-v="${k}" title="${CB_TIPS[k]}" class="${cur === k ? 'on' : ''}">${CB_OPTS[k]}</button>`).join('')}</span>`;
+      const cbBar = n => `<div class="cb-steps">${[0, 1, 2].map(i => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div><div class="cb-k">Step ${n + 1} of 3</div>`;
+      function cbCatch() { cbC = { step: 1, grp: {}, each: {}, one: {}, dated: {}, date: {}, cap: {}, tally: { week: 0, cu: 0, park: 0, go: 0 }, snap: toMarkdown() }; cbMode = 'catch'; cbCatchPaint(); }
+      function cbCatchPaint() {
+        const D = cbCatchData(), c = cbC;
+        if (c.step === 1 && !D.g.last.length && !D.g.older.length && !D.g.prog.length) c.step = 2;
+        if (c.step === 2 && !D.dated.length) c.step = 3;
+        if (c.step === 3 && !D.cap.length) c.step = 4;
+        let h = '';
+        if (c.step === 1) {
+          const grp = (key, label, list) => !list.length ? '' : `<div class="cb-grp"><div class="cb-gt"><div><b>${label} · ${list.length}</b><div class="cb-peek">${list.slice(0, 3).map(x => cbE(cleanTitle(x.task.title))).join(' · ')}${list.length > 3 ? '…' : ''}</div></div>${cbPick('data-cbg', key, ['week', 'cu', 'park', 'go'], c.grp[key])}</div>
+            ${c.one[key] ? `<div class="cb-one">${list.map(x => `<div class="cb-it"><span>${cbE(cleanTitle(x.task.title))}</span>${cbPick('data-cbe', x.task.id, ['week', 'cu', 'park', 'go'], c.each[x.task.id] || c.grp[key] || '')}</div>`).join('')}</div>` : `<button type="button" class="cb-link small" data-cbone="${key}">Choose one by one</button>`}</div>`;
+          h = `${cbBar(0)}<h2>What’s still on your plate</h2><p class="cb-sub tight">Pick for a whole group, or go one by one. Anything you skip stays as it is.</p>
+            <div class="cb-legend"><span><b>Coming up</b> stays on your board, just not this week</span><span><b>Park</b> moves it to Parked: out of sight, back whenever you want</span><span><b>Let go</b> sends it to the Waste Yard, where you can still restore it</span></div>
+            ${grp('last', 'From the week before', D.g.last)}${grp('older', 'Older', D.g.older)}${grp('prog', 'In progress', D.g.prog)}
+            <div class="cb-foot"><button type="button" class="cb-link" data-cb="slate">Rather start with a clean slate?</button><button type="button" class="cb-btn main" data-cb="next">Next</button></div>`;
+        } else if (c.step === 2) {
+          h = `${cbBar(1)}<h2>Coming up soon</h2><p class="cb-sub">These have dates. Still right? Keep them, move the date, or let them go.</p>
+            ${D.dated.map(x => { const d = cbDue(x.task), cur = c.dated[x.task.id] || 'keep', past = hzDay(d) < cbT0(), keys = hzDay(d) > hzDay(hzWeekEnd()) ? ['keep', 'date', 'cu', 'park', 'go'] : ['keep', 'date', 'park', 'go'];
+              return `<div class="cb-grp"><div class="cb-gt"><div><b class="t">${cbE(cleanTitle(x.task.title))}</b><div class="cb-peek">${past ? 'Was due' : 'Due'} ${fmtDue(d)}</div></div>${cbPick('data-cbd', x.task.id, keys, cur)}</div>${cur === 'date' ? `<div class="cb-date">New date <input type="date" data-cbdate="${x.task.id}" value="${c.date[x.task.id] || ymd(new Date(cbT0().getTime() + 7 * 864e5))}"></div>` : ''}</div>`; }).join('')}
+            <div class="cb-foot"><span></span><button type="button" class="cb-btn main" data-cb="next">Next</button></div>`;
+        } else if (c.step === 3) {
+          h = `${cbBar(2)}<h2>You captured ${cbN(D.cap.length, 'thing')}</h2><p class="cb-sub">Quick homes for them.</p>
+            ${D.cap.map(t => `<div class="cb-grp"><div class="cb-gt"><b class="t">${cbE(cleanTitle(t.title))}</b>${cbPick('data-cbc', t.id, ['week', 'cu', 'park', 'go'], c.cap[t.id] || '')}</div></div>`).join('')}
+            <div class="cb-foot"><span></span><button type="button" class="cb-btn main" data-cb="next">Finish</button></div>`;
+        } else {
+          const T = c.tally, chips = [[T.week, 'on this week'], [T.cu, 'coming up'], [T.park, 'in Parked'], [T.go, 'in the Waste Yard']].filter(x => x[0]).map(x => `<span><b>${x[0]}</b> ${x[1]}</span>`).join('');
+          h = `<div class="cb-wave">✨</div><h2>All caught up.</h2><p class="cb-sub">Your board is current again, and nothing carries an old “from …” label. When you’re ready, set today’s Three on Today, as usual.</p>
+            <div class="cb-row"><button type="button" class="cb-btn main" data-cb="today">Go to Today</button><button type="button" class="cb-btn soft" data-cb="board">See my board</button></div>${chips ? `<div class="cb-sum">${chips}</div>` : ''}`;
+          cbWeekDone();
+        }
+        cbShow(cbX('close') + h);
+      }
+      function cbCatchApply() {
+        const D = cbCatchData(), c = cbC, tally = k => { if (k && c.tally[k] != null) c.tally[k]++; };
+        if (c.step === 1) { [['last', D.g.last], ['older', D.g.older], ['prog', D.g.prog]].forEach(([k, list]) => list.forEach(x => { const v = c.each[x.task.id] || c.grp[k] || ''; if (!v) return; cbApply(x, v); tally(v); })); }
+        else if (c.step === 2) { D.dated.forEach(x => { const v = c.dated[x.task.id] || 'keep';
+          if (v === 'date') { cbFresh(x.task); const s = c.date[x.task.id] || ymd(new Date(cbT0().getTime() + 7 * 864e5)), i = cbInfo(x.task); i.deadline = new Date(s + 'T00:00:00'); x.task.note = composeNote(i, x.task.checked); tally('week'); }
+          else { cbApply(x, v); tally(v === 'keep' ? 'week' : v); } }); }
+        else if (c.step === 3) { D.cap.forEach(t => { const v = c.cap[t.id]; if (!v) return;
+          if (v === 'go') { try { capDiscard(t); } catch (e) {} tally('go'); return; }
+          if (!capAdd(t, true)) return; const f = findTaskById(t.id); if (!f) return;
+          if (v === 'park') cbPark([f], false); else hzSet(t, v === 'cu' ? 'cu' : 'week'); tally(v); }); }
+        markChanged(); renderTasks(); c.step++; cbCatchPaint();
+      }
+      // ---- clicks, typing, keys ----
+      function cbClick(e) {
+        if (e.target === cbEl) { if (cbMode === 'fresh') cbSet(); else if (cbMode !== 'catch') cbClose(); return; }
+        const b = e.target.closest('button'); if (!b) return;
+        const d = b.dataset, a = d.cb;
+        if (a === 'close') return cbClose();
+        if (a === 'slate') return cbSlate();
+        if (a === 'catch') return cbCatch();
+        if (a === 'set') return cbSet();
+        if (a === 'undo') return cbUndo();
+        if (a === 'add') return cbAdd();
+        if (a === 'drawer') { cbS.drawer = !cbS.drawer; return cbFreshPaint(); }
+        if (a === 'next') return cbCatchApply();
+        if (a === 'today') { cbClose(); try { switchMainTab('day'); } catch (x) {} return; }
+        if (a === 'board') { cbClose(); try { switchMainTab('tasks'); } catch (x) {} return; }
+        if (d.cbback) { const t = cbBringBack(deepFind(d.cbback)); if (t) { cbS.back.push(String(t.id)); cbS.typed = ''; } return cbFreshPaint(true); }
+        if (d.cbnew) return cbAdd();
+        if (d.cbone) { cbC.one[d.cbone] = true; return cbCatchPaint(); }
+        const p = b.closest('.cb-pick'); if (p && cbC) {
+          const v = d.v, ps = p.dataset, tog = (o, k) => { o[k] = o[k] === v ? '' : v; };
+          if (ps.cbg) { tog(cbC.grp, ps.cbg); Object.keys(cbC.each).forEach(k => { if (cbCatchData().g[ps.cbg].some(x => String(x.task.id) === k)) delete cbC.each[k]; }); }
+          if (ps.cbe) tog(cbC.each, ps.cbe);
+          if (ps.cbd) cbC.dated[ps.cbd] = v;
+          if (ps.cbc) tog(cbC.cap, ps.cbc);
+          return cbCatchPaint();
+        }
+      }
+      function cbInput(e) {
+        if (e.target.classList.contains('cb-in') && cbS) { cbS.typed = e.target.value; const w = cbEl.querySelector('.cb-sugwrap'); if (w) w.innerHTML = cbSugHtml(cbMatch(cbS.typed)); }
+        if (e.target.dataset.cbdate && cbC) cbC.date[e.target.dataset.cbdate] = e.target.value;
+      }
+      function cbKey(e) { if (e.key === 'Enter' && e.target.classList.contains('cb-in')) { e.preventDefault(); const t = cbMatch(cbS.typed); if (!t) cbAdd(); } }
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && cbEl) { e.preventDefault(); e.stopPropagation(); if (cbMode === 'fresh') cbSet(); else cbClose(); } }, true);
+      // ---- when it appears: 5+ days since Hodo was last used here, once per break, with something open to clear ----
+      function cbCheck(force) {
+        const away = cbDaysAway(); cbStamp();
+        if (!force && away < CB_AWAY) return false;
+        if (!cbSlateList().length && !cbCatchData().cap.length) return false;
+        cbWelcome(false); return true;
+      }
+      { let tries = 0; const wait = () => { if (sections && sections.length) { cbCheck(false); return; } if (++tries < 120) setTimeout(wait, 500); else cbStamp(); }; setTimeout(wait, 900); }
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) cbStamp(); });
+      setInterval(cbStamp, 30 * 60 * 1000);
+      // ---- Settings → Your week: a clean slate any time ----
+      function cbSoRow() { try { const wk = document.querySelector('#spBody .so-sec[data-g="week"]'); if (!wk || wk.querySelector('.cb-sorow')) return;
+        const r = document.createElement('div'); r.className = 'sp-row cb-sorow'; r.dataset.t = 'Clean slate';
+        r.innerHTML = '<div class="sp-rl"><span class="sp-rt">Clean slate</span><span class="sp-hint">Move your open tasks to Parked and start fresh. Nothing is deleted.</span></div><button type="button" class="sp-btn" data-cbso="1">Start fresh…</button>';
+        wk.appendChild(r); } catch (e) {} }
+      document.addEventListener('click', e => { if (e.target.closest && e.target.closest('#settingsBtn, #soNav')) setTimeout(cbSoRow, 0); const o = e.target.closest && e.target.closest('[data-cbso]'); if (!o) return; e.preventDefault(); try { document.getElementById('settingsPanel').hidden = true; } catch (x) {} cbWelcome(true); }, true);
+      cbSoRow();
+      // ---- Guide ----
+      if (!GUIDE_ITEMS.some(x => x.id === 'comeback')) { const i = GUIDE_ITEMS.findIndex(x => x.id === 'wreset'); GUIDE_ITEMS.splice(i < 0 ? GUIDE_ITEMS.length : i + 1, 0, { id: 'comeback', g: 'concepts', t: 'Coming back after a break', d: 'After 5 days or more away, Hodo welcomes you back with two choices. Clean slate moves your open tasks to Parked in one tap (nothing is deleted; anything due in the next 7 days and what you’re waiting on stay) and gives you a fresh board: bring anything back as you type, or from the list beside it. Or catch up in three short steps: what’s still on your plate, what has a date, and what you captured. Today’s Three stays a separate step. A clean slate is also in Settings → Your week, any time.', kw: 'away break vacation holiday return restart fresh start clean slate overwhelmed behind catch up' }); }
+      window.koiComeback = { days: cbDaysAway, check: cbCheck, open: cbWelcome, slate: cbSlate, catchUp: cbCatch, list: cbSlateList, match: cbMatch, mode: () => cbMode, state: () => ({ s: cbS, c: cbC }) };
     }
     applyWaitRail();
   </script>
