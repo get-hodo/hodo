@@ -1,6 +1,17 @@
 # Hodo: what changed
 
-## Hodo 2.11 · Nov 13, 2026
+## Hodo 2.12 · Nov 14, 2026
+- NEW: Focus on what’s now
+- NEW: Never miss a deadline
+- NEW: Cards your size
+- NEW: Search finds parked tasks too
+- REWORKED: Right-click does it all
+- REWORKED: Waiting On, person by person
+- REWORKED: Feedback in under a minute
+- REWORKED: Hodo fits your window
+- SHELVED: Fewer things, on purpose
+
+## Hodo 2.11 · Nov 14, 2026
 - NEW: Coming back is easy now
 - NEW: Parked tasks find you
 
